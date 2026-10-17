@@ -1,451 +1,453 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SoilGuard — Real-Time Soil Intelligence & Agronomic Console</title>
   <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
   <style>
-    :root {
-      --background: #090e17;
-      --foreground: #f1f5f9;
-      --card: #111a2e;
-      --card-subtle: #17233d;
-      --border: #223254;
-      --border-accent: #2d4270;
-      --muted: #162035;
-      --muted-foreground: #94a3b8;
-      --primary: #10b981;
-      --primary-foreground: #ffffff;
-      --accent-amber: #f59e0b;
-      --accent-rose: #f43f5e;
-      --accent-sky: #0284c7;
-      --accent-purple: #8b5cf6;
+    /* Technical Precision & Minimalist Palette */
+    :root, [data-theme="light"] {
+      --bg: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-subtle: #f1f5f9;
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --text-faint: #94a3b8;
+
+      /* Semantic status indicators */
+      --c-green: #059669;
+      --c-green-bg: #ecfdf5;
+      --c-green-border: #a7f3d0;
+
+      --c-amber: #d97706;
+      --c-amber-bg: #fffbeb;
+      --c-amber-border: #fde68a;
+
+      --c-red: #dc2626;
+      --c-red-bg: #fef2f2;
+      --c-red-border: #fecaca;
+
+      --c-blue: #0284c7;
+      --c-blue-bg: #f0f9ff;
+      --c-blue-border: #bae6fd;
+
+      --chart-grid: #e2e8f0;
+      --chart-axis: #64748b;
+      --chart-line: #059669;
+      --chart-fill: rgba(5, 150, 105, 0.08);
+      --chart-thresh: #dc2626;
+    }
+
+    [data-theme="dark"] {
+      --bg: #09090b;
+      --bg-surface: #121214;
+      --bg-subtle: #18181b;
+      --border: #27272a;
+      --border-strong: #3f3f46;
+      --text: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --text-faint: #71717a;
+
+      /* Semantic status indicators */
+      --c-green: #34d399;
+      --c-green-bg: rgba(52, 211, 153, 0.1);
+      --c-green-border: rgba(52, 211, 153, 0.25);
+
+      --c-amber: #fbbf24;
+      --c-amber-bg: rgba(251, 191, 36, 0.1);
+      --c-amber-border: rgba(251, 191, 36, 0.25);
+
+      --c-red: #f87171;
+      --c-red-bg: rgba(248, 113, 113, 0.1);
+      --c-red-border: rgba(248, 113, 113, 0.25);
+
+      --c-blue: #38bdf8;
+      --c-blue-bg: rgba(56, 189, 248, 0.1);
+      --c-blue-border: rgba(56, 189, 248, 0.25);
+
+      --chart-grid: #27272a;
+      --chart-axis: #71717a;
+      --chart-line: #34d399;
+      --chart-fill: rgba(52, 211, 153, 0.08);
+      --chart-thresh: #f87171;
     }
 
     body {
-      background-color: var(--background);
-      color: var(--foreground);
-      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      transition: background-color 0.2s ease, color 0.2s ease;
+      font-variant-numeric: tabular-nums;
     }
 
-    @keyframes pulse-ring {
-      0% { transform: scale(0.92); opacity: 0.9; }
-      50% { transform: scale(1.25); opacity: 0.25; }
-      100% { transform: scale(0.92); opacity: 0.9; }
+    /* Minimalist Technical Tabs */
+    .tab-btn {
+      border-bottom: 2px solid transparent;
+      color: var(--text-muted);
+      transition: all 0.15s ease;
     }
-    .beacon-glow {
-      animation: pulse-ring 2s infinite ease-in-out;
+    .tab-btn:hover {
+      color: var(--text);
+      border-color: var(--border-strong);
+    }
+    .tab-btn.tab-active {
+      color: var(--text);
+      border-color: var(--c-green);
+      font-weight: 600;
     }
 
-    .tab-active {
-      background: var(--card);
-      color: var(--foreground);
-      border-color: var(--primary);
-      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
-    }
-
-    /* Custom range slider styling */
+    /* Clean Instrument Sliders */
     input[type=range] {
       -webkit-appearance: none;
-      height: 6px;
-      border-radius: 4px;
-      background: var(--border);
+      height: 4px;
+      border-radius: 2px;
+      background: var(--border-strong);
       outline: none;
     }
     input[type=range]::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 18px;
-      height: 18px;
+      width: 14px;
+      height: 14px;
       border-radius: 50%;
-      background: var(--primary);
+      background: var(--text);
       cursor: pointer;
-      border: 2px solid white;
-      box-shadow: 0 0 4px rgba(0,0,0,0.4);
+      border: 2px solid var(--bg-surface);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.2);
     }
 
-    /* Scrollbars */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+    /* Micro blinking hardware LED */
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
     }
-    ::-webkit-scrollbar-track {
-      background: var(--background);
-    }
-    ::-webkit-scrollbar-thumb {
-      background: var(--border);
-      border-radius: 3px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--primary);
+    .led-blink {
+      animation: blink 1.5s infinite ease-in-out;
     }
   </style>
 </head>
-<body class="antialiased min-h-screen p-3 sm:p-5 selection:bg-emerald-500 selection:text-white">
+<body class="antialiased min-h-screen p-3 sm:p-6 text-sm">
 
   <div class="max-w-7xl mx-auto space-y-4">
 
-    <!-- Top Navigation & System Health Bar -->
-    <header class="bg-[var(--card)] border border-[var(--border)] rounded-2xl px-5 py-3.5 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3">
-      <div class="flex items-center space-x-3.5">
-        <div class="w-11 h-11 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex items-center justify-center text-2xl font-black shadow-inner">
-          🌱
+    <!-- Top Instrumentation Bar & Minimalist Controls -->
+    <header class="bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg px-4 py-3 flex flex-col md:flex-row md:items-center justify-between gap-3">
+      <div class="flex items-center space-x-3">
+        <div class="w-8 h-8 rounded border border-[var(--border)] bg-[var(--bg-subtle)] flex items-center justify-center font-mono font-bold text-xs">
+          SG
         </div>
         <div>
           <div class="flex items-center gap-2">
-            <h1 class="text-lg font-black tracking-tight text-[var(--foreground)]">SoilGuard SIS</h1>
-            <span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 tracking-wider uppercase">
-              Industrial Console v1.2
+            <h1 class="text-sm font-bold tracking-tight uppercase">SoilGuard Console</h1>
+            <span class="text-[10px] font-mono px-1.5 py-0.2 rounded border border-[var(--border)] text-[var(--text-muted)]">
+              v1.3·PRECISION
             </span>
           </div>
-          <p class="text-xs text-[var(--muted-foreground)]">Soil Intelligence System · Real-Time Salinity, Irrigation & Nutrient Sentry</p>
+          <p class="text-xs text-[var(--text-muted)]">Soil Intelligence & Agronomic Decision System</p>
         </div>
       </div>
 
-      <!-- Quick Descriptive System Health Keys -->
-      <div class="flex flex-wrap items-center gap-2 text-xs">
-        <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[var(--background)] border border-[var(--border)]">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-          <span class="text-[var(--muted-foreground)]">NODE:</span>
-          <strong class="text-[var(--foreground)] font-mono">SG-NODE-001 (Trans-Nzoia)</strong>
+      <!-- Quick Telemetry Chips & Theme Switcher -->
+      <div class="flex flex-wrap items-center gap-2 text-xs font-mono">
+        <div class="flex items-center gap-1.5 px-2.5 py-1 rounded border border-[var(--border)] bg-[var(--bg-subtle)]">
+          <span class="w-1.5 h-1.5 rounded-full bg-[var(--c-green)] led-blink"></span>
+          <span class="text-[var(--text-muted)]">NODE:</span>
+          <span>SG-001</span>
         </div>
 
-        <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[var(--background)] border border-[var(--border)]">
-          <span class="text-[var(--muted-foreground)]">POWER:</span>
-          <strong id="header-batt" class="text-emerald-400 font-mono">4.18V · Solar 5W OK</strong>
+        <div class="flex items-center gap-1.5 px-2.5 py-1 rounded border border-[var(--border)] bg-[var(--bg-subtle)]">
+          <span class="text-[var(--text-muted)]">PWR:</span>
+          <span id="header-batt">4.18V · SOLAR</span>
         </div>
 
-        <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[var(--background)] border border-[var(--border)]">
-          <span class="text-[var(--muted-foreground)]">GSM:</span>
-          <strong class="text-sky-400 font-mono">CSQ 26/31 (4G/SMS)</strong>
+        <div class="flex items-center gap-1.5 px-2.5 py-1 rounded border border-[var(--border)] bg-[var(--bg-subtle)]">
+          <span class="text-[var(--text-muted)]">CELL:</span>
+          <span>CSQ 26/31</span>
         </div>
 
-        <button id="btn-stream" onclick="toggleAutoStream()" class="px-3.5 py-1.5 rounded-xl font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition-all shadow-sm flex items-center gap-1.5 ml-1 cursor-pointer">
+        <!-- 15m Ticker Button -->
+        <button id="btn-stream" onclick="toggleAutoStream()" class="px-2.5 py-1 rounded border border-[var(--border-strong)] bg-[var(--bg-subtle)] hover:bg-[var(--border)] transition-colors flex items-center gap-1 font-sans font-medium cursor-pointer">
           <span id="stream-icon">▶</span>
-          <span id="stream-text">Live 15m Ticker</span>
+          <span id="stream-text">15m Ticker</span>
+        </button>
+
+        <!-- LIGHT / DARK MODE TOGGLE (MINIMALIST) -->
+        <button id="theme-toggle-btn" onclick="toggleTheme()" class="px-2.5 py-1 rounded border border-[var(--border-strong)] bg-[var(--bg-subtle)] hover:bg-[var(--border)] transition-colors flex items-center gap-1.5 font-sans font-medium cursor-pointer" title="Toggle Light/Dark Mode">
+          <span id="theme-icon">☼</span>
+          <span id="theme-label">Light</span>
         </button>
       </div>
     </header>
 
-    <!-- Field & Crop Phenology Selector Ribbon -->
-    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm space-y-3">
+    <!-- Crop & Phenological Stage Configuration Ribbon -->
+    <div class="bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg p-3.5 space-y-3">
       <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 text-xs">
         
         <!-- Crop Selector -->
         <div class="flex flex-wrap items-center gap-2">
-          <span class="font-bold text-[var(--muted-foreground)] uppercase tracking-wider text-[11px]">Active Crop:</span>
-          <div class="inline-flex rounded-xl p-1 bg-[var(--background)] border border-[var(--border)] gap-1">
-            <button onclick="selectField('maize')" id="field-maize" class="field-btn px-3 py-1.5 rounded-lg font-bold transition-all bg-[var(--card)] text-[var(--foreground)] border border-emerald-500/30 shadow-xs">
-              🌽 Maize (Corn)
+          <span class="font-mono text-[var(--text-muted)] uppercase text-[11px]">Crop:</span>
+          <div class="inline-flex rounded border border-[var(--border)] p-0.5 bg-[var(--bg-subtle)] gap-0.5">
+            <button onclick="selectField('maize')" id="field-maize" class="field-btn px-2.5 py-1 rounded font-medium text-xs bg-[var(--bg-surface)] text-[var(--text)] border border-[var(--border)]">
+              Maize (Corn)
             </button>
-            <button onclick="selectField('tomato')" id="field-tomato" class="field-btn px-3 py-1.5 rounded-lg font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-all">
-              🍅 Tomato (Vegetable)
+            <button onclick="selectField('tomato')" id="field-tomato" class="field-btn px-2.5 py-1 rounded font-medium text-xs text-[var(--text-muted)] hover:text-[var(--text)]">
+              Tomato
             </button>
-            <button onclick="selectField('rice')" id="field-rice" class="field-btn px-3 py-1.5 rounded-lg font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-all">
-              🌾 Rice (Paddy)
+            <button onclick="selectField('rice')" id="field-rice" class="field-btn px-2.5 py-1 rounded font-medium text-xs text-[var(--text-muted)] hover:text-[var(--text)]">
+              Rice (Paddy)
             </button>
-            <button onclick="selectField('wheat')" id="field-wheat" class="field-btn px-3 py-1.5 rounded-lg font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-all">
-              🌾 Wheat (Highland)
+            <button onclick="selectField('wheat')" id="field-wheat" class="field-btn px-2.5 py-1 rounded font-medium text-xs text-[var(--text-muted)] hover:text-[var(--text)]">
+              Wheat
             </button>
           </div>
         </div>
 
         <!-- Phenological Stage Selector -->
         <div class="flex flex-wrap items-center gap-2">
-          <span class="font-bold text-[var(--muted-foreground)] uppercase tracking-wider text-[11px]">Growth Stage:</span>
-          <div class="inline-flex rounded-xl p-1 bg-[var(--background)] border border-[var(--border)] gap-1">
-            <button onclick="selectStage('germination')" id="stage-germination" class="stage-btn px-2.5 py-1 rounded-lg text-xs font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-all">
+          <span class="font-mono text-[var(--text-muted)] uppercase text-[11px]">Growth Stage:</span>
+          <div class="inline-flex rounded border border-[var(--border)] p-0.5 bg-[var(--bg-subtle)] gap-0.5">
+            <button onclick="selectStage('germination')" id="stage-germination" class="stage-btn px-2 py-1 rounded text-xs font-medium text-[var(--text-muted)] hover:text-[var(--text)]">
               1. Germination
             </button>
-            <button onclick="selectStage('vegetative')" id="stage-vegetative" class="stage-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-[var(--card)] text-emerald-400 border border-emerald-500/30 transition-all">
+            <button onclick="selectStage('vegetative')" id="stage-vegetative" class="stage-btn px-2 py-1 rounded text-xs font-medium bg-[var(--bg-surface)] text-[var(--text)] border border-[var(--border)]">
               2. Vegetative
             </button>
-            <button onclick="selectStage('flowering')" id="stage-flowering" class="stage-btn px-2.5 py-1 rounded-lg text-xs font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-all">
+            <button onclick="selectStage('flowering')" id="stage-flowering" class="stage-btn px-2 py-1 rounded text-xs font-medium text-[var(--text-muted)] hover:text-[var(--text)]">
               3. Flowering / Fruit
             </button>
-            <button onclick="selectStage('maturity')" id="stage-maturity" class="stage-btn px-2.5 py-1 rounded-lg text-xs font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-all">
+            <button onclick="selectStage('maturity')" id="stage-maturity" class="stage-btn px-2 py-1 rounded text-xs font-medium text-[var(--text-muted)] hover:text-[var(--text)]">
               4. Maturity
             </button>
           </div>
         </div>
       </div>
 
-      <!-- Live Agronomic Biological Target Strip -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3 pt-2.5 border-t border-[var(--border)] text-xs text-[var(--muted-foreground)]">
-        <div>Root Zone: <strong id="lbl-root-depth" class="text-[var(--foreground)] font-mono">-20 cm depth</strong></div>
-        <div>Safe EC Limit: <strong id="lbl-threshold" class="text-emerald-400 font-mono">1.70 dS/m</strong></div>
-        <div>Moisture Band: <strong id="lbl-moist-band" class="text-[var(--foreground)] font-mono">22% – 38% VWC</strong></div>
-        <div>Yield Loss Slope: <strong id="lbl-slope" class="text-amber-400 font-mono">12.0% per dS/m</strong></div>
-        <div>Stage NPK Target: <strong id="lbl-stage-npk" class="text-purple-400 font-mono">3.5 kg / 100m²</strong></div>
+      <!-- Live Agronomic Specifications Strip -->
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-2 border-t border-[var(--border)] text-xs font-mono text-[var(--text-muted)]">
+        <div>Root Depth: <span id="lbl-root-depth" class="text-[var(--text)] font-semibold">-20 cm</span></div>
+        <div>Safe EC Limit: <span id="lbl-threshold" class="text-[var(--text)] font-semibold">1.70 dS/m</span></div>
+        <div>Moisture Band: <span id="lbl-moist-band" class="text-[var(--text)] font-semibold">22% – 38%</span></div>
+        <div>Loss Slope: <span id="lbl-slope" class="text-[var(--text)] font-semibold">12.0% / dS/m</span></div>
+        <div>Stage Target: <span id="lbl-stage-npk" class="text-[var(--text)] font-semibold">3.5 kg/100m²</span></div>
       </div>
     </div>
 
-    <!-- Descriptive Action Keys (High-Signal Status Ribbon) -->
-    <div id="status-ribbon" class="rounded-2xl p-4 border transition-all duration-300 grid grid-cols-2 sm:grid-cols-4 gap-3 shadow-sm bg-emerald-500/10 border-emerald-500/30">
+    <!-- Operational State Directive Banner -->
+    <div id="status-ribbon" class="rounded-lg p-3.5 border transition-colors grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[var(--bg-surface)] border-[var(--border)]">
       <div>
-        <span class="text-[11px] font-bold uppercase tracking-wider text-[var(--muted-foreground)] block">Field Status Key</span>
-        <span id="key-status" class="text-sm font-black text-emerald-400 uppercase tracking-tight">OPTIMAL EQUILIBRIUM</span>
+        <span class="text-[10px] font-mono uppercase text-[var(--text-muted)] block">Field Status</span>
+        <span id="key-status" class="text-xs font-bold uppercase tracking-tight text-[var(--c-green)]">OPTIMAL EQUILIBRIUM</span>
       </div>
 
       <div>
-        <span class="text-[11px] font-bold uppercase tracking-wider text-[var(--muted-foreground)] block">Irrigation Action Key</span>
-        <span id="key-action" class="text-sm font-black text-[var(--foreground)]">HOLD (Moisture In Target)</span>
+        <span class="text-[10px] font-mono uppercase text-[var(--text-muted)] block">Irrigation Action</span>
+        <span id="key-action" class="text-xs font-bold text-[var(--text)]">HOLD (Moisture In Target)</span>
       </div>
 
       <div>
-        <span class="text-[11px] font-bold uppercase tracking-wider text-[var(--muted-foreground)] block">Fertilizer Protocol Key</span>
-        <span id="key-fertilizer" class="text-sm font-black text-emerald-400">AUTHORIZED (Stage: Vegetative)</span>
+        <span class="text-[10px] font-mono uppercase text-[var(--text-muted)] block">Fertilizer Protocol</span>
+        <span id="key-fertilizer" class="text-xs font-bold text-[var(--c-green)]">AUTHORIZED (Stage: Vegetative)</span>
       </div>
 
       <div>
-        <span class="text-[11px] font-bold uppercase tracking-wider text-[var(--muted-foreground)] block">Leaching Requirement</span>
-        <span id="key-leaching" class="text-sm font-black text-emerald-400 font-mono">0% (Baseline Safe)</span>
+        <span class="text-[10px] font-mono uppercase text-[var(--text-muted)] block">Leaching Requirement</span>
+        <span id="key-leaching" class="text-xs font-bold font-mono text-[var(--text)]">0% (Baseline Safe)</span>
       </div>
     </div>
 
-    <!-- 4 Primary Telemetry Dials -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+    <!-- 4 Primary Instrument Dials (Technical Readouts) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
       <!-- 1. Salinity EC -->
-      <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm flex flex-col justify-between">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-bold uppercase tracking-wider text-[var(--muted-foreground)]">Soil Salinity (EC<sub>25</sub>)</span>
-          <span id="pill-ec" class="text-xs font-black px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+      <div class="bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg p-3.5 flex flex-col justify-between">
+        <div class="flex items-center justify-between text-xs font-mono">
+          <span class="text-[var(--text-muted)] uppercase">EC<sub>25</sub> (Salinity)</span>
+          <span id="pill-ec" class="text-[10px] px-1.5 py-0.2 rounded border border-[var(--c-green-border)] bg-[var(--c-green-bg)] text-[var(--c-green)] font-semibold">
             IN SPEC
           </span>
         </div>
-        <div class="my-3 flex items-baseline gap-2">
-          <span id="metric-ec" class="text-3xl font-black text-[var(--foreground)] font-mono">1.35</span>
-          <span class="text-xs font-semibold text-[var(--muted-foreground)]">dS/m</span>
+        <div class="my-2 flex items-baseline gap-1.5">
+          <span id="metric-ec" class="text-2xl font-bold font-mono text-[var(--text)]">1.35</span>
+          <span class="text-xs text-[var(--text-muted)]">dS/m</span>
         </div>
-        <div class="text-xs text-[var(--muted-foreground)] flex justify-between pt-2 border-t border-[var(--border)]">
-          <span>Limit: <strong id="limit-ec" class="text-[var(--foreground)] font-mono">&le; 1.70</strong></span>
-          <span>Osmotic: <strong id="lbl-osmotic" class="text-emerald-400 font-mono">-0.49 bar</strong></span>
+        <div class="text-[11px] font-mono text-[var(--text-muted)] flex justify-between pt-2 border-t border-[var(--border)]">
+          <span>Limit: <strong id="limit-ec" class="text-[var(--text)]">&le; 1.70</strong></span>
+          <span>Osmotic: <strong id="lbl-osmotic" class="text-[var(--text)]">-0.49 bar</strong></span>
         </div>
       </div>
 
       <!-- 2. Soil Moisture -->
-      <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm flex flex-col justify-between">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-bold uppercase tracking-wider text-[var(--muted-foreground)]">Volumetric Moisture</span>
-          <span id="pill-moist" class="text-xs font-black px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+      <div class="bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg p-3.5 flex flex-col justify-between">
+        <div class="flex items-center justify-between text-xs font-mono">
+          <span class="text-[var(--text-muted)] uppercase">Moisture (VWC)</span>
+          <span id="pill-moist" class="text-[10px] px-1.5 py-0.2 rounded border border-[var(--c-green-border)] bg-[var(--c-green-bg)] text-[var(--c-green)] font-semibold">
             OPTIMAL
           </span>
         </div>
-        <div class="my-3 flex items-baseline gap-2">
-          <span id="metric-moist" class="text-3xl font-black text-[var(--foreground)] font-mono">31.4</span>
-          <span class="text-xs font-semibold text-[var(--muted-foreground)]">% VWC</span>
+        <div class="my-2 flex items-baseline gap-1.5">
+          <span id="metric-moist" class="text-2xl font-bold font-mono text-[var(--text)]">31.4</span>
+          <span class="text-xs text-[var(--text-muted)]">%</span>
         </div>
-        <div class="text-xs text-[var(--muted-foreground)] flex justify-between pt-2 border-t border-[var(--border)]">
-          <span>Refill: <strong class="text-[var(--foreground)] font-mono">22%</strong></span>
-          <span>Field Cap: <strong class="text-[var(--foreground)] font-mono">38%</strong></span>
+        <div class="text-[11px] font-mono text-[var(--text-muted)] flex justify-between pt-2 border-t border-[var(--border)]">
+          <span>Refill: <strong class="text-[var(--text)]">22%</strong></span>
+          <span>Capacity: <strong class="text-[var(--text)]">38%</strong></span>
         </div>
       </div>
 
       <!-- 3. Soil Temperature -->
-      <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm flex flex-col justify-between">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-bold uppercase tracking-wider text-[var(--muted-foreground)]">Root Temperature</span>
-          <span class="text-xs font-black px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-            HEALTHY
+      <div class="bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg p-3.5 flex flex-col justify-between">
+        <div class="flex items-center justify-between text-xs font-mono">
+          <span class="text-[var(--text-muted)] uppercase">Root Temp</span>
+          <span class="text-[10px] px-1.5 py-0.2 rounded border border-[var(--c-green-border)] bg-[var(--c-green-bg)] text-[var(--c-green)] font-semibold">
+            DS18B20
           </span>
         </div>
-        <div class="my-3 flex items-baseline gap-2">
-          <span id="metric-temp" class="text-3xl font-black text-[var(--foreground)] font-mono">23.8</span>
-          <span class="text-xs font-semibold text-[var(--muted-foreground)]">°C</span>
+        <div class="my-2 flex items-baseline gap-1.5">
+          <span id="metric-temp" class="text-2xl font-bold font-mono text-[var(--text)]">23.8</span>
+          <span class="text-xs text-[var(--text-muted)]">°C</span>
         </div>
-        <div class="text-xs text-[var(--muted-foreground)] flex justify-between pt-2 border-t border-[var(--border)]">
-          <span>Sensor: <strong class="text-[var(--foreground)] font-mono">DS18B20 1-Wire</strong></span>
-          <span>Target: <strong class="text-[var(--foreground)] font-mono">18–32°C</strong></span>
+        <div class="text-[11px] font-mono text-[var(--text-muted)] flex justify-between pt-2 border-t border-[var(--border)]">
+          <span>1-Wire Bus: <strong class="text-[var(--text)]">GPIO 4</strong></span>
+          <span>Comp: <strong class="text-[var(--text)]">25°C Base</strong></span>
         </div>
       </div>
 
-      <!-- 4. Leaching Extra Water -->
-      <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm flex flex-col justify-between">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-bold uppercase tracking-wider text-[var(--muted-foreground)]">FAO-56 Leaching (LR)</span>
-          <span id="pill-lr" class="text-xs font-black px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+      <!-- 4. Leaching Requirement -->
+      <div class="bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg p-3.5 flex flex-col justify-between">
+        <div class="flex items-center justify-between text-xs font-mono">
+          <span class="text-[var(--text-muted)] uppercase">FAO-56 Leach (LR)</span>
+          <span id="pill-lr" class="text-[10px] px-1.5 py-0.2 rounded border border-[var(--border)] bg-[var(--bg-subtle)] text-[var(--text-muted)] font-semibold">
             NO FLUSH
           </span>
         </div>
-        <div class="my-3 flex items-baseline gap-2">
-          <span id="metric-lr" class="text-3xl font-black text-[var(--foreground)] font-mono">+0%</span>
-          <span class="text-xs font-semibold text-[var(--muted-foreground)]">Extra Vol</span>
+        <div class="my-2 flex items-baseline gap-1.5">
+          <span id="metric-lr" class="text-2xl font-bold font-mono text-[var(--text)]">+0%</span>
+          <span class="text-xs text-[var(--text-muted)]">Extra Volume</span>
         </div>
-        <div class="text-xs text-[var(--muted-foreground)] flex justify-between pt-2 border-t border-[var(--border)]">
-          <span>Water EC<sub>w</sub>: <strong class="text-[var(--foreground)] font-mono">0.60 dS/m</strong></span>
-          <span>Surplus Flush Time: <strong id="lbl-flush-time" class="text-[var(--foreground)] font-mono">0 min</strong></span>
+        <div class="text-[11px] font-mono text-[var(--text-muted)] flex justify-between pt-2 border-t border-[var(--border)]">
+          <span>Water EC<sub>w</sub>: <strong class="text-[var(--text)]">0.60 dS/m</strong></span>
+          <span>Soak: <strong id="lbl-flush-time" class="text-[var(--text)]">0 min</strong></span>
         </div>
       </div>
     </div>
 
-    <!-- ============================================================== -->
-    <!-- PROMINENT NEW SECTION: COLOR ACTION MATRIX & WHAT TO DO       -->
-    <!-- ============================================================== -->
-    <section class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm space-y-4">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-[var(--border)] pb-3">
+    <!-- Diagnostic Color Matrix & Field Protocol Directives -->
+    <section class="bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg p-4 space-y-3">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-[var(--border)] pb-2.5">
         <div>
-          <div class="flex items-center gap-2">
-            <h2 class="text-base font-black tracking-tight text-[var(--foreground)]">Hardware Beacon & Diagnostic Color Matrix</h2>
-            <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 uppercase">
-              Field Action Protocols
-            </span>
-          </div>
-          <p class="text-xs text-[var(--muted-foreground)] mt-0.5">
-            Exact descriptive meanings and mandatory physical measures for farmers and extension agents when specific beacon colors show up.
+          <h2 class="text-xs font-bold uppercase tracking-wider text-[var(--text)]">Optical Sentry & Diagnostic Color Action Protocols</h2>
+          <p class="text-xs text-[var(--text-muted)]">
+            Prescribed physical agronomic measures for farmers and extension agents corresponding to hardware beacon signals.
           </p>
         </div>
-        <div class="flex items-center gap-2 text-xs">
-          <span class="text-[var(--muted-foreground)]">Currently Triggered Signal:</span>
-          <span id="active-color-badge" class="font-black px-3 py-1 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center gap-1.5">
-            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-            🟢 GREEN SIGNAL (OPTIMAL EQUILIBRIUM)
+        <div class="flex items-center gap-2 text-xs font-mono">
+          <span class="text-[var(--text-muted)]">Active Signal:</span>
+          <span id="active-color-badge" class="px-2 py-0.5 rounded border border-[var(--c-green-border)] bg-[var(--c-green-bg)] text-[var(--c-green)] font-semibold">
+            🟢 GREEN (EQUILIBRIUM)
           </span>
         </div>
       </div>
 
-      <!-- 4 Color Action Cards Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-
-        <!-- 1. GREEN SIGNAL CARD -->
-        <div id="card-color-green" class="rounded-xl border p-4 space-y-3 transition-all duration-300 bg-emerald-500/10 border-emerald-500/40 ring-1 ring-emerald-500/30">
+      <!-- 4 Semantic Color Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+        
+        <!-- GREEN CARD -->
+        <div id="card-color-green" class="rounded border p-3 space-y-2.5 border-[var(--c-green-border)] bg-[var(--c-green-bg)]">
           <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="w-3.5 h-3.5 rounded-full bg-emerald-400 shadow-sm"></span>
-              <h3 class="text-xs font-black uppercase tracking-wider text-emerald-400">GREEN SIGNAL</h3>
-            </div>
-            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono">EC &le; Safe Limit</span>
+            <span class="font-bold text-[var(--c-green)] flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-[var(--c-green)]"></span>
+              GREEN SIGNAL
+            </span>
+            <span class="font-mono text-[10px] text-[var(--text-muted)]">EC &le; Limit</span>
           </div>
-
-          <div class="space-y-1">
-            <h4 class="text-xs font-bold text-[var(--foreground)]">Descriptive Meaning:</h4>
-            <p class="text-xs text-[var(--muted-foreground)] leading-relaxed">
-              <strong>Optimal Soil Equilibrium.</strong> Salinity is well within biological tolerance. Moisture is between refill and capacity (22–38%). Roots absorb water freely with zero osmotic resistance.
+          <div>
+            <div class="font-semibold text-[var(--text)] mb-0.5">Optimal Soil Equilibrium</div>
+            <p class="text-[var(--text-muted)] text-[11px] leading-relaxed">
+              Salinity within biological tolerance. Moisture at field capacity (22–38%). Root osmotic potential supports unobstructed nutrient uptake.
             </p>
           </div>
-
-          <div class="space-y-2 pt-2 border-t border-emerald-500/20 text-xs">
-            <h4 class="text-xs font-bold text-emerald-300 uppercase tracking-wider text-[11px]">Mandatory Measures to Take:</h4>
-            <ul class="space-y-1.5 text-[var(--muted-foreground)]">
-              <li class="flex items-start gap-1.5">
-                <span class="text-emerald-400 font-bold">1.</span>
-                <span><strong>Irrigation:</strong> Maintain scheduled standard cycle (e.g. 40-min drip/furrow). Do not over-irrigate to avoid leaching nitrogen.</span>
-              </li>
-              <li class="flex items-start gap-1.5">
-                <span class="text-emerald-400 font-bold">2.</span>
-                <span><strong>Fertilizer:</strong> Authorized for full growth-stage dose. Uptake efficiency is peak (90–95%).</span>
-              </li>
-              <li class="flex items-start gap-1.5">
-                <span class="text-emerald-400 font-bold">3.</span>
-                <span><strong>Monitoring:</strong> Beacon flashes green every 10s. No hardware or soil intervention needed.</span>
-              </li>
+          <div class="pt-2 border-t border-[var(--border)] space-y-1">
+            <div class="font-mono text-[10px] uppercase text-[var(--text-muted)] font-semibold">Action Protocol:</div>
+            <ul class="text-[11px] text-[var(--text)] space-y-1 list-disc list-inside">
+              <li><strong>Irrigation:</strong> Maintain scheduled 40-minute cycle. Do not over-water.</li>
+              <li><strong>Fertilizer:</strong> Authorized for full growth-stage dose. Uptake efficiency ~95%.</li>
+              <li><strong>Monitoring:</strong> Beacon pulses green every 10s. Normal observation.</li>
             </ul>
           </div>
         </div>
 
-        <!-- 2. AMBER / YELLOW SIGNAL CARD -->
-        <div id="card-color-amber" class="rounded-xl border p-4 space-y-3 transition-all duration-300 bg-[var(--background)] border-[var(--border)] opacity-85 hover:opacity-100">
+        <!-- AMBER CARD -->
+        <div id="card-color-amber" class="rounded border p-3 space-y-2.5 border-[var(--border)] bg-[var(--bg-surface)] opacity-85 hover:opacity-100">
           <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="w-3.5 h-3.5 rounded-full bg-amber-400 shadow-sm"></span>
-              <h3 class="text-xs font-black uppercase tracking-wider text-amber-400">AMBER SIGNAL</h3>
-            </div>
-            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono">85% Threshold / Dry</span>
+            <span class="font-bold text-[var(--c-amber)] flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-[var(--c-amber)]"></span>
+              AMBER SIGNAL
+            </span>
+            <span class="font-mono text-[10px] text-[var(--text-muted)]">85% Limit / Dry</span>
           </div>
-
-          <div class="space-y-1">
-            <h4 class="text-xs font-bold text-[var(--foreground)]">Descriptive Meaning:</h4>
-            <p class="text-xs text-[var(--muted-foreground)] leading-relaxed">
-              <strong>Pre-Stress Advisory.</strong> Salinity is within 85–100% of tolerance OR moisture has dropped near refill point (&lt; 22%). Evapotranspiration is concentrating salts in the active root zone.
+          <div>
+            <div class="font-semibold text-[var(--text)] mb-0.5">Pre-Stress Advisory</div>
+            <p class="text-[var(--text-muted)] text-[11px] leading-relaxed">
+              EC approaching crop threshold OR moisture near refill point (&lt; 22%). Evaporative loss is concentrating salts around root hairs.
             </p>
           </div>
-
-          <div class="space-y-2 pt-2 border-t border-[var(--border)] text-xs">
-            <h4 class="text-xs font-bold text-amber-300 uppercase tracking-wider text-[11px]">Mandatory Measures to Take:</h4>
-            <ul class="space-y-1.5 text-[var(--muted-foreground)]">
-              <li class="flex items-start gap-1.5">
-                <span class="text-amber-400 font-bold">1.</span>
-                <span><strong>Irrigation:</strong> If dry, water immediately for standard runtime + 10% to dilute root zone salts and prevent salt crystallization.</span>
-              </li>
-              <li class="flex items-start gap-1.5">
-                <span class="text-amber-400 font-bold">2.</span>
-                <span><strong>Fertilizer:</strong> <strong>DEFER OR HALVE DOSE</strong>. Never apply full mineral salts now; doing so pushes soil directly into the red critical zone.</span>
-              </li>
-              <li class="flex items-start gap-1.5">
-                <span class="text-amber-400 font-bold">3.</span>
-                <span><strong>Inspection:</strong> Re-check reading after 4–6 hours to ensure soil water dilutes salts safely.</span>
-              </li>
+          <div class="pt-2 border-t border-[var(--border)] space-y-1">
+            <div class="font-mono text-[10px] uppercase text-[var(--text-muted)] font-semibold">Action Protocol:</div>
+            <ul class="text-[11px] text-[var(--text)] space-y-1 list-disc list-inside">
+              <li><strong>Irrigation:</strong> If dry, water immediately (+10% runtime) to dilute root salts.</li>
+              <li><strong>Fertilizer:</strong> <strong>HOLD OR HALVE DOSE</strong>. Never apply full mineral salts now.</li>
+              <li><strong>Inspection:</strong> Re-check console telemetry in 4–6 hours.</li>
             </ul>
           </div>
         </div>
 
-        <!-- 3. RED SIGNAL CARD -->
-        <div id="card-color-red" class="rounded-xl border p-4 space-y-3 transition-all duration-300 bg-[var(--background)] border-[var(--border)] opacity-85 hover:opacity-100">
+        <!-- RED CARD -->
+        <div id="card-color-red" class="rounded border p-3 space-y-2.5 border-[var(--border)] bg-[var(--bg-surface)] opacity-85 hover:opacity-100">
           <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="w-3.5 h-3.5 rounded-full bg-rose-500 shadow-sm"></span>
-              <h3 class="text-xs font-black uppercase tracking-wider text-rose-400">RED SIGNAL</h3>
-            </div>
-            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 font-mono">EC &gt; Crop Tolerance</span>
+            <span class="font-bold text-[var(--c-red)] flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-[var(--c-red)]"></span>
+              RED SIGNAL
+            </span>
+            <span class="font-mono text-[10px] text-[var(--text-muted)]">EC &gt; Threshold</span>
           </div>
-
-          <div class="space-y-1">
-            <h4 class="text-xs font-bold text-[var(--foreground)]">Descriptive Meaning:</h4>
-            <p class="text-xs text-[var(--muted-foreground)] leading-relaxed">
-              <strong>Critical Osmotic Shock.</strong> Salinity exceeds safe limit. "Physiological Drought" occurs—even in wet soil, osmotic pressure sucks water OUT of roots into the soil. Crop loss is underway.
+          <div>
+            <div class="font-semibold text-[var(--text)] mb-0.5">Critical Saline Hazard</div>
+            <p class="text-[var(--text-muted)] text-[11px] leading-relaxed">
+              <strong>Physiological Drought.</strong> Osmotic suction pulls water *out* of roots into soil. Root damage and yield decline underway.
             </p>
           </div>
-
-          <div class="space-y-2 pt-2 border-t border-[var(--border)] text-xs">
-            <h4 class="text-xs font-bold text-rose-300 uppercase tracking-wider text-[11px]">Mandatory Measures to Take:</h4>
-            <ul class="space-y-1.5 text-[var(--muted-foreground)]">
-              <li class="flex items-start gap-1.5">
-                <span class="text-rose-400 font-bold">1.</span>
-                <span><strong>HALT FERTILIZER:</strong> 100% ban on all chemical inputs, foliar sprays, or manures for minimum 7 days.</span>
-              </li>
-              <li class="flex items-start gap-1.5">
-                <span class="text-rose-400 font-bold">2.</span>
-                <span><strong>LEACH FLUSH:</strong> Apply calculated FAO-56 surplus water (+25% to +40% extra volume) in deep soaks to push salts below root depth (-20cm).</span>
-              </li>
-              <li class="flex items-start gap-1.5">
-                <span class="text-rose-400 font-bold">3.</span>
-                <span><strong>CLEAR DRAINS:</strong> Ensure perimeter furrows are open so saline flush water drains away from field.</span>
-              </li>
+          <div class="pt-2 border-t border-[var(--border)] space-y-1">
+            <div class="font-mono text-[10px] uppercase text-[var(--text-muted)] font-semibold">Action Protocol:</div>
+            <ul class="text-[11px] text-[var(--text)] space-y-1 list-disc list-inside">
+              <li><strong>FERTILIZER BAN:</strong> 100% halt on all chemical inputs for minimum 7 days.</li>
+              <li><strong>LEACH FLUSH:</strong> Apply calculated FAO-56 extra water (+25% to +40%) in deep soak.</li>
+              <li><strong>DRAINAGE:</strong> Open perimeter furrows so salt water exits field.</li>
             </ul>
           </div>
         </div>
 
-        <!-- 4. BLUE SIGNAL CARD -->
-        <div id="card-color-blue" class="rounded-xl border p-4 space-y-3 transition-all duration-300 bg-[var(--background)] border-[var(--border)] opacity-85 hover:opacity-100">
+        <!-- BLUE CARD -->
+        <div id="card-color-blue" class="rounded border p-3 space-y-2.5 border-[var(--border)] bg-[var(--bg-surface)] opacity-85 hover:opacity-100">
           <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="w-3.5 h-3.5 rounded-full bg-sky-400 shadow-sm"></span>
-              <h3 class="text-xs font-black uppercase tracking-wider text-sky-400">BLUE SIGNAL</h3>
-            </div>
-            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300 font-mono">Moist &gt; 38% Saturation</span>
+            <span class="font-bold text-[var(--c-blue)] flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-[var(--c-blue)]"></span>
+              BLUE SIGNAL
+            </span>
+            <span class="font-mono text-[10px] text-[var(--text-muted)]">Moist &gt; 38% Sat</span>
           </div>
-
-          <div class="space-y-1">
-            <h4 class="text-xs font-bold text-[var(--foreground)]">Descriptive Meaning:</h4>
-            <p class="text-xs text-[var(--muted-foreground)] leading-relaxed">
-              <strong>Waterlogging & Hypoxia Hazard.</strong> Soil pores are completely choked with water. Oxygen drops below 5%, suffocating roots and triggering anaerobic denitrification.
+          <div>
+            <div class="font-semibold text-[var(--text)] mb-0.5">Waterlogging & Hypoxia</div>
+            <p class="text-[var(--text-muted)] text-[11px] leading-relaxed">
+              Soil macropores choked with water. Oxygen drops below 5%, suffocating roots and triggering rapid denitrification.
             </p>
           </div>
-
-          <div class="space-y-2 pt-2 border-t border-[var(--border)] text-xs">
-            <h4 class="text-xs font-bold text-sky-300 uppercase tracking-wider text-[11px]">Mandatory Measures to Take:</h4>
-            <ul class="space-y-1.5 text-[var(--muted-foreground)]">
-              <li class="flex items-start gap-1.5">
-                <span class="text-sky-400 font-bold">1.</span>
-                <span><strong>SHUT VALVES:</strong> Cut all irrigation immediately. Divert any incoming canal flows away from plot.</span>
-              </li>
-              <li class="flex items-start gap-1.5">
-                <span class="text-sky-400 font-bold">2.</span>
-                <span><strong>TRENCH DRAINAGE:</strong> Trench or rake relief furrows to allow ponding water to exit gravity-wise.</span>
-              </li>
-              <li class="flex items-start gap-1.5">
-                <span class="text-sky-400 font-bold">3.</span>
-                <span><strong>NO FERTILIZER:</strong> Strictly avoid fertilizing wet soil; 100% of applied nitrogen will convert to gas or wash off.</span>
-              </li>
+          <div class="pt-2 border-t border-[var(--border)] space-y-1">
+            <div class="font-mono text-[10px] uppercase text-[var(--text-muted)] font-semibold">Action Protocol:</div>
+            <ul class="text-[11px] text-[var(--text)] space-y-1 list-disc list-inside">
+              <li><strong>SHUT VALVES:</strong> Stop all irrigation pumps and divert canal lines immediately.</li>
+              <li><strong>RELIEF DITCHES:</strong> Rake or trench surface furrows to drain standing ponded water.</li>
+              <li><strong>NO FERTILIZER:</strong> Zero fertilizer; prevents complete denitrification runoff.</li>
             </ul>
           </div>
         </div>
@@ -453,205 +455,202 @@
       </div>
     </section>
 
-    <!-- Main Workspace: Comprehensive Multi-Tab Engine + Right Sentry/SMS Sidebar -->
+    <!-- Main Tabbed Workstation + Side Hardware/SMS Deck -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
-      <!-- LEFT & CENTER (2 Cols): Comprehensive Dynamic View Tabs -->
+      <!-- LEFT 2 COLS: Minimalist Tab Panels -->
       <div class="lg:col-span-2 space-y-4">
 
-        <!-- Navigation Tabs (Expanded to 6 Substantive Sections) -->
-        <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-1.5 shadow-sm flex flex-wrap gap-1 text-xs font-bold">
-          <button onclick="switchTab('chart')" id="tab-btn-chart" class="tab-btn flex-1 py-2 px-2.5 rounded-xl transition-all tab-active shadow-xs text-center">
-            📈 Live Telemetry Curve
+        <!-- Navigation Tabs -->
+        <div class="border-b border-[var(--border)] flex flex-wrap gap-4 text-xs font-medium">
+          <button onclick="switchTab('chart')" id="tab-btn-chart" class="tab-btn tab-active pb-2.5 cursor-pointer">
+            Telemetry Curve
           </button>
-          <button onclick="switchTab('controls')" id="tab-btn-controls" class="tab-btn flex-1 py-2 px-2.5 rounded-xl text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-all text-center">
-            🎛️ Probe Stress Simulator
+          <button onclick="switchTab('controls')" id="tab-btn-controls" class="tab-btn pb-2.5 cursor-pointer">
+            Sensor Simulator
           </button>
-          <button onclick="switchTab('phenology')" id="tab-btn-phenology" class="tab-btn flex-1 py-2 px-2.5 rounded-xl text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-all text-center">
-            🌱 FAO Agronomic Science
+          <button onclick="switchTab('phenology')" id="tab-btn-phenology" class="tab-btn pb-2.5 cursor-pointer">
+            FAO Science & Phenology
           </button>
-          <button onclick="switchTab('hardware')" id="tab-btn-hardware" class="tab-btn flex-1 py-2 px-2.5 rounded-xl text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-all text-center">
-            🛠️ $30 Hardware Node Specs
+          <button onclick="switchTab('hardware')" id="tab-btn-hardware" class="tab-btn pb-2.5 cursor-pointer">
+            $30 Hardware BOM
           </button>
-          <button onclick="switchTab('roi')" id="tab-btn-roi" class="tab-btn flex-1 py-2 px-2.5 rounded-xl text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-all text-center">
-            💰 Smallholder ROI & Impact
+          <button onclick="switchTab('roi')" id="tab-btn-roi" class="tab-btn pb-2.5 cursor-pointer">
+            Smallholder ROI
           </button>
-          <button onclick="switchTab('logs')" id="tab-btn-logs" class="tab-btn flex-1 py-2 px-2.5 rounded-xl text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-all text-center">
-            🗄️ 15-Min Rolling Log
+          <button onclick="switchTab('logs')" id="tab-btn-logs" class="tab-btn pb-2.5 cursor-pointer">
+            15m Rolling Log
           </button>
         </div>
 
         <!-- TAB 1: Live Curve Canvas -->
-        <div id="tab-content-chart" class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm space-y-4">
+        <div id="tab-content-chart" class="bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg p-4 space-y-3">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
             <div>
-              <h2 class="text-sm font-extrabold text-[var(--foreground)]">Real-Time Salinity vs Crop Tolerance Boundary</h2>
-              <p class="text-xs text-[var(--muted-foreground)]">Continuously plots normalized EC<sub>25</sub> against the crop safe line and moisture refill band</p>
+              <h3 class="font-bold text-[var(--text)]">Salinity Trajectory vs Biological Tolerance</h3>
+              <p class="text-[var(--text-muted)] text-[11px]">Normalized EC<sub>25</sub> rolling telemetry against crop stress boundary</p>
             </div>
-            <!-- Quick Graph Range Filter -->
-            <div class="inline-flex rounded-xl p-0.5 bg-[var(--background)] border border-[var(--border)]">
-              <button onclick="setChartRange(8)" class="range-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-[var(--card)] text-[var(--foreground)]">8h</button>
-              <button onclick="setChartRange(16)" class="range-btn px-2.5 py-1 rounded-lg text-xs text-[var(--muted-foreground)] hover:text-[var(--foreground)]">16h</button>
-              <button onclick="setChartRange(24)" class="range-btn px-2.5 py-1 rounded-lg text-xs text-[var(--muted-foreground)] hover:text-[var(--foreground)]">24h</button>
+            <!-- Range Filter -->
+            <div class="inline-flex rounded border border-[var(--border)] p-0.5 bg-[var(--bg-subtle)] font-mono text-xs">
+              <button onclick="setChartRange(8)" class="range-btn px-2 py-0.5 rounded bg-[var(--bg-surface)] text-[var(--text)] font-semibold">8h</button>
+              <button onclick="setChartRange(16)" class="range-btn px-2 py-0.5 rounded text-[var(--text-muted)] hover:text-[var(--text)]">16h</button>
+              <button onclick="setChartRange(24)" class="range-btn px-2 py-0.5 rounded text-[var(--text-muted)] hover:text-[var(--text)]">24h</button>
             </div>
           </div>
 
           <!-- Dynamic SVG Vector Chart -->
-          <div class="w-full bg-[var(--background)] rounded-xl p-3 border border-[var(--border)] overflow-hidden">
-            <svg id="svg-chart" viewBox="0 0 650 210" class="w-full h-auto overflow-visible"></svg>
+          <div class="w-full bg-[var(--bg)] rounded border border-[var(--border)] p-2 overflow-hidden">
+            <svg id="svg-chart" viewBox="0 0 650 200" class="w-full h-auto overflow-visible"></svg>
           </div>
 
-          <div class="flex flex-wrap items-center justify-between text-xs text-[var(--muted-foreground)] gap-2 px-1">
-            <div class="flex flex-wrap items-center gap-4">
-              <span class="flex items-center gap-1.5"><span class="w-3 h-1 bg-emerald-500 rounded"></span> Actual Soil EC (dS/m)</span>
-              <span class="flex items-center gap-1.5"><span class="w-3 h-0.5 border-b-2 border-dashed border-rose-500"></span> Crop Threshold (<span id="svg-legend-limit">1.70</span> dS/m)</span>
-              <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-sky-400"></span> In-Range Node Telemetry</span>
+          <div class="flex flex-wrap items-center justify-between text-[11px] font-mono text-[var(--text-muted)] gap-2">
+            <div class="flex items-center gap-4">
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-0.5 bg-[var(--chart-line)]"></span> Actual EC<sub>25</sub></span>
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-0.5 border-b border-dashed border-[var(--chart-thresh)]"></span> Safe Limit (<span id="svg-legend-limit">1.70</span> dS/m)</span>
             </div>
-            <span class="font-mono text-[11px]">Sampling: Every 15 Min · Local MicroSD Backup</span>
+            <span>MicroSD SPI Log: Buffered</span>
           </div>
         </div>
 
         <!-- TAB 2: Probe Stress Simulator -->
-        <div id="tab-content-controls" class="hidden bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm space-y-4">
+        <div id="tab-content-controls" class="hidden bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg p-4 space-y-4">
           <div>
-            <h2 class="text-sm font-extrabold text-[var(--foreground)]">Field Sensor Vector Injector (Live Stress Dials)</h2>
-            <p class="text-xs text-[var(--muted-foreground)]">Manually inject simulated field variables to test the edge decision engine and color matrix</p>
+            <h3 class="font-bold text-[var(--text)]">Field Sensor Vector Injector</h3>
+            <p class="text-xs text-[var(--text-muted)]">Manually test the edge decision engine and color protocol transitions</p>
           </div>
 
-          <!-- 3 Interactive Dials -->
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-2">
-              <div class="flex justify-between items-center text-xs">
-                <span class="font-bold text-[var(--foreground)]">Raw EC Probe:</span>
-                <span id="slider-ec-val" class="font-mono font-bold text-emerald-400">1.35 dS/m</span>
+            <div class="p-3 rounded border border-[var(--border)] bg-[var(--bg-subtle)] space-y-2">
+              <div class="flex justify-between items-center text-xs font-mono">
+                <span class="text-[var(--text-muted)]">Raw EC Probe:</span>
+                <span id="slider-ec-val" class="font-bold text-[var(--text)]">1.35 dS/m</span>
               </div>
               <input type="range" id="input-ec" min="0.4" max="4.5" step="0.05" value="1.35" oninput="syncManualInputs()" class="w-full cursor-pointer">
-              <div class="flex justify-between text-[11px] text-[var(--muted-foreground)] font-mono">
-                <span>0.4 (Fresh Rain)</span>
-                <span>4.5 (Saline Shock)</span>
+              <div class="flex justify-between text-[10px] font-mono text-[var(--text-muted)]">
+                <span>0.4 (Fresh)</span>
+                <span>4.5 (Saline)</span>
               </div>
             </div>
 
-            <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-2">
-              <div class="flex justify-between items-center text-xs">
-                <span class="font-bold text-[var(--foreground)]">Volumetric Moisture:</span>
-                <span id="slider-moist-val" class="font-mono font-bold text-sky-400">31.4%</span>
+            <div class="p-3 rounded border border-[var(--border)] bg-[var(--bg-subtle)] space-y-2">
+              <div class="flex justify-between items-center text-xs font-mono">
+                <span class="text-[var(--text-muted)]">Moisture Probe:</span>
+                <span id="slider-moist-val" class="font-bold text-[var(--text)]">31.4%</span>
               </div>
               <input type="range" id="input-moist" min="10" max="50" step="0.5" value="31.4" oninput="syncManualInputs()" class="w-full cursor-pointer">
-              <div class="flex justify-between text-[11px] text-[var(--muted-foreground)] font-mono">
-                <span>10% (Wilting Point)</span>
-                <span>50% (Saturated)</span>
+              <div class="flex justify-between text-[10px] font-mono text-[var(--text-muted)]">
+                <span>10% (Wilting)</span>
+                <span>50% (Ponding)</span>
               </div>
             </div>
 
-            <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-2">
-              <div class="flex justify-between items-center text-xs">
-                <span class="font-bold text-[var(--foreground)]">Soil Temp Probe:</span>
-                <span id="slider-temp-val" class="font-mono font-bold text-amber-400">23.8°C</span>
+            <div class="p-3 rounded border border-[var(--border)] bg-[var(--bg-subtle)] space-y-2">
+              <div class="flex justify-between items-center text-xs font-mono">
+                <span class="text-[var(--text-muted)]">Temperature Probe:</span>
+                <span id="slider-temp-val" class="font-bold text-[var(--text)]">23.8°C</span>
               </div>
               <input type="range" id="input-temp" min="15" max="38" step="0.5" value="23.8" oninput="syncManualInputs()" class="w-full cursor-pointer">
-              <div class="flex justify-between text-[11px] text-[var(--muted-foreground)] font-mono">
-                <span>15°C (Cool Morning)</span>
-                <span>38°C (Noon Peak)</span>
+              <div class="flex justify-between text-[10px] font-mono text-[var(--text-muted)]">
+                <span>15°C (Morning)</span>
+                <span>38°C (Peak)</span>
               </div>
             </div>
           </div>
 
-          <!-- Quick Stress Scenario Triggers -->
-          <div class="pt-2">
-            <span class="text-xs font-bold text-[var(--muted-foreground)] block mb-2">Preset Field Stress Scenarios:</span>
+          <!-- Scenario Presets -->
+          <div class="pt-1">
+            <span class="text-xs font-mono uppercase text-[var(--text-muted)] block mb-2">Preset Field Stress Conditions:</span>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              <button onclick="injectPreset(1.3, 31.0, 24.0)" class="p-2.5 rounded-xl text-xs font-bold bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition-colors text-center cursor-pointer">
-                🟢 Balanced Field
+              <button onclick="injectPreset(1.3, 31.0, 24.0)" class="p-2 rounded border border-[var(--border)] bg-[var(--bg-subtle)] hover:bg-[var(--border)] transition-colors text-xs font-medium text-left cursor-pointer">
+                🟢 Optimal Field
               </button>
-              <button onclick="injectPreset(1.2, 17.0, 29.0)" class="p-2.5 rounded-xl text-xs font-bold bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 transition-colors text-center cursor-pointer">
-                🟡 Drought Dry-Down
+              <button onclick="injectPreset(1.2, 17.0, 29.0)" class="p-2 rounded border border-[var(--border)] bg-[var(--bg-subtle)] hover:bg-[var(--border)] transition-colors text-xs font-medium text-left cursor-pointer">
+                🟡 Drought Depletion
               </button>
-              <button onclick="injectPreset(3.1, 28.0, 25.0)" class="p-2.5 rounded-xl text-xs font-bold bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 transition-colors text-center cursor-pointer">
-                🔴 Salt Stress Spike
+              <button onclick="injectPreset(3.1, 28.0, 25.0)" class="p-2 rounded border border-[var(--border)] bg-[var(--bg-subtle)] hover:bg-[var(--border)] transition-colors text-xs font-medium text-left cursor-pointer">
+                🔴 Salt Stress Shock
               </button>
-              <button onclick="injectPreset(1.3, 46.0, 21.0)" class="p-2.5 rounded-xl text-xs font-bold bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 border border-sky-500/30 transition-colors text-center cursor-pointer">
-                🌊 Flood Saturation
+              <button onclick="injectPreset(1.3, 46.0, 21.0)" class="p-2 rounded border border-[var(--border)] bg-[var(--bg-subtle)] hover:bg-[var(--border)] transition-colors text-xs font-medium text-left cursor-pointer">
+                🔵 Flood Waterlog
               </button>
             </div>
           </div>
         </div>
 
         <!-- TAB 3: FAO Agronomic Science & Phenology -->
-        <div id="tab-content-phenology" class="hidden bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm space-y-4 text-xs">
+        <div id="tab-content-phenology" class="hidden bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg p-4 space-y-4 text-xs">
           <div>
-            <h2 class="text-sm font-extrabold text-[var(--foreground)]">FAO-56 Crop Tolerance Database & Biological Models</h2>
-            <p class="text-xs text-[var(--muted-foreground)]">Scientific baseline calibrated to sub-Saharan Africa smallholder agricultural realities</p>
+            <h3 class="font-bold text-[var(--text)]">FAO-56 Agronomic Formulations & Biological Models</h3>
+            <p class="text-[var(--text-muted)] text-[11px]">Mathematical standards governing edge recommendations</p>
           </div>
 
-          <!-- Mathematical Formulas Breakdown -->
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-1.5">
-              <span class="text-[var(--muted-foreground)] font-bold block text-[11px]">FAO-56 Leaching Fraction (LR)</span>
-              <p class="font-mono text-emerald-400 font-bold text-xs">LR = ECw / (5 &times; ECe - ECw)</p>
-              <p class="text-[var(--muted-foreground)] text-[11px] leading-snug">Calculates the extra depth of water needed to leach accumulated salts down past the -20cm root zone.</p>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 font-mono">
+            <div class="p-3 rounded border border-[var(--border)] bg-[var(--bg-subtle)] space-y-1">
+              <span class="text-[var(--text-muted)] text-[10px] uppercase block">Leaching Fraction (LR)</span>
+              <div class="font-bold text-[var(--text)]">LR = ECw / (5&times;ECe - ECw)</div>
+              <p class="font-sans text-[var(--text-muted)] text-[11px] leading-snug">Calculates fraction of surplus water needed to leach root zone salts.</p>
             </div>
 
-            <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-1.5">
-              <span class="text-[var(--muted-foreground)] font-bold block text-[11px]">Standard 25°C Temp Compensation</span>
-              <p class="font-mono text-amber-400 font-bold text-xs">EC25 = ECraw / [1 + 0.02 &times; (T - 25)]</p>
-              <p class="text-[var(--muted-foreground)] text-[11px] leading-snug">Removes diurnal temperature distortion. Raw electrical conductivity shifts ~2% per 1°C temperature drift.</p>
+            <div class="p-3 rounded border border-[var(--border)] bg-[var(--bg-subtle)] space-y-1">
+              <span class="text-[var(--text-muted)] text-[10px] uppercase block">Temp Compensation (25°C)</span>
+              <div class="font-bold text-[var(--text)]">EC25 = EC / [1 + 0.02(T-25)]</div>
+              <p class="font-sans text-[var(--text-muted)] text-[11px] leading-snug">Normalizes electrical conductivity across diurnal shifts.</p>
             </div>
 
-            <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-1.5">
-              <span class="text-[var(--muted-foreground)] font-bold block text-[11px]">Root Osmotic Potential (&Psi;s)</span>
-              <p class="font-mono text-purple-400 font-bold text-xs">&Psi;s &approx; -0.36 &times; EC (bars)</p>
-              <p class="text-[var(--muted-foreground)] text-[11px] leading-snug">Quantifies the negative suction pressure plants must exert to extract soil water across root cell membranes.</p>
+            <div class="p-3 rounded border border-[var(--border)] bg-[var(--bg-subtle)] space-y-1">
+              <span class="text-[var(--text-muted)] text-[10px] uppercase block">Root Osmotic Potential</span>
+              <div class="font-bold text-[var(--text)]">&Psi;s &approx; -0.36 &times; EC (bars)</div>
+              <p class="font-sans text-[var(--text-muted)] text-[11px] leading-snug">Quantifies negative hydraulic suction roots must overcome to drink.</p>
             </div>
           </div>
 
-          <!-- Full Biological Crop Tolerance Table -->
-          <div class="space-y-2">
-            <h3 class="text-xs font-bold text-[var(--foreground)] uppercase tracking-wider">Crop Biological Tolerance & Sensitivity Registry</h3>
-            <div class="overflow-x-auto rounded-xl border border-[var(--border)]">
-              <table class="w-full text-left text-xs">
-                <thead class="bg-[var(--background)] text-[var(--muted-foreground)] font-semibold border-b border-[var(--border)]">
+          <!-- Crop Table -->
+          <div class="space-y-1.5">
+            <div class="font-mono text-[10px] uppercase text-[var(--text-muted)]">Biological Crop Threshold Registry</div>
+            <div class="overflow-x-auto rounded border border-[var(--border)]">
+              <table class="w-full text-left text-xs font-mono">
+                <thead class="bg-[var(--bg-subtle)] text-[var(--text-muted)] border-b border-[var(--border)]">
                   <tr>
-                    <th class="py-2.5 px-3">Crop</th>
-                    <th class="py-2.5 px-3">Safe ECe (dS/m)</th>
-                    <th class="py-2.5 px-3">Yield Decline Slope</th>
-                    <th class="py-2.5 px-3">Root Depth</th>
-                    <th class="py-2.5 px-3">Moisture Band</th>
-                    <th class="py-2.5 px-3">Sensitivity Category</th>
+                    <th class="py-2 px-3 font-sans">Crop</th>
+                    <th class="py-2 px-3">Safe ECe</th>
+                    <th class="py-2 px-3">Decline Slope</th>
+                    <th class="py-2 px-3">Active Depth</th>
+                    <th class="py-2 px-3">Optimal VWC</th>
+                    <th class="py-2 px-3 font-sans">Sensitivity</th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-[var(--border)] font-mono">
-                  <tr class="hover:bg-[var(--background)]">
-                    <td class="py-2 px-3 font-sans font-bold text-[var(--foreground)]">🌽 Maize (Corn)</td>
-                    <td class="py-2 px-3 text-emerald-400">1.70</td>
-                    <td class="py-2 px-3 text-amber-400">12.0% / dS/m</td>
-                    <td class="py-2 px-3">-20 to -60 cm</td>
-                    <td class="py-2 px-3">22% – 38%</td>
-                    <td class="py-2 px-3 font-sans"><span class="px-2 py-0.5 rounded bg-amber-500/15 text-amber-400 text-[10px] font-bold">Moderately Sensitive</span></td>
+                <tbody class="divide-y divide-[var(--border)]">
+                  <tr>
+                    <td class="py-1.5 px-3 font-sans font-medium text-[var(--text)]">Maize (Corn)</td>
+                    <td class="py-1.5 px-3">1.70 dS/m</td>
+                    <td class="py-1.5 px-3">12.0% / dS/m</td>
+                    <td class="py-1.5 px-3">-20 cm</td>
+                    <td class="py-1.5 px-3">22% – 38%</td>
+                    <td class="py-1.5 px-3 font-sans text-[var(--text-muted)]">Mod. Sensitive</td>
                   </tr>
-                  <tr class="hover:bg-[var(--background)]">
-                    <td class="py-2 px-3 font-sans font-bold text-[var(--foreground)]">🍅 Tomato</td>
-                    <td class="py-2 px-3 text-emerald-400">2.50</td>
-                    <td class="py-2 px-3 text-amber-400">9.9% / dS/m</td>
-                    <td class="py-2 px-3">-15 to -45 cm</td>
-                    <td class="py-2 px-3">25% – 40%</td>
-                    <td class="py-2 px-3 font-sans"><span class="px-2 py-0.5 rounded bg-amber-500/15 text-amber-400 text-[10px] font-bold">Moderately Sensitive</span></td>
+                  <tr>
+                    <td class="py-1.5 px-3 font-sans font-medium text-[var(--text)]">Tomato</td>
+                    <td class="py-1.5 px-3">2.50 dS/m</td>
+                    <td class="py-1.5 px-3">9.9% / dS/m</td>
+                    <td class="py-1.5 px-3">-15 cm</td>
+                    <td class="py-1.5 px-3">25% – 40%</td>
+                    <td class="py-1.5 px-3 font-sans text-[var(--text-muted)]">Mod. Sensitive</td>
                   </tr>
-                  <tr class="hover:bg-[var(--background)]">
-                    <td class="py-2 px-3 font-sans font-bold text-[var(--foreground)]">🌾 Rice (Paddy)</td>
-                    <td class="py-2 px-3 text-emerald-400">3.00</td>
-                    <td class="py-2 px-3 text-amber-400">12.0% / dS/m</td>
-                    <td class="py-2 px-3">-10 to -30 cm</td>
-                    <td class="py-2 px-3">35% – 55%</td>
-                    <td class="py-2 px-3 font-sans"><span class="px-2 py-0.5 rounded bg-rose-500/15 text-rose-400 text-[10px] font-bold">Sensitive (Seedling)</span></td>
+                  <tr>
+                    <td class="py-1.5 px-3 font-sans font-medium text-[var(--text)]">Rice (Paddy)</td>
+                    <td class="py-1.5 px-3">3.00 dS/m</td>
+                    <td class="py-1.5 px-3">12.0% / dS/m</td>
+                    <td class="py-1.5 px-3">-10 cm</td>
+                    <td class="py-1.5 px-3">35% – 55%</td>
+                    <td class="py-1.5 px-3 font-sans text-[var(--text-muted)]">Sensitive (Seedling)</td>
                   </tr>
-                  <tr class="hover:bg-[var(--background)]">
-                    <td class="py-2 px-3 font-sans font-bold text-[var(--foreground)]">🌾 Wheat</td>
-                    <td class="py-2 px-3 text-emerald-400">6.00</td>
-                    <td class="py-2 px-3 text-amber-400">7.1% / dS/m</td>
-                    <td class="py-2 px-3">-25 to -80 cm</td>
-                    <td class="py-2 px-3">20% – 35%</td>
-                    <td class="py-2 px-3 font-sans"><span class="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 text-[10px] font-bold">Moderately Tolerant</span></td>
+                  <tr>
+                    <td class="py-1.5 px-3 font-sans font-medium text-[var(--text)]">Wheat</td>
+                    <td class="py-1.5 px-3">6.00 dS/m</td>
+                    <td class="py-1.5 px-3">7.1% / dS/m</td>
+                    <td class="py-1.5 px-3">-25 cm</td>
+                    <td class="py-1.5 px-3">20% – 35%</td>
+                    <td class="py-1.5 px-3 font-sans text-[var(--text-muted)]">Mod. Tolerant</td>
                   </tr>
                 </tbody>
               </table>
@@ -660,220 +659,166 @@
         </div>
 
         <!-- TAB 4: $30 Hardware Node Specs -->
-        <div id="tab-content-hardware" class="hidden bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm space-y-4 text-xs">
+        <div id="tab-content-hardware" class="hidden bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg p-4 space-y-4 text-xs">
           <div>
-            <h2 class="text-sm font-extrabold text-[var(--foreground)]">Ultra-Low-Cost Hardware Architecture ($30 Bill-of-Materials)</h2>
-            <p class="text-xs text-[var(--muted-foreground)]">Democratizing precision agriculture for smallholders vs $500–$3,000 industrial alternatives</p>
+            <h3 class="font-bold text-[var(--text)]">Field-Deployable Hardware Architecture ($30 Bill-of-Materials)</h3>
+            <p class="text-[var(--text-muted)] text-[11px]">Commodity rural components vs $500–$3,000 industrial sensors</p>
           </div>
 
-          <!-- Cost Comparison Strip -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div class="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 space-y-1.5">
-              <span class="text-emerald-400 font-bold block text-xs">SoilGuard SIS Node</span>
-              <div class="text-2xl font-black text-[var(--foreground)] font-mono">$30.50 USD</div>
-              <p class="text-[var(--muted-foreground)] text-xs">Commodity ESP32 architecture, repairable locally by rural technicians in under 30 minutes. Operates 100% offline with zero cloud mandate.</p>
-            </div>
-
-            <div class="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 space-y-1.5">
-              <span class="text-rose-400 font-bold block text-xs">Commercial IoT (Sentek / Decagon / Stevens)</span>
-              <div class="text-2xl font-black text-[var(--foreground)] font-mono">$500 – $3,000 USD</div>
-              <p class="text-[var(--muted-foreground)] text-xs">Completely out of reach for smallholders (&lt; 2ha). Requires proprietary cloud subscriptions, cell modems, and imported replacement parts.</p>
-            </div>
-          </div>
-
-          <!-- Component Bill of Materials Table -->
-          <div class="space-y-2">
-            <h3 class="text-xs font-bold text-[var(--foreground)] uppercase tracking-wider">Exact Hardware BOM & Specifications</h3>
-            <div class="overflow-x-auto rounded-xl border border-[var(--border)]">
-              <table class="w-full text-left text-xs">
-                <thead class="bg-[var(--background)] text-[var(--muted-foreground)] font-semibold border-b border-[var(--border)]">
-                  <tr>
-                    <th class="py-2 px-3">Subsystem</th>
-                    <th class="py-2 px-3">Component Choice</th>
-                    <th class="py-2 px-3">Specification / Protocol</th>
-                    <th class="py-2 px-3">Role in System</th>
-                    <th class="py-2 px-3">Cost (USD)</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-[var(--border)] font-mono">
-                  <tr>
-                    <td class="py-2 px-3 font-sans font-bold text-[var(--foreground)]">Edge Brain</td>
-                    <td class="py-2 px-3">ESP32-WROOM-32D</td>
-                    <td class="py-2 px-3">Dual-Core 240MHz, 520KB SRAM</td>
-                    <td class="py-2 px-3 font-sans text-[var(--muted-foreground)]">Executes FAO-56 logic locally</td>
-                    <td class="py-2 px-3 text-emerald-400 font-bold">$4.80</td>
-                  </tr>
-                  <tr>
-                    <td class="py-2 px-3 font-sans font-bold text-[var(--foreground)]">Salinity Probe</td>
-                    <td class="py-2 px-3">Analog EC/TDS Electrode</td>
-                    <td class="py-2 px-3">K=1.0 Cell Constant (0–20 dS/m)</td>
-                    <td class="py-2 px-3 font-sans text-[var(--muted-foreground)]">Measures root zone electrical conductivity</td>
-                    <td class="py-2 px-3 text-emerald-400 font-bold">$7.90</td>
-                  </tr>
-                  <tr>
-                    <td class="py-2 px-3 font-sans font-bold text-[var(--foreground)]">Moisture Probe</td>
-                    <td class="py-2 px-3">Capacitive V1.2 Probe</td>
-                    <td class="py-2 px-3">Corrosion-Free PCB Dielectric</td>
-                    <td class="py-2 px-3 font-sans text-[var(--muted-foreground)]">Measures % volumetric soil moisture</td>
-                    <td class="py-2 px-3 text-emerald-400 font-bold">$2.80</td>
-                  </tr>
-                  <tr>
-                    <td class="py-2 px-3 font-sans font-bold text-[var(--foreground)]">Temperature</td>
-                    <td class="py-2 px-3">Dallas DS18B20 Probe</td>
-                    <td class="py-2 px-3">1-Wire Digital Bus (&plusmn;0.5°C)</td>
-                    <td class="py-2 px-3 font-sans text-[var(--muted-foreground)]">Dynamic 25°C EC compensation</td>
-                    <td class="py-2 px-3 text-emerald-400 font-bold">$1.80</td>
-                  </tr>
-                  <tr>
-                    <td class="py-2 px-3 font-sans font-bold text-[var(--foreground)]">Power Subsystem</td>
-                    <td class="py-2 px-3">5W Solar + 2200mAh LiPo</td>
-                    <td class="py-2 px-3">TP4056 MPPT Charge Controller</td>
-                    <td class="py-2 px-3 font-sans text-[var(--muted-foreground)]">3-Day autonomous grid-free operation</td>
-                    <td class="py-2 px-3 text-emerald-400 font-bold">$7.50</td>
-                  </tr>
-                  <tr>
-                    <td class="py-2 px-3 font-sans font-bold text-[var(--foreground)]">Enclosure & LED</td>
-                    <td class="py-2 px-3">IP65 Housing + RGB Beacon</td>
-                    <td class="py-2 px-3">Weatherproof UV-Resistant Box</td>
-                    <td class="py-2 px-3 font-sans text-[var(--muted-foreground)]">Zero-literacy visual status beacon</td>
-                    <td class="py-2 px-3 text-emerald-400 font-bold">$3.20</td>
-                  </tr>
-                  <tr>
-                    <td class="py-2 px-3 font-sans font-bold text-[var(--foreground)]">Storage & Logging</td>
-                    <td class="py-2 px-3">SPI MicroSD Card Module</td>
-                    <td class="py-2 px-3">8GB Class-10 (SPI Bus)</td>
-                    <td class="py-2 px-3 font-sans text-[var(--muted-foreground)]">7-year continuous 15-min data buffer</td>
-                    <td class="py-2 px-3 text-emerald-400 font-bold">$2.50</td>
-                  </tr>
-                  <tr class="bg-emerald-500/10 font-bold">
-                    <td class="py-2.5 px-3 font-sans text-emerald-400" colspan="4">TOTAL FIELD-READY NODE BILL OF MATERIALS</td>
-                    <td class="py-2.5 px-3 text-emerald-400 font-mono text-sm">$30.50 USD</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+          <div class="overflow-x-auto rounded border border-[var(--border)]">
+            <table class="w-full text-left font-mono text-xs">
+              <thead class="bg-[var(--bg-subtle)] text-[var(--text-muted)] border-b border-[var(--border)]">
+                <tr>
+                  <th class="py-2 px-3 font-sans">Subsystem</th>
+                  <th class="py-2 px-3">Component Choice</th>
+                  <th class="py-2 px-3 font-sans">Role in Node</th>
+                  <th class="py-2 px-3">Cost (USD)</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-[var(--border)]">
+                <tr>
+                  <td class="py-1.5 px-3 font-sans font-medium text-[var(--text)]">Edge Processor</td>
+                  <td class="py-1.5 px-3">ESP32-WROOM-32D</td>
+                  <td class="py-1.5 px-3 font-sans text-[var(--text-muted)]">Executes FAO-56 logic locally</td>
+                  <td class="py-1.5 px-3">$4.80</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 px-3 font-sans font-medium text-[var(--text)]">Salinity Probe</td>
+                  <td class="py-1.5 px-3">Analog EC/TDS K=1.0</td>
+                  <td class="py-1.5 px-3 font-sans text-[var(--text-muted)]">Direct root-zone conductivity</td>
+                  <td class="py-1.5 px-3">$7.90</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 px-3 font-sans font-medium text-[var(--text)]">Moisture Probe</td>
+                  <td class="py-1.5 px-3">Capacitive V1.2</td>
+                  <td class="py-1.5 px-3 font-sans text-[var(--text-muted)]">Corrosion-free volumetric moisture</td>
+                  <td class="py-1.5 px-3">$2.80</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 px-3 font-sans font-medium text-[var(--text)]">Temperature</td>
+                  <td class="py-1.5 px-3">DS18B20 1-Wire</td>
+                  <td class="py-1.5 px-3 font-sans text-[var(--text-muted)]">Dynamic 25°C compensation</td>
+                  <td class="py-1.5 px-3">$1.80</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 px-3 font-sans font-medium text-[var(--text)]">Power System</td>
+                  <td class="py-1.5 px-3">5W Solar + 2200mAh LiPo</td>
+                  <td class="py-1.5 px-3 font-sans text-[var(--text-muted)]">3-Day autonomous solar operation</td>
+                  <td class="py-1.5 px-3">$7.50</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 px-3 font-sans font-medium text-[var(--text)]">Enclosure & Optical</td>
+                  <td class="py-1.5 px-3">IP65 Housing + RGB LED</td>
+                  <td class="py-1.5 px-3 font-sans text-[var(--text-muted)]">Weatherproof zero-text status</td>
+                  <td class="py-1.5 px-3">$3.20</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 px-3 font-sans font-medium text-[var(--text)]">Local Buffer</td>
+                  <td class="py-1.5 px-3">SPI MicroSD 8GB</td>
+                  <td class="py-1.5 px-3 font-sans text-[var(--text-muted)]">Offline rolling data logging</td>
+                  <td class="py-1.5 px-3">$2.50</td>
+                </tr>
+                <tr class="bg-[var(--bg-subtle)] font-bold text-[var(--text)]">
+                  <td class="py-2 px-3 font-sans" colspan="3">Total Unit Bill-of-Materials</td>
+                  <td class="py-2 px-3">$30.50 USD</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
 
         <!-- TAB 5: Smallholder ROI & Impact Model -->
-        <div id="tab-content-roi" class="hidden bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm space-y-4 text-xs">
+        <div id="tab-content-roi" class="hidden bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg p-4 space-y-4 text-xs">
           <div>
-            <h2 class="text-sm font-extrabold text-[var(--foreground)]">Smallholder Economic ROI & Cross-Sector Impact Model</h2>
-            <p class="text-xs text-[var(--muted-foreground)]">Financial returns and resource conservation for a typical 1.5-hectare smallholder farm</p>
+            <h3 class="font-bold text-[var(--text)]">Smallholder Financial ROI & Resource Conservation Model</h3>
+            <p class="text-[var(--text-muted)] text-[11px]">Cost-benefit analysis calibrated to typical sub-Saharan smallholder plots</p>
           </div>
 
-          <!-- Impact Metrics Grid -->
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-1">
-              <span class="text-[var(--muted-foreground)] uppercase text-[10px] font-bold">Water Reduction</span>
-              <div class="text-xl font-black text-sky-400 font-mono">30% – 50%</div>
-              <p class="text-[var(--muted-foreground)] text-[11px]">Saves ~2,500 m³ water/ha per season by stopping blind calendar pumping.</p>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 font-mono">
+            <div class="p-2.5 rounded border border-[var(--border)] bg-[var(--bg-subtle)]">
+              <span class="text-[10px] text-[var(--text-muted)] block uppercase">Water Saved</span>
+              <div class="text-base font-bold text-[var(--text)]">30% – 50%</div>
+              <p class="font-sans text-[11px] text-[var(--text-muted)] mt-0.5">Saves ~2,500 m³/ha.</p>
             </div>
-
-            <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-1">
-              <span class="text-[var(--muted-foreground)] uppercase text-[10px] font-bold">Fertilizer Saved</span>
-              <div class="text-xl font-black text-purple-400 font-mono">25% – 40%</div>
-              <p class="text-[var(--muted-foreground)] text-[11px]">Stops toxic salt over-application, saving $40–$70/ha in wasted inputs.</p>
+            <div class="p-2.5 rounded border border-[var(--border)] bg-[var(--bg-subtle)]">
+              <span class="text-[10px] text-[var(--text-muted)] block uppercase">Fertilizer Saved</span>
+              <div class="text-base font-bold text-[var(--text)]">25% – 40%</div>
+              <p class="font-sans text-[11px] text-[var(--text-muted)] mt-0.5">Halts salt over-application.</p>
             </div>
-
-            <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-1">
-              <span class="text-[var(--muted-foreground)] uppercase text-[10px] font-bold">Yield Increase</span>
-              <div class="text-xl font-black text-emerald-400 font-mono">+15% – 30%</div>
-              <p class="text-[var(--muted-foreground)] text-[11px]">Protects crop from osmotic physiological drought; average +0.5 t/ha maize.</p>
+            <div class="p-2.5 rounded border border-[var(--border)] bg-[var(--bg-subtle)]">
+              <span class="text-[10px] text-[var(--text-muted)] block uppercase">Yield Gain</span>
+              <div class="text-base font-bold text-[var(--text)]">+15% – 30%</div>
+              <p class="font-sans text-[11px] text-[var(--text-muted)] mt-0.5">Prevents osmotic wilt.</p>
             </div>
-
-            <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-1">
-              <span class="text-[var(--muted-foreground)] uppercase text-[10px] font-bold">Payback Period</span>
-              <div class="text-xl font-black text-amber-400 font-mono">&lt; 1 Season</div>
-              <p class="text-[var(--muted-foreground)] text-[11px]">$30 node pays for itself in the very first harvest from saved inputs alone.</p>
+            <div class="p-2.5 rounded border border-[var(--border)] bg-[var(--bg-subtle)]">
+              <span class="text-[10px] text-[var(--text-muted)] block uppercase">Payback Time</span>
+              <div class="text-base font-bold text-[var(--text)]">&lt; 1 Season</div>
+              <p class="font-sans text-[11px] text-[var(--text-muted)] mt-0.5">$30 unit repaid first crop.</p>
             </div>
           </div>
 
-          <!-- Interactive Farm Size & ROI Simulator -->
-          <div class="p-4 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-3">
-            <div class="flex items-center justify-between">
-              <span class="font-bold text-[var(--foreground)]">Interactive Smallholder Financial Projection Calculator:</span>
-              <span class="text-[var(--muted-foreground)] font-mono">Farm Size: <strong id="calc-area-lbl" class="text-emerald-400">1.5 Hectares</strong></span>
+          <!-- Dynamic ROI Calculator -->
+          <div class="p-3.5 rounded border border-[var(--border)] bg-[var(--bg-subtle)] space-y-2.5">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-semibold text-[var(--text)]">Smallholder Plot Size Calculator:</span>
+              <span class="font-mono text-[var(--text)]"><strong id="calc-area-lbl">1.5 Hectares</strong></span>
             </div>
             <input type="range" id="input-area" min="0.5" max="5.0" step="0.5" value="1.5" oninput="calcROI()" class="w-full cursor-pointer">
-            <div class="flex justify-between text-[11px] text-[var(--muted-foreground)] font-mono">
-              <span>0.5 ha (Micro-plot)</span>
-              <span>1.5 ha (Typical Smallholder)</span>
-              <span>5.0 ha (Semi-Commercial)</span>
+            <div class="flex justify-between text-[10px] font-mono text-[var(--text-muted)]">
+              <span>0.5 ha</span>
+              <span>1.5 ha (Average)</span>
+              <span>5.0 ha</span>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-center">
-              <div class="p-2.5 rounded-lg bg-[var(--card)] border border-[var(--border)]">
-                <span class="text-[var(--muted-foreground)] text-[11px] block">Fertilizer Spend Saved:</span>
-                <span id="roi-fert-val" class="text-sm font-black text-purple-400 font-mono">$60 USD / season</span>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 font-mono text-center">
+              <div class="p-2 rounded border border-[var(--border)] bg-[var(--bg-surface)]">
+                <span class="text-[10px] text-[var(--text-muted)] block">Fertilizer Saved:</span>
+                <span id="roi-fert-val" class="font-bold text-[var(--text)]">$60 USD</span>
               </div>
-              <div class="p-2.5 rounded-lg bg-[var(--card)] border border-[var(--border)]">
-                <span class="text-[var(--muted-foreground)] text-[11px] block">Additional Crop Yield Value:</span>
-                <span id="roi-yield-val" class="text-sm font-black text-emerald-400 font-mono">+$180 USD / season</span>
+              <div class="p-2 rounded border border-[var(--border)] bg-[var(--bg-surface)]">
+                <span class="text-[10px] text-[var(--text-muted)] block">Yield Protected:</span>
+                <span id="roi-yield-val" class="font-bold text-[var(--text)]">+$180 USD</span>
               </div>
-              <div class="p-2.5 rounded-lg bg-[var(--card)] border border-emerald-500/40 bg-emerald-500/10">
-                <span class="text-emerald-300 text-[11px] font-bold block">Net Smallholder Farm Profit Gain:</span>
-                <span id="roi-net-val" class="text-base font-black text-emerald-400 font-mono">+$240 USD / season</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- UN SDG Alignment Strip -->
-          <div class="pt-1">
-            <span class="text-[11px] font-bold text-[var(--muted-foreground)] uppercase tracking-wider block mb-2">UN Sustainable Development Goals (SDG) Direct Impact:</span>
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
-              <div class="p-2 rounded-lg bg-[var(--background)] border border-[var(--border)]">
-                <strong class="text-emerald-400 block">SDG 2: Zero Hunger</strong>
-                <span class="text-[var(--muted-foreground)]">Improves staple crop yield stability against salinity.</span>
-              </div>
-              <div class="p-2 rounded-lg bg-[var(--background)] border border-[var(--border)]">
-                <strong class="text-sky-400 block">SDG 6: Clean Water</strong>
-                <span class="text-[var(--muted-foreground)]">Eliminates 30–50% of wasted agricultural freshwater.</span>
-              </div>
-              <div class="p-2 rounded-lg bg-[var(--background)] border border-[var(--border)]">
-                <strong class="text-amber-400 block">SDG 12: Consumption</strong>
-                <span class="text-[var(--muted-foreground)]">Precision nutrient dosing prevents fertilizer runoff.</span>
-              </div>
-              <div class="p-2 rounded-lg bg-[var(--background)] border border-[var(--border)]">
-                <strong class="text-emerald-400 block">SDG 15: Life on Land</strong>
-                <span class="text-[var(--muted-foreground)]">Prevents irreversible secondary soil salinization.</span>
+              <div class="p-2 rounded border border-[var(--border)] bg-[var(--bg-surface)] font-bold text-[var(--c-green)]">
+                <span class="text-[10px] text-[var(--text-muted)] block">Net Seasonal Gain:</span>
+                <span id="roi-net-val">+$240 USD</span>
               </div>
             </div>
           </div>
         </div>
 
         <!-- TAB 6: 15-Minute Rolling Log Table -->
-        <div id="tab-content-logs" class="hidden bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm space-y-3">
+        <div id="tab-content-logs" class="hidden bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg p-4 space-y-3">
           <div class="flex items-center justify-between text-xs">
             <div>
-              <h2 class="text-sm font-extrabold text-[var(--foreground)]">MicroSD Rolling Telemetry Stream (SPI Bus Log)</h2>
-              <p class="text-xs text-[var(--muted-foreground)]">Timestamped 15-minute cycles stored on SPI card and queued for GSM uplink</p>
+              <h3 class="font-bold text-[var(--text)]">MicroSD Rolling Telemetry Stream</h3>
+              <p class="text-[var(--text-muted)] text-[11px]">Timestamped 15-minute cycles stored on SPI card</p>
             </div>
-            <div class="flex items-center gap-2">
-              <button onclick="downloadCSV()" class="px-2.5 py-1 rounded-lg border border-[var(--border)] text-xs text-emerald-400 hover:bg-emerald-500/10 cursor-pointer">
+            <div class="flex items-center gap-1.5 font-mono">
+              <button onclick="downloadCSV()" class="px-2 py-0.5 rounded border border-[var(--border-strong)] bg-[var(--bg-subtle)] hover:bg-[var(--border)] text-xs cursor-pointer">
                 Export CSV
               </button>
-              <button onclick="resetData()" class="px-2.5 py-1 rounded-lg border border-[var(--border)] text-xs text-[var(--muted-foreground)] hover:text-[var(--foreground)] cursor-pointer">
-                Reset Buffer
+              <button onclick="resetData()" class="px-2 py-0.5 rounded border border-[var(--border-strong)] bg-[var(--bg-subtle)] hover:bg-[var(--border)] text-xs cursor-pointer">
+                Reset
               </button>
             </div>
           </div>
 
           <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
-              <thead class="bg-[var(--background)] text-[var(--muted-foreground)] uppercase font-semibold border-b border-[var(--border)]">
+            <table class="w-full text-left font-mono text-xs">
+              <thead class="bg-[var(--bg-subtle)] text-[var(--text-muted)] border-b border-[var(--border)]">
                 <tr>
-                  <th class="py-2 px-2.5">Time</th>
-                  <th class="py-2 px-2.5">Raw EC</th>
-                  <th class="py-2 px-2.5">EC<sub>25</sub></th>
-                  <th class="py-2 px-2.5">Moist</th>
-                  <th class="py-2 px-2.5">Temp</th>
-                  <th class="py-2 px-2.5">Beacon Color</th>
-                  <th class="py-2 px-2.5">Prescribed Field Measure</th>
+                  <th class="py-1.5 px-2.5 font-sans">Time</th>
+                  <th class="py-1.5 px-2.5">Raw EC</th>
+                  <th class="py-1.5 px-2.5">EC<sub>25</sub></th>
+                  <th class="py-1.5 px-2.5">Moist</th>
+                  <th class="py-1.5 px-2.5">Temp</th>
+                  <th class="py-1.5 px-2.5 font-sans">Signal</th>
+                  <th class="py-1.5 px-2.5 font-sans">Directive</th>
                 </tr>
               </thead>
-              <tbody id="table-log-body" class="divide-y divide-[var(--border)] font-mono">
-                <!-- Dynamically generated rows -->
+              <tbody id="table-log-body" class="divide-y divide-[var(--border)]">
+                <!-- Dynamically populated -->
               </tbody>
             </table>
           </div>
@@ -881,99 +826,92 @@
 
       </div>
 
-      <!-- RIGHT COLUMN (1 Col): Visual Sentry, Cellular SMS Screen & Edge Health -->
+      <!-- RIGHT 1 COL: Hardware Sentry & SMS Deck -->
       <div class="space-y-4">
 
-        <!-- 1. Tri-Color Visual Sentry (RGB LED Beacon Emulation) -->
-        <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm flex flex-col justify-between">
-          <div class="flex items-center justify-between pb-2.5 border-b border-[var(--border)]">
+        <!-- 1. Optical Hardware Sentry -->
+        <div class="bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg p-3.5 space-y-2.5">
+          <div class="flex items-center justify-between border-b border-[var(--border)] pb-2">
             <div>
-              <h2 class="text-xs font-black uppercase tracking-wider text-[var(--muted-foreground)]">Field Visual Sentry</h2>
-              <span class="text-xs text-[var(--muted-foreground)]">Hardware RGB Pulse Node</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <div id="beacon-light" class="w-4 h-4 rounded-full bg-emerald-500 beacon-glow ring-4 ring-emerald-500/30"></div>
-              <span id="beacon-label" class="text-xs font-black uppercase text-emerald-400">GREEN PULSE</span>
-            </div>
-          </div>
-
-          <div class="my-3 p-3 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-1">
-            <span id="beacon-headline" class="text-xs font-bold text-[var(--foreground)] block">Equilibrium Confirmed</span>
-            <p id="beacon-subtext" class="text-xs text-[var(--muted-foreground)] leading-snug">
-              Beacon pulses green every 10s. The farmer passing through the field sees immediately that salinity and moisture are safe.
-            </p>
-          </div>
-
-          <div class="text-xs text-[var(--muted-foreground)] flex items-center justify-between pt-2 border-t border-[var(--border)]">
-            <span>Visual Literacy:</span>
-            <span class="font-bold text-[var(--foreground)]">Zero-Text Iconography</span>
-          </div>
-        </div>
-
-        <!-- 2. Plain-Language Cellular SMS Terminal -->
-        <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm space-y-3">
-          <div class="flex items-center justify-between pb-2.5 border-b border-[var(--border)]">
-            <div>
-              <h2 class="text-xs font-black uppercase tracking-wider text-[var(--muted-foreground)]">Cellular SMS Terminal</h2>
-              <span class="text-xs text-[var(--muted-foreground)]">Farmer Feature Phone Interface</span>
+              <h3 class="text-xs font-bold uppercase font-mono tracking-wider">Optical Sentry</h3>
+              <span class="text-[11px] text-[var(--text-muted)]">Physical RGB Pulse Pip</span>
             </div>
             <div class="flex items-center gap-1.5">
-              <button onclick="toggleSmsLang()" id="btn-sms-lang" class="text-[10px] font-bold px-2 py-0.5 rounded bg-[var(--background)] border border-[var(--border)] text-emerald-400 cursor-pointer">
-                EN &bull; SWA
-              </button>
-              <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-                Nokia 105
-              </span>
+              <span id="beacon-light" class="w-2.5 h-2.5 rounded-full bg-[var(--c-green)]"></span>
+              <span id="beacon-label" class="text-xs font-mono font-bold text-[var(--c-green)]">GREEN</span>
             </div>
           </div>
 
-          <!-- Feature Phone Screen Card -->
-          <div class="bg-[var(--background)] p-3.5 rounded-xl border border-[var(--border)] space-y-2">
-            <div class="flex justify-between items-center text-[11px] text-[var(--muted-foreground)] border-b border-[var(--border)] pb-1 font-mono">
-              <span>FROM: SoilGuard (+254 712 345 678)</span>
-              <span id="sms-clock">18:40</span>
-            </div>
-            <p id="sms-content" class="text-xs font-medium text-[var(--foreground)] leading-relaxed font-sans">
-              SoilGuard: All soil metrics optimal (EC: 1.35 dS/m, Moisture: 31%). Safe window for standard fertilizer: 3.5 kg / 100m².
+          <div class="p-2.5 rounded border border-[var(--border)] bg-[var(--bg-subtle)] space-y-1 text-xs">
+            <div id="beacon-headline" class="font-semibold text-[var(--text)]">Equilibrium Confirmed</div>
+            <p id="beacon-subtext" class="text-[var(--text-muted)] text-[11px] leading-relaxed">
+              Pulsing green every 10s. The farmer passing through the field sees immediately that salinity and moisture are safe.
             </p>
           </div>
 
-          <div class="flex items-center justify-between text-xs text-[var(--muted-foreground)]">
-            <span>Encoding: <strong class="text-[var(--foreground)]">GSM 7-bit</strong></span>
-            <span>Chars: <strong id="sms-char-count" class="text-[var(--foreground)] font-mono">118 / 160</strong></span>
+          <div class="flex justify-between text-[11px] font-mono text-[var(--text-muted)] pt-1">
+            <span>Visual Literacy:</span>
+            <span class="text-[var(--text)] font-medium">Zero-Text Iconography</span>
           </div>
         </div>
 
-        <!-- 3. Field Node Diagnostics Card -->
-        <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm space-y-2.5 text-xs">
-          <div class="flex items-center justify-between pb-2 border-b border-[var(--border)]">
-            <h2 class="text-xs font-black uppercase tracking-wider text-[var(--muted-foreground)]">Node Hardware Diagnostics</h2>
-            <span class="text-emerald-400 font-bold font-mono">ALL PASS</span>
-          </div>
-          <div class="space-y-1.5 text-[var(--muted-foreground)]">
-            <div class="flex justify-between">
-              <span>Firmware Version:</span>
-              <span class="text-[var(--foreground)] font-mono">v1.2.0 (MicroPython)</span>
+        <!-- 2. Cellular SMS Terminal (Nokia 105 Emulation) -->
+        <div class="bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg p-3.5 space-y-2.5">
+          <div class="flex items-center justify-between border-b border-[var(--border)] pb-2">
+            <div>
+              <h3 class="text-xs font-bold uppercase font-mono tracking-wider">SMS Dispatch</h3>
+              <span class="text-[11px] text-[var(--text-muted)]">Feature Phone Interface</span>
             </div>
+            <div class="flex items-center gap-1 font-mono text-xs">
+              <button onclick="toggleSmsLang()" id="btn-sms-lang" class="px-1.5 py-0.5 rounded border border-[var(--border-strong)] bg-[var(--bg-subtle)] hover:bg-[var(--border)] text-[10px] cursor-pointer">
+                EN &bull; SWA
+              </button>
+              <span class="text-[10px] text-[var(--text-muted)]">Nokia 105</span>
+            </div>
+          </div>
+
+          <div class="bg-[var(--bg-subtle)] border border-[var(--border)] rounded p-3 space-y-1.5">
+            <div class="flex justify-between text-[10px] font-mono text-[var(--text-muted)] border-b border-[var(--border)] pb-1">
+              <span>+254 712 345 678</span>
+              <span id="sms-clock">18:40</span>
+            </div>
+            <p id="sms-content" class="text-xs text-[var(--text)] leading-relaxed">
+              SoilGuard: All soil metrics optimal (EC: 1.35 dS/m, Moisture: 31%). Safe window for stage fertilizer: 3.5 kg / 100m².
+            </p>
+          </div>
+
+          <div class="flex justify-between text-[11px] font-mono text-[var(--text-muted)]">
+            <span>Encoding: GSM 7-bit</span>
+            <span>Length: <strong id="sms-char-count" class="text-[var(--text)]">118 / 160</strong></span>
+          </div>
+        </div>
+
+        <!-- 3. Hardware Bus Diagnostics -->
+        <div class="bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg p-3.5 space-y-2 text-xs font-mono">
+          <div class="flex items-center justify-between border-b border-[var(--border)] pb-1.5">
+            <span class="font-bold text-[var(--text)] uppercase text-[11px]">Hardware Buses</span>
+            <span class="text-[var(--c-green)] font-semibold text-[11px]">ALL OK</span>
+          </div>
+          <div class="space-y-1 text-[11px] text-[var(--text-muted)]">
             <div class="flex justify-between">
-              <span>EC Probe ADC Channel:</span>
-              <span class="text-[var(--foreground)] font-mono">GPIO 34 (12-bit SAR)</span>
+              <span>EC Probe ADC:</span>
+              <span class="text-[var(--text)]">GPIO 34 (12-bit)</span>
             </div>
             <div class="flex justify-between">
               <span>Capacitive Sensor:</span>
-              <span class="text-[var(--foreground)] font-mono">GPIO 35 (Analog)</span>
+              <span class="text-[var(--text)]">GPIO 35 (Analog)</span>
             </div>
             <div class="flex justify-between">
-              <span>Temp Probe Bus:</span>
-              <span class="text-[var(--foreground)] font-mono">GPIO 4 (1-Wire)</span>
+              <span>Temp 1-Wire:</span>
+              <span class="text-[var(--text)]">GPIO 4 (DS18B20)</span>
             </div>
             <div class="flex justify-between">
-              <span>SPI MicroSD Storage:</span>
-              <span class="text-emerald-400 font-mono font-bold">Mounted (8GB FAT32)</span>
+              <span>Storage SPI:</span>
+              <span class="text-[var(--text)]">MicroSD 8GB FAT</span>
             </div>
             <div class="flex justify-between">
-              <span>SIM800L Modem:</span>
-              <span class="text-emerald-400 font-mono">Registered (Safaricom)</span>
+              <span>Cellular Modem:</span>
+              <span class="text-[var(--text)]">SIM800L (Safaricom)</span>
             </div>
           </div>
         </div>
@@ -982,14 +920,10 @@
 
     </div>
 
-    <!-- Clean Industrial Footer -->
-    <footer class="border-t border-[var(--border)] pt-4 pb-2 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-[var(--muted-foreground)]">
-      <div>
-        <strong>SoilGuard SIS</strong> — Soil Intelligence System & Agronomic Sentry Platform · Innovation Competition 2026
-      </div>
-      <div class="font-mono text-[11px]">
-        Designed for Low-Resource Smallholder Resiliency · Sub-Saharan Africa
-      </div>
+    <!-- Minimalist Footer -->
+    <footer class="border-t border-[var(--border)] pt-3 pb-2 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-[var(--text-muted)] font-mono">
+      <div>SoilGuard SIS &bull; Precision Agriculture Instrument &bull; 2026</div>
+      <div>Sub-Saharan Africa Smallholder Deployment</div>
     </footer>
 
   </div>
@@ -1003,26 +937,26 @@
         slope: 12.0,
         min_moist: 22.0,
         max_moist: 38.0,
-        root_depth: '-20 cm depth',
+        root_depth: '-20 cm',
         stages: {
-          germination: { name: '1. Germination', dose: '1.0 kg / 100m² Starter P', safe_ec: 1.30 },
-          vegetative: { name: '2. Vegetative', dose: '3.5 kg / 100m² NPK (Top-dress)', safe_ec: 1.70 },
-          flowering: { name: '3. Flowering / Tasseling', dose: '2.0 kg / 100m² Nitrogen', safe_ec: 1.50 },
-          maturity: { name: '4. Grain Filling / Maturity', dose: '1.0 kg / 100m² Potassium', safe_ec: 1.90 }
+          germination: { name: '1. Germination', dose: '1.0 kg/100m² Starter P' },
+          vegetative: { name: '2. Vegetative', dose: '3.5 kg/100m² NPK (Top-dress)' },
+          flowering: { name: '3. Flowering', dose: '2.0 kg/100m² Nitrogen' },
+          maturity: { name: '4. Maturity', dose: '1.0 kg/100m² Potassium' }
         }
       },
       tomato: {
-        name: 'Tomato (Vegetable)',
+        name: 'Tomato',
         threshold_ec: 2.50,
         slope: 9.9,
         min_moist: 25.0,
         max_moist: 40.0,
-        root_depth: '-15 cm depth',
+        root_depth: '-15 cm',
         stages: {
-          germination: { name: '1. Nursery / Seedling', dose: '0.8 kg / 100m² Balanced', safe_ec: 1.80 },
-          vegetative: { name: '2. Vegetative Growth', dose: '2.8 kg / 100m² NPK 17:17:17', safe_ec: 2.50 },
-          flowering: { name: '3. Flowering / Fruit Set', dose: '3.2 kg / 100m² High Potash', safe_ec: 2.20 },
-          maturity: { name: '4. Ripening / Harvest', dose: '1.5 kg / 100m² Calcium Nitrate', safe_ec: 2.80 }
+          germination: { name: '1. Seedling', dose: '0.8 kg/100m² Balanced' },
+          vegetative: { name: '2. Vegetative', dose: '2.8 kg/100m² NPK 17:17:17' },
+          flowering: { name: '3. Fruit Set', dose: '3.2 kg/100m² Potash' },
+          maturity: { name: '4. Harvest', dose: '1.5 kg/100m² CaNO3' }
         }
       },
       rice: {
@@ -1031,26 +965,26 @@
         slope: 12.0,
         min_moist: 35.0,
         max_moist: 55.0,
-        root_depth: '-10 cm depth',
+        root_depth: '-10 cm',
         stages: {
-          germination: { name: '1. Seedling / Transplant', dose: '1.5 kg / 100m² Basal DAP', safe_ec: 2.00 },
-          vegetative: { name: '2. Tillering Stage', dose: '4.0 kg / 100m² Urea split', safe_ec: 3.00 },
-          flowering: { name: '3. Panicle Initiation', dose: '2.5 kg / 100m² NPK', safe_ec: 2.70 },
-          maturity: { name: '4. Grain Filling', dose: '1.0 kg / 100m² MOP', safe_ec: 3.20 }
+          germination: { name: '1. Seedling', dose: '1.5 kg/100m² Basal DAP' },
+          vegetative: { name: '2. Tillering', dose: '4.0 kg/100m² Urea' },
+          flowering: { name: '3. Panicle', dose: '2.5 kg/100m² NPK' },
+          maturity: { name: '4. Grain Fill', dose: '1.0 kg/100m² MOP' }
         }
       },
       wheat: {
-        name: 'Wheat (Highland)',
+        name: 'Wheat',
         threshold_ec: 6.00,
         slope: 7.1,
         min_moist: 20.0,
         max_moist: 35.0,
-        root_depth: '-25 cm depth',
+        root_depth: '-25 cm',
         stages: {
-          germination: { name: '1. Emergence / Crown', dose: '1.2 kg / 100m² Starter', safe_ec: 4.00 },
-          vegetative: { name: '2. Jointing / Tillering', dose: '3.0 kg / 100m² Urea', safe_ec: 6.00 },
-          flowering: { name: '3. Booting / Heading', dose: '2.0 kg / 100m² NPK', safe_ec: 5.50 },
-          maturity: { name: '4. Dough / Ripening', dose: '0.8 kg / 100m² Micronutrient', safe_ec: 6.50 }
+          germination: { name: '1. Emergence', dose: '1.2 kg/100m² Starter' },
+          vegetative: { name: '2. Jointing', dose: '3.0 kg/100m² Urea' },
+          flowering: { name: '3. Heading', dose: '2.0 kg/100m² NPK' },
+          maturity: { name: '4. Ripening', dose: '0.8 kg/100m² Micro' }
         }
       }
     };
@@ -1062,7 +996,35 @@
     let autoStreamTimer = null;
     let telemetryStream = [];
 
-    // Initialize telemetry history
+    // Theme Management
+    function initTheme() {
+      const saved = localStorage.getItem('soilguard_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      applyTheme(saved);
+    }
+
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('soilguard_theme', theme);
+
+      const icon = document.getElementById('theme-icon');
+      const label = document.getElementById('theme-label');
+
+      if (theme === 'dark') {
+        icon.textContent = '☼';
+        label.textContent = 'Light';
+      } else {
+        icon.textContent = '☾';
+        label.textContent = 'Dark';
+      }
+      if (typeof renderChart === 'function') renderChart();
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      applyTheme(current === 'dark' ? 'light' : 'dark');
+    }
+
+    // Stream Initialization
     function initStream() {
       telemetryStream = [];
       const now = Date.now();
@@ -1086,28 +1048,28 @@
       recalculateAndRender();
     }
 
-    // Switch Crop
+    // Crop Selection
     function selectField(cropKey) {
       activeCrop = cropKey;
       document.querySelectorAll('.field-btn').forEach(btn => {
-        btn.className = 'field-btn px-3 py-1.5 rounded-lg font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-all';
+        btn.className = 'field-btn px-2.5 py-1 rounded font-medium text-xs text-[var(--text-muted)] hover:text-[var(--text)]';
       });
       const activeBtn = document.getElementById(`field-${cropKey}`);
       if (activeBtn) {
-        activeBtn.className = 'field-btn px-3 py-1.5 rounded-lg font-bold transition-all bg-[var(--card)] text-[var(--foreground)] border border-emerald-500/30 shadow-xs';
+        activeBtn.className = 'field-btn px-2.5 py-1 rounded font-medium text-xs bg-[var(--bg-surface)] text-[var(--text)] border border-[var(--border)]';
       }
       recalculateAndRender();
     }
 
-    // Switch Phenology Stage
+    // Stage Selection
     function selectStage(stageKey) {
       activeStage = stageKey;
       document.querySelectorAll('.stage-btn').forEach(btn => {
-        btn.className = 'stage-btn px-2.5 py-1 rounded-lg text-xs font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-all';
+        btn.className = 'stage-btn px-2 py-1 rounded text-xs font-medium text-[var(--text-muted)] hover:text-[var(--text)]';
       });
       const activeBtn = document.getElementById(`stage-${stageKey}`);
       if (activeBtn) {
-        activeBtn.className = 'stage-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-[var(--card)] text-emerald-400 border border-emerald-500/30 transition-all';
+        activeBtn.className = 'stage-btn px-2 py-1 rounded text-xs font-medium bg-[var(--bg-surface)] text-[var(--text)] border border-[var(--border)]';
       }
       recalculateAndRender();
     }
@@ -1118,28 +1080,22 @@
         const el = document.getElementById(`tab-content-${t}`);
         const btn = document.getElementById(`tab-btn-${t}`);
         if (el) el.classList.add('hidden');
-        if (btn) {
-          btn.classList.remove('tab-active');
-          btn.classList.add('text-[var(--muted-foreground)]');
-        }
+        if (btn) btn.classList.remove('tab-active');
       });
       const targetEl = document.getElementById(`tab-content-${tabId}`);
       const targetBtn = document.getElementById(`tab-btn-${tabId}`);
       if (targetEl) targetEl.classList.remove('hidden');
-      if (targetBtn) {
-        targetBtn.classList.add('tab-active');
-        targetBtn.classList.remove('text-[var(--muted-foreground)]');
-      }
+      if (targetBtn) targetBtn.classList.add('tab-active');
     }
 
-    // Chart Range Selector
+    // Chart Range Filter
     function setChartRange(points) {
       chartRangePoints = points;
       document.querySelectorAll('.range-btn').forEach(btn => {
-        btn.className = 'range-btn px-2.5 py-1 rounded-lg text-xs text-[var(--muted-foreground)] hover:text-[var(--foreground)]';
+        btn.className = 'range-btn px-2 py-0.5 rounded text-[var(--text-muted)] hover:text-[var(--text)]';
       });
       if (window.event && window.event.target) {
-        window.event.target.className = 'range-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-[var(--card)] text-[var(--foreground)]';
+        window.event.target.className = 'range-btn px-2 py-0.5 rounded bg-[var(--bg-surface)] text-[var(--text)] font-semibold';
       }
       renderChart();
     }
@@ -1176,7 +1132,7 @@
       syncManualInputs();
     }
 
-    // Leaching requirement formula (FAO-56)
+    // FAO-56 Leaching requirement formula
     function computeLR(targetEc, waterEc = 0.6) {
       const denom = (5.0 * targetEc) - waterEc;
       if (denom <= 0) return 0.15;
@@ -1184,7 +1140,7 @@
       return Math.min(Math.max(lr, 0.05), 0.45);
     }
 
-    // Recalculate State & Update All Descriptive Keys
+    // Recalculate State & Update All UI Keys
     function recalculateAndRender() {
       const crop = CROP_DATA[activeCrop];
       const stage = crop.stages[activeStage] || crop.stages.vegetative;
@@ -1193,15 +1149,14 @@
       const moist = latest.moist;
       const temp = latest.temp;
 
-      // Update header & strip tags
+      // Update specification strip
       document.getElementById('lbl-threshold').textContent = `${crop.threshold_ec.toFixed(2)} dS/m`;
-      document.getElementById('lbl-moist-band').textContent = `${crop.min_moist}% – ${crop.max_moist}% VWC`;
-      document.getElementById('lbl-slope').textContent = `${crop.slope.toFixed(1)}% per dS/m`;
+      document.getElementById('lbl-moist-band').textContent = `${crop.min_moist}% – ${crop.max_moist}%`;
+      document.getElementById('lbl-slope').textContent = `${crop.slope.toFixed(1)}% / dS/m`;
       document.getElementById('lbl-root-depth').textContent = crop.root_depth;
       document.getElementById('lbl-stage-npk').textContent = stage.dose;
       document.getElementById('limit-ec').textContent = `≤ ${crop.threshold_ec.toFixed(2)}`;
 
-      // Calculate Root Osmotic Potential (-0.36 * EC)
       const osmoticPressure = (-0.36 * ec_25).toFixed(2);
       document.getElementById('lbl-osmotic').textContent = `${osmoticPressure} bar`;
 
@@ -1217,7 +1172,7 @@
 
       const lr = computeLR(crop.threshold_ec, 0.6);
       const extraPercent = Math.round(lr * 100);
-      const extraMinutes = Math.round(40 * (lr)); // Baseline 40m watering
+      const extraMinutes = Math.round(40 * lr);
 
       const statusRibbon = document.getElementById('status-ribbon');
       const keyStatus = document.getElementById('key-status');
@@ -1240,84 +1195,82 @@
       const cardRed = document.getElementById('card-color-red');
       const cardBlue = document.getElementById('card-color-blue');
 
-      // Reset matrix card highlights
+      // Reset matrix cards
       [cardGreen, cardAmber, cardRed, cardBlue].forEach(c => {
-        c.className = 'rounded-xl border p-4 space-y-3 transition-all duration-300 bg-[var(--background)] border-[var(--border)] opacity-85 hover:opacity-100';
+        c.className = 'rounded border p-3 space-y-2.5 border-[var(--border)] bg-[var(--bg-surface)] opacity-85 hover:opacity-100';
       });
 
       let smsString = '';
 
       if (is_saline) {
-        // --- 1. RED STATE: CRITICAL SALINITY FLUSH ---
-        statusRibbon.className = 'rounded-2xl p-4 border transition-all duration-300 grid grid-cols-2 sm:grid-cols-4 gap-3 shadow-sm bg-rose-500/15 border-rose-500/40 animate-pulse';
-        keyStatus.className = 'text-sm font-black text-rose-400 uppercase tracking-tight';
+        // --- 1. RED STATE ---
+        statusRibbon.className = 'rounded-lg p-3.5 border transition-colors grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[var(--c-red-bg)] border-[var(--c-red-border)]';
+        keyStatus.className = 'text-xs font-bold uppercase tracking-tight text-[var(--c-red)]';
         keyStatus.textContent = 'CRITICAL SALINITY FLUSH';
 
-        keyAction.className = 'text-sm font-black text-rose-400';
+        keyAction.className = 'text-xs font-bold text-[var(--c-red)]';
         keyAction.textContent = `FLUSH ROOT ZONE (+${extraPercent}%)`;
 
-        keyFert.className = 'text-sm font-black text-rose-400';
+        keyFert.className = 'text-xs font-bold text-[var(--c-red)]';
         keyFert.textContent = 'LOCKED (Zero Chemical Inputs)';
 
-        keyLeach.className = 'text-sm font-black text-amber-400 font-mono';
+        keyLeach.className = 'text-xs font-bold font-mono text-[var(--c-amber)]';
         keyLeach.textContent = `+${extraPercent}% Extra Water`;
 
         document.getElementById('metric-lr').textContent = `+${extraPercent}%`;
-        document.getElementById('lbl-flush-time').textContent = `+${extraMinutes} min extra soak`;
+        document.getElementById('lbl-flush-time').textContent = `+${extraMinutes} min`;
 
         pillEc.textContent = 'EXCEEDED';
-        pillEc.className = 'text-xs font-black px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/40';
+        pillEc.className = 'text-[10px] px-1.5 py-0.2 rounded border border-[var(--c-red-border)] bg-[var(--c-red-bg)] text-[var(--c-red)] font-semibold';
 
         pillLr.textContent = 'ACTIVE FLUSH';
-        pillLr.className = 'text-xs font-black px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/40';
+        pillLr.className = 'text-[10px] px-1.5 py-0.2 rounded border border-[var(--c-amber-border)] bg-[var(--c-amber-bg)] text-[var(--c-amber)] font-semibold';
 
-        beaconLight.className = 'w-4 h-4 rounded-full bg-rose-500 beacon-glow ring-4 ring-rose-500/40';
-        beaconLabel.className = 'text-xs font-black uppercase text-rose-400';
-        beaconLabel.textContent = 'RED PULSE';
+        beaconLight.className = 'w-2.5 h-2.5 rounded-full bg-[var(--c-red)]';
+        beaconLabel.className = 'text-xs font-mono font-bold text-[var(--c-red)]';
+        beaconLabel.textContent = 'RED';
         beaconHead.textContent = 'Critical Salinity Warning';
-        beaconSub.textContent = 'Red beacon flashes urgently. The farmer stops fertilizer immediately and applies extra flush water to drive salts below roots.';
+        beaconSub.textContent = 'Red beacon indicates salinity exceeding plant tolerance. Stop fertilizer immediately and apply extra flush water.';
 
-        // Highlight Red Card in Matrix
-        cardRed.className = 'rounded-xl border p-4 space-y-3 transition-all duration-300 bg-rose-500/15 border-rose-500/50 ring-2 ring-rose-500/40 shadow-lg';
-        activeBadge.className = 'font-black px-3 py-1 rounded-xl bg-rose-500/20 text-rose-400 border border-rose-500/40 flex items-center gap-1.5';
-        activeBadge.innerHTML = '<span class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping"></span> 🔴 RED SIGNAL (CRITICAL SALINE HAZARD)';
+        cardRed.className = 'rounded border p-3 space-y-2.5 border-[var(--c-red-border)] bg-[var(--c-red-bg)] font-medium';
+        activeBadge.className = 'px-2 py-0.5 rounded border border-[var(--c-red-border)] bg-[var(--c-red-bg)] text-[var(--c-red)] font-semibold';
+        activeBadge.innerHTML = '🔴 RED (CRITICAL SALINE HAZARD)';
 
         if (smsLang === 'swa') {
-          smsString = `SoilGuard HATARI: Chumvi nyingi kwa ${crop.name} (${ec_25} dS/m > ${crop.threshold_ec}). ACHA mbolea mara moja! Mwagia maji ya ziada (+${extraPercent}%) kuosha chumvi chini ya mizizi.`;
+          smsString = `SoilGuard HATARI: Chumvi nyingi kwa ${crop.name} (${ec_25} dS/m > ${crop.threshold_ec}). ACHA mbolea mara moja! Mwagia maji ya ziada (+${extraPercent}%) kuosha mizizi.`;
         } else {
           smsString = `SoilGuard CRITICAL: High salt in ${crop.name} (${ec_25} dS/m > ${crop.threshold_ec}). Hold fertilizer! Flush root zone with ${extraPercent}% extra irrigation water.`;
         }
       } else if (is_waterlogged) {
-        // --- 2. BLUE STATE: WATERLOGGING / SATURATION ---
-        statusRibbon.className = 'rounded-2xl p-4 border transition-all duration-300 grid grid-cols-2 sm:grid-cols-4 gap-3 shadow-sm bg-sky-500/15 border-sky-500/40';
-        keyStatus.className = 'text-sm font-black text-sky-400 uppercase tracking-tight';
+        // --- 2. BLUE STATE ---
+        statusRibbon.className = 'rounded-lg p-3.5 border transition-colors grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[var(--c-blue-bg)] border-[var(--c-blue-border)]';
+        keyStatus.className = 'text-xs font-bold uppercase tracking-tight text-[var(--c-blue)]';
         keyStatus.textContent = 'WATERLOGGED SOIL';
 
-        keyAction.className = 'text-sm font-black text-sky-400';
+        keyAction.className = 'text-xs font-bold text-[var(--c-blue)]';
         keyAction.textContent = 'SHUT VALVES & DRAIN TRENCHES';
 
-        keyFert.className = 'text-sm font-black text-amber-400';
-        keyFert.textContent = 'PROHIBITED (Denitrification Risk)';
+        keyFert.className = 'text-xs font-bold text-[var(--c-amber)]';
+        keyFert.textContent = 'PROHIBITED (Denitrification)';
 
-        keyLeach.className = 'text-sm font-black text-emerald-400 font-mono';
+        keyLeach.className = 'text-xs font-bold font-mono text-[var(--text)]';
         keyLeach.textContent = '0% (Pores Saturated)';
 
         document.getElementById('metric-lr').textContent = '+0%';
         document.getElementById('lbl-flush-time').textContent = '0 min';
 
         pillMoist.textContent = 'SATURATED';
-        pillMoist.className = 'text-xs font-black px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-400 border border-sky-500/40';
+        pillMoist.className = 'text-[10px] px-1.5 py-0.2 rounded border border-[var(--c-blue-border)] bg-[var(--c-blue-bg)] text-[var(--c-blue)] font-semibold';
 
-        beaconLight.className = 'w-4 h-4 rounded-full bg-sky-400 beacon-glow ring-4 ring-sky-400/40';
-        beaconLabel.className = 'text-xs font-black uppercase text-sky-400';
-        beaconLabel.textContent = 'BLUE PULSE';
-        beaconHead.textContent = 'Waterlogging & Hypoxia Hazard';
-        beaconSub.textContent = 'Blue beacon signals that soil pores are choked with water. Cut irrigation immediately and clear surface furrows to restore root aeration.';
+        beaconLight.className = 'w-2.5 h-2.5 rounded-full bg-[var(--c-blue)]';
+        beaconLabel.className = 'text-xs font-mono font-bold text-[var(--c-blue)]';
+        beaconLabel.textContent = 'BLUE';
+        beaconHead.textContent = 'Waterlogging Saturation';
+        beaconSub.textContent = 'Blue beacon signals soil waterlogging. Shut off irrigation immediately and dig relief furrows to restore root oxygen.';
 
-        // Highlight Blue Card in Matrix
-        cardBlue.className = 'rounded-xl border p-4 space-y-3 transition-all duration-300 bg-sky-500/15 border-sky-500/50 ring-2 ring-sky-500/40 shadow-lg';
-        activeBadge.className = 'font-black px-3 py-1 rounded-xl bg-sky-500/20 text-sky-400 border border-sky-500/40 flex items-center gap-1.5';
-        activeBadge.innerHTML = '<span class="w-2.5 h-2.5 rounded-full bg-sky-400 animate-ping"></span> 🔵 BLUE SIGNAL (WATERLOGGING SATURATION)';
+        cardBlue.className = 'rounded border p-3 space-y-2.5 border-[var(--c-blue-border)] bg-[var(--c-blue-bg)] font-medium';
+        activeBadge.className = 'px-2 py-0.5 rounded border border-[var(--c-blue-border)] bg-[var(--c-blue-bg)] text-[var(--c-blue)] font-semibold';
+        activeBadge.innerHTML = '🔵 BLUE (WATERLOGGED SATURATION)';
 
         if (smsLang === 'swa') {
           smsString = `SoilGuard TAHADHARI: Maji mengi shambani (${moist}%). Funga maji mara moja kuzuia mizizi kuoza. Usiweke mbolea sasa.`;
@@ -1325,82 +1278,80 @@
           smsString = `SoilGuard Caution: Soil saturated (${moist}%). Shut off irrigation immediately to prevent root hypoxia. Hold fertilizer to stop runoff.`;
         }
       } else if (is_dry || is_approaching_saline) {
-        // --- 3. AMBER / YELLOW STATE: IRRIGATION DUE / PRE-STRESS ---
-        statusRibbon.className = 'rounded-2xl p-4 border transition-all duration-300 grid grid-cols-2 sm:grid-cols-4 gap-3 shadow-sm bg-amber-500/15 border-amber-500/40';
-        keyStatus.className = 'text-sm font-black text-amber-400 uppercase tracking-tight';
+        // --- 3. AMBER STATE ---
+        statusRibbon.className = 'rounded-lg p-3.5 border transition-colors grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[var(--c-amber-bg)] border-[var(--c-amber-border)]';
+        keyStatus.className = 'text-xs font-bold uppercase tracking-tight text-[var(--c-amber)]';
         keyStatus.textContent = is_dry ? 'IRRIGATION DUE (REFILL)' : 'ELEVATED SALINITY ADVISORY';
 
-        keyAction.className = 'text-sm font-black text-amber-400';
+        keyAction.className = 'text-xs font-bold text-[var(--c-amber)]';
         keyAction.textContent = is_dry ? 'WATER FIELD (Standard Cycle)' : 'IRRIGATE (+10% Buffer)';
 
-        keyFert.className = 'text-sm font-black text-amber-400';
+        keyFert.className = 'text-xs font-bold text-[var(--c-amber)]';
         keyFert.textContent = 'DEFER / HALVE DOSE';
 
-        keyLeach.className = 'text-sm font-black text-emerald-400 font-mono';
+        keyLeach.className = 'text-xs font-bold font-mono text-[var(--text)]';
         keyLeach.textContent = '0% (Buffer Safe)';
 
         document.getElementById('metric-lr').textContent = '+0%';
         document.getElementById('lbl-flush-time').textContent = '0 min';
 
         pillEc.textContent = is_approaching_saline ? 'ELEVATED' : 'IN SPEC';
-        pillEc.className = is_approaching_saline ? 'text-xs font-black px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/40' : 'text-xs font-black px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30';
+        pillEc.className = is_approaching_saline ? 'text-[10px] px-1.5 py-0.2 rounded border border-[var(--c-amber-border)] bg-[var(--c-amber-bg)] text-[var(--c-amber)] font-semibold' : 'text-[10px] px-1.5 py-0.2 rounded border border-[var(--c-green-border)] bg-[var(--c-green-bg)] text-[var(--c-green)] font-semibold';
 
         pillMoist.textContent = is_dry ? 'REFILL DUE' : 'OPTIMAL';
-        pillMoist.className = is_dry ? 'text-xs font-black px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/40' : 'text-xs font-black px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30';
+        pillMoist.className = is_dry ? 'text-[10px] px-1.5 py-0.2 rounded border border-[var(--c-amber-border)] bg-[var(--c-amber-bg)] text-[var(--c-amber)] font-semibold' : 'text-[10px] px-1.5 py-0.2 rounded border border-[var(--c-green-border)] bg-[var(--c-green-bg)] text-[var(--c-green)] font-semibold';
 
-        beaconLight.className = 'w-4 h-4 rounded-full bg-amber-400 beacon-glow ring-4 ring-amber-400/40';
-        beaconLabel.className = 'text-xs font-black uppercase text-amber-400';
-        beaconLabel.textContent = 'YELLOW PULSE';
+        beaconLight.className = 'w-2.5 h-2.5 rounded-full bg-[var(--c-amber)]';
+        beaconLabel.className = 'text-xs font-mono font-bold text-[var(--c-amber)]';
+        beaconLabel.textContent = 'AMBER';
         beaconHead.textContent = is_dry ? 'Irrigation Due (Refill)' : 'Salinity Creeping Up';
-        beaconSub.textContent = 'Yellow beacon signals approaching moisture deficit or early salt concentration. Irrigate field; hold or halve planned fertilizer.';
+        beaconSub.textContent = 'Amber beacon signals moisture depletion or early salt concentration. Water field; hold or halve planned fertilizer.';
 
-        // Highlight Amber Card in Matrix
-        cardAmber.className = 'rounded-xl border p-4 space-y-3 transition-all duration-300 bg-amber-500/15 border-amber-500/50 ring-2 ring-amber-500/40 shadow-lg';
-        activeBadge.className = 'font-black px-3 py-1 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center gap-1.5';
-        activeBadge.innerHTML = '<span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span> 🟡 AMBER SIGNAL (PRE-STRESS ADVISORY)';
+        cardAmber.className = 'rounded border p-3 space-y-2.5 border-[var(--c-amber-border)] bg-[var(--c-amber-bg)] font-medium';
+        activeBadge.className = 'px-2 py-0.5 rounded border border-[var(--c-amber-border)] bg-[var(--c-amber-bg)] text-[var(--c-amber)] font-semibold';
+        activeBadge.innerHTML = '🟡 AMBER (PRE-STRESS ADVISORY)';
 
         if (smsLang === 'swa') {
           smsString = `SoilGuard: Udongo umekauka (${moist}%). Chumvi iko salama (${ec_25} dS/m). Mwagia maji leo dakika 40. Punguza mbolea nusu: ${stage.dose}.`;
         } else {
-          smsString = `SoilGuard: Soil moisture is low (${moist}%). Salinity safe (${ec_25} dS/m). Run standard irrigation today. Hold or halve fertilizer: ${stage.dose}.`;
+          smsString = `SoilGuard: Soil moisture low (${moist}%). Salinity safe (${ec_25} dS/m). Run standard irrigation today. Hold or halve fertilizer: ${stage.dose}.`;
         }
       } else {
-        // --- 4. GREEN STATE: OPTIMAL EQUILIBRIUM ---
-        statusRibbon.className = 'rounded-2xl p-4 border transition-all duration-300 grid grid-cols-2 sm:grid-cols-4 gap-3 shadow-sm bg-emerald-500/10 border-emerald-500/30';
-        keyStatus.className = 'text-sm font-black text-emerald-400 uppercase tracking-tight';
+        // --- 4. GREEN STATE ---
+        statusRibbon.className = 'rounded-lg p-3.5 border transition-colors grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[var(--c-green-bg)] border-[var(--c-green-border)]';
+        keyStatus.className = 'text-xs font-bold uppercase tracking-tight text-[var(--c-green)]';
         keyStatus.textContent = 'OPTIMAL EQUILIBRIUM';
 
-        keyAction.className = 'text-sm font-black text-[var(--foreground)]';
+        keyAction.className = 'text-xs font-bold text-[var(--text)]';
         keyAction.textContent = 'HOLD (In Target)';
 
-        keyFert.className = 'text-sm font-black text-emerald-400';
+        keyFert.className = 'text-xs font-bold text-[var(--c-green)]';
         keyFert.textContent = `AUTHORIZED (${stage.name})`;
 
-        keyLeach.className = 'text-sm font-black text-emerald-400 font-mono';
+        keyLeach.className = 'text-xs font-bold font-mono text-[var(--text)]';
         keyLeach.textContent = '0% (Buffer Safe)';
 
         document.getElementById('metric-lr').textContent = '+0%';
         document.getElementById('lbl-flush-time').textContent = '0 min';
 
         pillEc.textContent = 'IN SPEC';
-        pillEc.className = 'text-xs font-black px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30';
+        pillEc.className = 'text-[10px] px-1.5 py-0.2 rounded border border-[var(--c-green-border)] bg-[var(--c-green-bg)] text-[var(--c-green)] font-semibold';
 
         pillMoist.textContent = 'OPTIMAL';
-        pillMoist.className = 'text-xs font-black px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30';
+        pillMoist.className = 'text-[10px] px-1.5 py-0.2 rounded border border-[var(--c-green-border)] bg-[var(--c-green-bg)] text-[var(--c-green)] font-semibold';
 
         pillLr.textContent = 'NO FLUSH';
-        pillLr.className = 'text-xs font-black px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30';
+        pillLr.className = 'text-[10px] px-1.5 py-0.2 rounded border border-[var(--border)] bg-[var(--bg-subtle)] text-[var(--text-muted)] font-semibold';
 
-        beaconLight.className = 'w-4 h-4 rounded-full bg-emerald-400 beacon-glow ring-4 ring-emerald-400/30';
-        beaconLabel.className = 'text-xs font-black uppercase text-emerald-400';
-        beaconLabel.textContent = 'GREEN PULSE';
+        beaconLight.className = 'w-2.5 h-2.5 rounded-full bg-[var(--c-green)]';
+        beaconLabel.className = 'text-xs font-mono font-bold text-[var(--c-green)]';
+        beaconLabel.textContent = 'GREEN';
         beaconHead.textContent = 'Equilibrium Confirmed';
         beaconSub.textContent = 'Beacon pulses green every 10s. The farmer passing through the field sees immediately that salinity and moisture are safe.';
 
-        // Highlight Green Card in Matrix
-        cardGreen.className = 'rounded-xl border p-4 space-y-3 transition-all duration-300 bg-emerald-500/15 border-emerald-500/50 ring-2 ring-emerald-500/40 shadow-lg';
-        activeBadge.className = 'font-black px-3 py-1 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center gap-1.5';
-        activeBadge.innerHTML = '<span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span> 🟢 GREEN SIGNAL (OPTIMAL EQUILIBRIUM)';
+        cardGreen.className = 'rounded border p-3 space-y-2.5 border-[var(--c-green-border)] bg-[var(--c-green-bg)] font-medium';
+        activeBadge.className = 'px-2 py-0.5 rounded border border-[var(--c-green-border)] bg-[var(--c-green-bg)] text-[var(--c-green)] font-semibold';
+        activeBadge.innerHTML = '🟢 GREEN (EQUILIBRIUM)';
 
         if (smsLang === 'swa') {
           smsString = `SoilGuard: Hali ya udongo ni nzuri (EC: ${ec_25} dS/m, Maji: ${moist}%). Unaweza kuweka mbolea ya awamu hii: ${stage.dose}.`;
@@ -1425,22 +1376,21 @@
       recalculateAndRender();
     }
 
-    // Interactive ROI Calculator Function
+    // Interactive ROI Calculator
     function calcROI() {
       const area = parseFloat(document.getElementById('input-area').value);
       document.getElementById('calc-area-lbl').textContent = `${area.toFixed(1)} Hectares`;
 
-      // Baseline figures per ha for smallholders
-      const fertSaved = Math.round(area * 40); // $40/ha saved in fertilizer waste
-      const yieldGain = Math.round(area * 120); // $120/ha gained in preserved crop yield
+      const fertSaved = Math.round(area * 40);
+      const yieldGain = Math.round(area * 120);
       const netGain = fertSaved + yieldGain;
 
-      document.getElementById('roi-fert-val').textContent = `$${fertSaved} USD / season`;
-      document.getElementById('roi-yield-val').textContent = `+$${yieldGain} USD / season`;
-      document.getElementById('roi-net-val').textContent = `+$${netGain} USD / season`;
+      document.getElementById('roi-fert-val').textContent = `$${fertSaved} USD`;
+      document.getElementById('roi-yield-val').textContent = `+$${yieldGain} USD`;
+      document.getElementById('roi-net-val').textContent = `+$${netGain} USD`;
     }
 
-    // Render Dynamic SVG Vector Chart
+    // Precision Vector Chart
     function renderChart() {
       const svg = document.getElementById('svg-chart');
       const crop = CROP_DATA[activeCrop];
@@ -1449,11 +1399,11 @@
 
       const data = telemetryStream.slice(-chartRangePoints);
       const width = 650;
-      const height = 210;
+      const height = 200;
       const padL = 40;
       const padR = 20;
-      const padT = 20;
-      const padB = 30;
+      const padT = 15;
+      const padB = 25;
 
       const chartW = width - padL - padR;
       const chartH = height - padT - padB;
@@ -1476,35 +1426,35 @@
         const v = minVal + ratio * range;
         const y = padT + chartH - ratio * chartH;
         markup += `
-          <line x1="${padL}" y1="${y}" x2="${width - padR}" y2="${y}" stroke="currentColor" stroke-dasharray="3 3" opacity="0.15" />
-          <text x="${padL - 8}" y="${y + 3.5}" text-anchor="end" fill="currentColor" opacity="0.5" font-size="10" font-family="monospace">${v.toFixed(1)}</text>
+          <line x1="${padL}" y1="${y}" x2="${width - padR}" y2="${y}" stroke="var(--chart-grid)" stroke-width="1" />
+          <text x="${padL - 6}" y="${y + 3.5}" text-anchor="end" fill="var(--chart-axis)" font-size="9" font-family="monospace">${v.toFixed(1)}</text>
         `;
       });
 
       // Threshold line
       markup += `
-        <line x1="${padL}" y1="${threshY}" x2="${width - padR}" y2="${threshY}" stroke="#f43f5e" stroke-width="1.8" stroke-dasharray="5 4" />
-        <text x="${width - padR}" y="${threshY - 5}" text-anchor="end" fill="#f43f5e" font-size="9" font-family="monospace">THRESHOLD ${threshold.toFixed(2)} dS/m</text>
+        <line x1="${padL}" y1="${threshY}" x2="${width - padR}" y2="${threshY}" stroke="var(--chart-thresh)" stroke-width="1.5" stroke-dasharray="4 3" />
+        <text x="${width - padR}" y="${threshY - 4}" text-anchor="end" fill="var(--chart-thresh)" font-size="8" font-family="monospace">LIMIT ${threshold.toFixed(2)}</text>
       `;
 
       // Area fill
       markup += `
-        <polygon points="${padL},${padT + chartH} ${pts} ${width - padR},${padT + chartH}" fill="#10b981" fill-opacity="0.12" />
+        <polygon points="${padL},${padT + chartH} ${pts} ${width - padR},${padT + chartH}" fill="var(--chart-fill)" />
       `;
 
       // Polyline curve
       markup += `
-        <polyline fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" points="${pts}" />
+        <polyline fill="none" stroke="var(--chart-line)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" points="${pts}" />
       `;
 
-      // Active Points
+      // Data Points
       data.forEach((d, i) => {
         const cx = getX(i);
         const cy = getY(d.ec_25);
         const isHot = d.ec_25 > threshold;
         const isLatest = i === data.length - 1;
         markup += `
-          <circle cx="${cx}" cy="${cy}" r="${isLatest ? 5.5 : 3}" fill="${isHot ? '#f43f5e' : '#10b981'}" stroke="#090e17" stroke-width="1.5" />
+          <circle cx="${cx}" cy="${cy}" r="${isLatest ? 4 : 2.5}" fill="${isHot ? 'var(--chart-thresh)' : 'var(--chart-line)'}" stroke="var(--bg-surface)" stroke-width="1" />
         `;
       });
 
@@ -1524,29 +1474,29 @@
         const isDry = r.moist < crop.min_moist;
         const isSat = r.moist > crop.max_moist;
 
-        let beaconBadge = '<span class="px-2 py-0.5 rounded font-bold text-[11px] text-emerald-400 bg-emerald-500/15">🟢 GREEN</span>';
+        let beaconBadge = '<span class="px-1.5 py-0.2 rounded text-[10px] text-[var(--c-green)] bg-[var(--c-green-bg)] font-semibold">GREEN</span>';
         let actionStr = 'HOLD (In Target)';
 
         if (isSaline) {
-          beaconBadge = '<span class="px-2 py-0.5 rounded font-bold text-[11px] text-rose-400 bg-rose-500/15">🔴 RED</span>';
+          beaconBadge = '<span class="px-1.5 py-0.2 rounded text-[10px] text-[var(--c-red)] bg-[var(--c-red-bg)] font-semibold">RED</span>';
           actionStr = 'FLUSH ROOT ZONE';
         } else if (isSat) {
-          beaconBadge = '<span class="px-2 py-0.5 rounded font-bold text-[11px] text-sky-400 bg-sky-500/15">🔵 BLUE</span>';
-          actionStr = 'SHUT VALVES / DRAIN';
+          beaconBadge = '<span class="px-1.5 py-0.2 rounded text-[10px] text-[var(--c-blue)] bg-[var(--c-blue-bg)] font-semibold">BLUE</span>';
+          actionStr = 'SHUT VALVES';
         } else if (isDry) {
-          beaconBadge = '<span class="px-2 py-0.5 rounded font-bold text-[11px] text-amber-400 bg-amber-500/15">🟡 AMBER</span>';
+          beaconBadge = '<span class="px-1.5 py-0.2 rounded text-[10px] text-[var(--c-amber)] bg-[var(--c-amber-bg)] font-semibold">AMBER</span>';
           actionStr = 'WATER FIELD (40M)';
         }
 
         html += `
-          <tr class="hover:bg-[var(--background)] transition-colors">
-            <td class="py-2 px-2.5 font-sans text-[var(--muted-foreground)]">${timeStr}</td>
-            <td class="py-2 px-2.5">${r.raw_ec.toFixed(2)}</td>
-            <td class="py-2 px-2.5 font-bold ${isSaline ? 'text-rose-400' : 'text-emerald-400'}">${r.ec_25.toFixed(2)}</td>
-            <td class="py-2 px-2.5">${r.moist.toFixed(1)}%</td>
-            <td class="py-2 px-2.5">${r.temp.toFixed(1)}°C</td>
-            <td class="py-2 px-2.5 font-sans">${beaconBadge}</td>
-            <td class="py-2 px-2.5 font-sans text-[var(--foreground)] font-medium">${actionStr}</td>
+          <tr class="hover:bg-[var(--bg-subtle)] transition-colors">
+            <td class="py-1.5 px-2.5 font-sans text-[var(--text-muted)]">${timeStr}</td>
+            <td class="py-1.5 px-2.5">${r.raw_ec.toFixed(2)}</td>
+            <td class="py-1.5 px-2.5 font-bold ${isSaline ? 'text-[var(--c-red)]' : 'text-[var(--text)]'}">${r.ec_25.toFixed(2)}</td>
+            <td class="py-1.5 px-2.5">${r.moist.toFixed(1)}%</td>
+            <td class="py-1.5 px-2.5">${r.temp.toFixed(1)}°C</td>
+            <td class="py-1.5 px-2.5 font-sans">${beaconBadge}</td>
+            <td class="py-1.5 px-2.5 font-sans text-[var(--text)]">${actionStr}</td>
           </tr>
         `;
       });
@@ -1587,12 +1537,12 @@
         clearInterval(autoStreamTimer);
         autoStreamTimer = null;
         icon.textContent = '▶';
-        text.textContent = 'Live 15m Ticker';
-        btn.className = 'px-3.5 py-1.5 rounded-xl font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition-all shadow-sm flex items-center gap-1.5 ml-1 cursor-pointer';
+        text.textContent = '15m Ticker';
+        btn.className = 'px-2.5 py-1 rounded border border-[var(--border-strong)] bg-[var(--bg-subtle)] hover:bg-[var(--border)] transition-colors flex items-center gap-1 font-sans font-medium cursor-pointer';
       } else {
         icon.textContent = '⏸';
         text.textContent = 'Pause Ticker';
-        btn.className = 'px-3.5 py-1.5 rounded-xl font-bold bg-amber-600 hover:bg-amber-500 text-white transition-all shadow-sm flex items-center gap-1.5 ml-1 cursor-pointer';
+        btn.className = 'px-2.5 py-1 rounded border border-[var(--border-strong)] bg-[var(--border)] transition-colors flex items-center gap-1 font-sans font-medium cursor-pointer';
 
         autoStreamTimer = setInterval(() => {
           simHour = (simHour + 1) % 24;
@@ -1631,7 +1581,10 @@
     }
 
     // Startup
-    window.addEventListener('DOMContentLoaded', initStream);
+    window.addEventListener('DOMContentLoaded', () => {
+      initTheme();
+      initStream();
+    });
   </script>
 </body>
 </html>
