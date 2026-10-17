@@ -1,0 +1,64 @@
+services:
+  timescaledb:
+    image: timescale/timescaledb:latest-pg15
+    container_name: soilguard_timescaledb
+    environment:
+      POSTGRES_USER: soilguard_user
+      POSTGRES_PASSWORD: soilguard_pass
+      POSTGRES_DB: soilguard_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - timescaledb_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U soilguard_user -d soilguard_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: soilguard_backend
+    environment:
+      DATABASE_URL: postgresql+asyncpg://soilguard_user:soilguard_pass@timescaledb:5432/soilguard_db
+      SECRET_KEY: soilguard-super-secret-key-change-in-production-min-32-chars
+      DEVICE_PSK: sg-field-device-pre-shared-key-2026
+      ENVIRONMENT: production
+      DEBUG: "False"
+      SMS_PROVIDER: mock
+    ports:
+      - "8000:8000"
+    depends_on:
+      timescaledb:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: soilguard_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  simulator:
+    build:
+      context: ./simulator
+      dockerfile: Dockerfile
+    container_name: soilguard_simulator
+    environment:
+      API_ENDPOINT: http://backend:8000/api/v1/ingest/telemetry
+      DEVICE_PSK: sg-field-device-pre-shared-key-2026
+      INTERVAL_SECONDS: 10
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  timescaledb_data:
