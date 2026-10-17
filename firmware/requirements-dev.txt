@@ -1,0 +1,5 @@
+# Development, linting and testing dependencies for edge firmware
+pytest>=7.4.0
+flake8>=6.1.0
+esptool>=4.6.2
+adafruit-ampy>=1.1.0
