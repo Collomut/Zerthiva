@@ -106,11 +106,12 @@ soilGuard/
 │   ├── architecture/               # Data Flow Diagrams (DFD) & UML diagrams (Mermaid)
 │   └── hardware_schematic.md       # Pinout maps, BOM cost table & wiring guide
 │
-├── .github/workflows/              # Automated CI/CD Pipelines
+├── ci/workflows/                   # Automated CI/CD Pipelines
 │   ├── firmware-ci.yml             # Firmware linting & logic tests
 │   ├── backend-ci.yml              # Pytest & backend container validation
 │   └── frontend-ci.yml             # React dashboard build verification
 │
+├── .github/                        # Pull request templates & community guidelines
 ├── docker-compose.yml              # Local dev stack (PostgreSQL/TimescaleDB, API, UI, Simulator)
 ├── .env.example
 ├── LICENSE                         # MIT License
