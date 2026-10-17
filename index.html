@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SoilGuard — Real-Time Soil Intelligence Console</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.2); opacity: 0.3; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+    .beacon-glow {
+      animation: pulse-ring 2s infinite ease-in-out;
+    }
+    .tab-active {
+      background: var(--card);
+      color: var(--foreground);
+      border-color: var(--border);
+    }
+  </style>
+</head>
+<body class="bg-[var(--background)] text-[var(--foreground)] antialiased min-h-screen p-3 sm:p-5 font-sans selection:bg-emerald-500 selection:text-white">
+  <div class="max-w-7xl mx-auto space-y-4">
+
+    <!-- Top Navigation & System Health Bar -->
+    <header class="bg-[var(--card)] border border-[var(--border)] rounded-2xl px-5 py-3.5 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-500 flex items-center justify-center text-xl font-black">
+          🌱
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-lg font-black tracking-tight text-[var(--foreground)]">SoilGuard SIS</h1>
+            <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-500 border border-emerald-500/30">
+              LIVE CONSOLE
+            </span>
+          </div>
+          <p class="text-xs text-[var(--muted-foreground)]">Soil Intelligence System — Edge Sentry & Field Telemetry</p>
+        </div>
+      </div>
+
+      <!-- Quick Descriptive System Keys -->
+      <div class="flex flex-wrap items-center gap-2 text-xs">
+        <div class="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span class="text-[var(--muted-foreground)]">NODE:</span>
+          <strong class="text-[var(--foreground)] font-mono">SG-NODE-001</strong>
+        </div>
+
+        <div class="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+          <span class="text-[var(--muted-foreground)]">BATT:</span>
+          <strong id="header-batt" class="text-emerald-500 font-mono">4.10V (Solar OK)</strong>
+        </div>
+
+        <div class="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+          <span class="text-[var(--muted-foreground)]">SIGNAL:</span>
+          <strong class="text-sky-500 font-mono">CSQ 24/31</strong>
+        </div>
+
+        <!-- Simulation Stream Toggle -->
+        <button id="btn-stream" onclick="toggleAutoStream()" class="px-3.5 py-1.5 rounded-xl font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition-all shadow-sm flex items-center gap-1.5 ml-1">
+          <span id="stream-icon">▶</span>
+          <span id="stream-text">Live Ticker</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Field & Crop Selector Ribbon -->
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-3.5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="font-bold text-[var(--muted-foreground)] uppercase tracking-wider">Active Field:</span>
+        <div class="inline-flex rounded-xl p-1 bg-[var(--background)] border border-[var(--border)] gap-1">
+          <button onclick="selectField('maize')" id="field-maize" class="field-btn px-3 py-1 rounded-lg font-bold transition-all bg-[var(--card)] text-[var(--foreground)] shadow-xs">
+            🌽 Amara Plot (Maize)
+          </button>
+          <button onclick="selectField('tomato')" id="field-tomato" class="field-btn px-3 py-1 rounded-lg font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-all">
+            🍅 Green Basin (Tomato)
+          </button>
+          <button onclick="selectField('rice')" id="field-rice" class="field-btn px-3 py-1 rounded-lg font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-all">
+            🌾 Polder 3 (Rice)
+          </button>
+          <button onclick="selectField('wheat')" id="field-wheat" class="field-btn px-3 py-1 rounded-lg font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-all">
+            🌾 Highland (Wheat)
+          </button>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-4 text-[var(--muted-foreground)]">
+        <div>Root Depth: <strong class="text-[var(--foreground)] font-mono">-20 cm</strong></div>
+        <div>Safe EC Threshold: <strong id="lbl-threshold" class="text-emerald-500 font-mono">1.70 dS/m</strong></div>
+        <div>Soil Moisture Band: <strong id="lbl-moist-band" class="text-[var(--foreground)] font-mono">22% – 38%</strong></div>
+      </div>
+    </div>
+
+    <!-- Descriptive Action Keys (High-Signal Status Banner) -->
+    <div id="status-ribbon" class="rounded-2xl p-4 border transition-all duration-300 grid grid-cols-2 sm:grid-cols-4 gap-3 shadow-sm bg-emerald-500/10 border-emerald-500/30">
+      <div>
+        <span class="text-xs font-bold uppercase tracking-wider text-[var(--muted-foreground)] block">Field Status</span>
+        <span id="key-status" class="text-sm font-black text-emerald-500 uppercase tracking-tight">OPTIMAL EQUILIBRIUM</span>
+      </div>
+
+      <div>
+        <span class="text-xs font-bold uppercase tracking-wider text-[var(--muted-foreground)] block">Irrigation Action</span>
+        <span id="key-action" class="text-sm font-black text-[var(--foreground)]">HOLD (Moisture In Target)</span>
+      </div>
+
+      <div>
+        <span class="text-xs font-bold uppercase tracking-wider text-[var(--muted-foreground)] block">Fertilizer Protocol</span>
+        <span id="key-fertilizer" class="text-sm font-black text-emerald-500">AUTHORIZED (Stage: Vegetative)</span>
+      </div>
+
+      <div>
+        <span class="text-xs font-bold uppercase tracking-wider text-[var(--muted-foreground)] block">Leaching Requirement</span>
+        <span id="key-leaching" class="text-sm font-black text-emerald-500 font-mono">0% (Baseline Safe)</span>
+      </div>
+    </div>
+
+    <!-- 4 Primary Metric Dials -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+      <!-- 1. Salinity EC -->
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm flex flex-col justify-between">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold uppercase tracking-wider text-[var(--muted-foreground)]">Soil Salinity ($\text{EC}_{25}$)</span>
+          <span id="pill-ec" class="text-xs font-black px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-500 border border-emerald-500/30">
+            IN SPEC
+          </span>
+        </div>
+        <div class="my-3 flex items-baseline gap-2">
+          <span id="metric-ec" class="text-3xl font-black text-[var(--foreground)] font-mono">1.35</span>
+          <span class="text-xs font-semibold text-[var(--muted-foreground)]">dS/m</span>
+        </div>
+        <div class="text-xs text-[var(--muted-foreground)] flex justify-between pt-2 border-t border-[var(--border)]">
+          <span>Tolerance: <strong id="limit-ec" class="text-[var(--foreground)] font-mono">&le; 1.70</strong></span>
+          <span>Comp: <strong class="text-[var(--foreground)] font-mono">25°C Base</strong></span>
+        </div>
+      </div>
+
+      <!-- 2. Soil Moisture -->
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm flex flex-col justify-between">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold uppercase tracking-wider text-[var(--muted-foreground)]">Volumetric Moisture</span>
+          <span id="pill-moist" class="text-xs font-black px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-500 border border-emerald-500/30">
+            OPTIMAL
+          </span>
+        </div>
+        <div class="my-3 flex items-baseline gap-2">
+          <span id="metric-moist" class="text-3xl font-black text-[var(--foreground)] font-mono">31.4</span>
+          <span class="text-xs font-semibold text-[var(--muted-foreground)]">% VWC</span>
+        </div>
+        <div class="text-xs text-[var(--muted-foreground)] flex justify-between pt-2 border-t border-[var(--border)]">
+          <span>Refill: <strong class="text-[var(--foreground)] font-mono">22%</strong></span>
+          <span>Capacity: <strong class="text-[var(--foreground)] font-mono">38%</strong></span>
+        </div>
+      </div>
+
+      <!-- 3. Soil Temperature -->
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm flex flex-col justify-between">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold uppercase tracking-wider text-[var(--muted-foreground)]">Root Temperature</span>
+          <span class="text-xs font-black px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-500 border border-emerald-500/30">
+            HEALTHY
+          </span>
+        </div>
+        <div class="my-3 flex items-baseline gap-2">
+          <span id="metric-temp" class="text-3xl font-black text-[var(--foreground)] font-mono">23.8</span>
+          <span class="text-xs font-semibold text-[var(--muted-foreground)]">°C</span>
+        </div>
+        <div class="text-xs text-[var(--muted-foreground)] flex justify-between pt-2 border-t border-[var(--border)]">
+          <span>Probe: <strong class="text-[var(--foreground)] font-mono">DS18B20 1-Wire</strong></span>
+          <span>Range: <strong class="text-[var(--foreground)] font-mono">18–32°C</strong></span>
+        </div>
+      </div>
+
+      <!-- 4. Leaching Extra Water -->
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm flex flex-col justify-between">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold uppercase tracking-wider text-[var(--muted-foreground)]">Leaching Water ($\text{LR}$)</span>
+          <span id="pill-lr" class="text-xs font-black px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-500 border border-emerald-500/30">
+            NO FLUSH
+          </span>
+        </div>
+        <div class="my-3 flex items-baseline gap-2">
+          <span id="metric-lr" class="text-3xl font-black text-[var(--foreground)] font-mono">+0%</span>
+          <span class="text-xs font-semibold text-[var(--muted-foreground)]">Extra Vol</span>
+        </div>
+        <div class="text-xs text-[var(--muted-foreground)] flex justify-between pt-2 border-t border-[var(--border)]">
+          <span>Irrigation EC: <strong class="text-[var(--foreground)] font-mono">0.60 dS/m</strong></span>
+          <span>FAO-56 Rule</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Workspace: Interactive Console (Tabs) + Right Sentry/SMS Sidebar -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+      <!-- LEFT & CENTER (2 Cols): Dynamic View Tabs -->
+      <div class="lg:col-span-2 space-y-4">
+
+        <!-- Navigation Tabs -->
+        <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-1.5 shadow-sm flex flex-wrap gap-1 text-xs font-bold">
+          <button onclick="switchTab('chart')" id="tab-btn-chart" class="tab-btn flex-1 py-2 px-3 rounded-xl transition-all tab-active shadow-xs">
+            📈 Live Telemetry Curve
+          </button>
+          <button onclick="switchTab('controls')" id="tab-btn-controls" class="tab-btn flex-1 py-2 px-3 rounded-xl text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-all">
+            🎛️ Probe Stress Simulator
+          </button>
+          <button onclick="switchTab('prescription')" id="tab-btn-prescription" class="tab-btn flex-1 py-2 px-3 rounded-xl text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-all">
+            📋 FAO Prescription Keys
+          </button>
+          <button onclick="switchTab('logs')" id="tab-btn-logs" class="tab-btn flex-1 py-2 px-3 rounded-xl text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-all">
+            🗄️ 15-Min Rolling Log
+          </button>
+        </div>
+
+        <!-- TAB 1: Live Curve Canvas -->
+        <div id="tab-content-chart" class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+            <div>
+              <h2 class="text-sm font-extrabold text-[var(--foreground)]">Real-Time Salinity vs Crop Tolerance Boundary</h2>
+              <p class="text-xs text-[var(--muted-foreground)]">Continuously plots normalized $\text{EC}_{25}$ against the crop safe line</p>
+            </div>
+            <!-- Quick Graph Range Filter -->
+            <div class="inline-flex rounded-xl p-0.5 bg-[var(--background)] border border-[var(--border)]">
+              <button onclick="setChartRange(8)" class="range-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-[var(--card)] text-[var(--foreground)]">8h</button>
+              <button onclick="setChartRange(16)" class="range-btn px-2.5 py-1 rounded-lg text-xs text-[var(--muted-foreground)] hover:text-[var(--foreground)]">16h</button>
+              <button onclick="setChartRange(24)" class="range-btn px-2.5 py-1 rounded-lg text-xs text-[var(--muted-foreground)] hover:text-[var(--foreground)]">24h</button>
+            </div>
+          </div>
+
+          <!-- Dynamic SVG Vector Chart -->
+          <div class="w-full bg-[var(--background)] rounded-xl p-3 border border-[var(--border)] overflow-hidden">
+            <svg id="svg-chart" viewBox="0 0 650 210" class="w-full h-auto overflow-visible"></svg>
+          </div>
+
+          <div class="flex items-center justify-between text-xs text-[var(--muted-foreground)] px-1">
+            <div class="flex items-center gap-3">
+              <span class="flex items-center gap-1.5"><span class="w-3 h-1 bg-emerald-500 rounded"></span> Actual Soil EC</span>
+              <span class="flex items-center gap-1.5"><span class="w-3 h-0.5 border-b-2 border-dashed border-rose-500"></span> Crop Threshold (<span id="svg-legend-limit">1.70</span> dS/m)</span>
+            </div>
+            <span class="font-mono">Updated Every 15 Min</span>
+          </div>
+        </div>
+
+        <!-- TAB 2: Probe Stress Simulator -->
+        <div id="tab-content-controls" class="hidden bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm space-y-4">
+          <div>
+            <h2 class="text-sm font-extrabold text-[var(--foreground)]">Field Sensor Vector Injector</h2>
+            <p class="text-xs text-[var(--muted-foreground)]">Simulate field condition shifts and observe the edge decision engine response</p>
+          </div>
+
+          <!-- Compact Dials -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-2">
+              <div class="flex justify-between items-center text-xs">
+                <span class="font-bold text-[var(--foreground)]">Raw EC Probe:</span>
+                <span id="slider-ec-val" class="font-mono font-bold text-emerald-500">1.35 dS/m</span>
+              </div>
+              <input type="range" id="input-ec" min="0.4" max="4.5" step="0.05" value="1.35" oninput="syncManualInputs()" class="w-full accent-emerald-500 cursor-pointer">
+              <div class="flex justify-between text-xs text-[var(--muted-foreground)]">
+                <span>0.4 (Fresh)</span>
+                <span>4.5 (Saline)</span>
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-2">
+              <div class="flex justify-between items-center text-xs">
+                <span class="font-bold text-[var(--foreground)]">Moisture Probe:</span>
+                <span id="slider-moist-val" class="font-mono font-bold text-sky-500">31.4%</span>
+              </div>
+              <input type="range" id="input-moist" min="10" max="50" step="0.5" value="31.4" oninput="syncManualInputs()" class="w-full accent-sky-500 cursor-pointer">
+              <div class="flex justify-between text-xs text-[var(--muted-foreground)]">
+                <span>10% (Dry)</span>
+                <span>50% (Sat)</span>
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-2">
+              <div class="flex justify-between items-center text-xs">
+                <span class="font-bold text-[var(--foreground)]">Soil Temp Probe:</span>
+                <span id="slider-temp-val" class="font-mono font-bold text-amber-500">23.8°C</span>
+              </div>
+              <input type="range" id="input-temp" min="15" max="38" step="0.5" value="23.8" oninput="syncManualInputs()" class="w-full accent-amber-500 cursor-pointer">
+              <div class="flex justify-between text-xs text-[var(--muted-foreground)]">
+                <span>15°C</span>
+                <span>38°C</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Stress Scenario Triggers -->
+          <div class="pt-2">
+            <span class="text-xs font-bold text-[var(--muted-foreground)] block mb-2">Preset Field Stress Scenarios:</span>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <button onclick="injectPreset(1.3, 31.0, 24.0)" class="p-2.5 rounded-xl text-xs font-bold bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 border border-emerald-500/30 transition-colors text-center">
+                🟢 Balanced Field
+              </button>
+              <button onclick="injectPreset(1.2, 17.0, 29.0)" class="p-2.5 rounded-xl text-xs font-bold bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 border border-amber-500/30 transition-colors text-center">
+                🟡 Drought Dry-Down
+              </button>
+              <button onclick="injectPreset(3.1, 28.0, 25.0)" class="p-2.5 rounded-xl text-xs font-bold bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 border border-rose-500/30 transition-colors text-center">
+                🔴 Salt Stress Spike
+              </button>
+              <button onclick="injectPreset(1.3, 45.0, 21.0)" class="p-2.5 rounded-xl text-xs font-bold bg-sky-500/10 hover:bg-sky-500/20 text-sky-500 border border-sky-500/30 transition-colors text-center">
+                🌊 Flood Saturation
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: FAO Agronomic Prescription Keys -->
+        <div id="tab-content-prescription" class="hidden bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm space-y-3 text-xs">
+          <div>
+            <h2 class="text-sm font-extrabold text-[var(--foreground)]">FAO-56 Agronomic Prescriptions & Formula Keys</h2>
+            <p class="text-xs text-[var(--muted-foreground)]">Mathematical evaluation computed by edge node</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="p-3 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-1.5">
+              <span class="text-[var(--muted-foreground)] font-bold">Standard Leaching Formula</span>
+              <p class="font-mono text-emerald-500 font-bold">LR = ECw / (5 &times; ECe - ECw)</p>
+              <p class="text-[var(--muted-foreground)] text-xs">Calculates the fraction of irrigation water needed to leach accumulated salts below the root zone.</p>
+            </div>
+
+            <div class="p-3 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-1.5">
+              <span class="text-[var(--muted-foreground)] font-bold">Temp Normalization Baseline</span>
+              <p class="font-mono text-emerald-500 font-bold">EC25 = ECraw / (1 + 0.02 &times; (T - 25))</p>
+              <p class="text-[var(--muted-foreground)] text-xs">Normalizes electrical conductivity readings across diurnal temperature swings.</p>
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-2">
+            <span class="text-[var(--muted-foreground)] font-bold block">Active Crop Agronomic Profile:</span>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+              <div>Crop: <strong id="desc-crop" class="text-[var(--foreground)]">Maize (Corn)</strong></div>
+              <div>Yield Decline Slope: <strong id="desc-slope" class="text-[var(--foreground)]">12.0% per dS/m</strong></div>
+              <div>Standard NPK Dose: <strong id="desc-npk" class="text-[var(--foreground)]">3.5 kg / 100m²</strong></div>
+              <div>Irrigation Water EC: <strong class="text-[var(--foreground)] font-mono">0.60 dS/m</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 4: 15-Minute Rolling Log Table -->
+        <div id="tab-content-logs" class="hidden bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm space-y-3">
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <h2 class="text-sm font-extrabold text-[var(--foreground)]">MicroSD Rolling Telemetry Stream</h2>
+              <p class="text-xs text-[var(--muted-foreground)]">Timestamped 15-minute cycles stored on SPI card and synced over cellular</p>
+            </div>
+            <button onclick="resetData()" class="px-2.5 py-1 rounded-lg border border-[var(--border)] text-xs text-[var(--muted-foreground)] hover:text-[var(--foreground)]">
+              Clear Buffer
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-[var(--background)] text-[var(--muted-foreground)] uppercase font-semibold border-b border-[var(--border)]">
+                <tr>
+                  <th class="py-2 px-2.5">Time</th>
+                  <th class="py-2 px-2.5">Raw EC</th>
+                  <th class="py-2 px-2.5">$\text{EC}_{25}$</th>
+                  <th class="py-2 px-2.5">Moist</th>
+                  <th class="py-2 px-2.5">Temp</th>
+                  <th class="py-2 px-2.5">Status Key</th>
+                  <th class="py-2 px-2.5">Action Key</th>
+                </tr>
+              </thead>
+              <tbody id="table-log-body" class="divide-y divide-[var(--border)] font-mono">
+                <!-- Dynamically generated rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN (1 Col): Visual Sentry, Cellular SMS Screen & Edge Health -->
+      <div class="space-y-4">
+
+        <!-- 1. Tri-Color Visual Sentry (RGB LED Beacon Emulation) -->
+        <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm flex flex-col justify-between">
+          <div class="flex items-center justify-between pb-2.5 border-b border-[var(--border)]">
+            <div>
+              <h2 class="text-xs font-black uppercase tracking-wider text-[var(--muted-foreground)]">Field Visual Sentry</h2>
+              <span class="text-xs text-[var(--muted-foreground)]">Hardware RGB Beacon</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <div id="beacon-light" class="w-4 h-4 rounded-full bg-emerald-500 beacon-glow ring-4 ring-emerald-500/30"></div>
+              <span id="beacon-label" class="text-xs font-black uppercase text-emerald-500">GREEN PULSE</span>
+            </div>
+          </div>
+
+          <div class="my-3 p-3 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-1">
+            <span id="beacon-headline" class="text-xs font-bold text-[var(--foreground)] block">Equilibrium Confirmed</span>
+            <p id="beacon-subtext" class="text-xs text-[var(--muted-foreground)] leading-snug">
+              Beacon pulses green every 10s. The farmer passing through the field sees immediately that salinity and moisture are safe.
+            </p>
+          </div>
+
+          <div class="text-xs text-[var(--muted-foreground)] flex items-center justify-between pt-2 border-t border-[var(--border)]">
+            <span>Visual Literacy:</span>
+            <span class="font-bold text-[var(--foreground)]">Zero-Text Iconography</span>
+          </div>
+        </div>
+
+        <!-- 2. Plain-Language Cellular SMS Terminal -->
+        <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm space-y-3">
+          <div class="flex items-center justify-between pb-2.5 border-b border-[var(--border)]">
+            <div>
+              <h2 class="text-xs font-black uppercase tracking-wider text-[var(--muted-foreground)]">Cellular SMS Terminal</h2>
+              <span class="text-xs text-[var(--muted-foreground)]">Farmer Feature Phone Interface</span>
+            </div>
+            <span class="text-xs font-bold px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-500 border border-emerald-500/30">
+              Nokia 105
+            </span>
+          </div>
+
+          <!-- Feature Phone Screen Card -->
+          <div class="bg-[var(--background)] p-3.5 rounded-xl border border-[var(--border)] space-y-2">
+            <div class="flex justify-between items-center text-xs text-[var(--muted-foreground)] border-b border-[var(--border)] pb-1 font-mono">
+              <span>RECIPIENT: +254 712 345 678</span>
+              <span id="sms-clock">18:40</span>
+            </div>
+            <p id="sms-content" class="text-xs font-medium text-[var(--foreground)] leading-relaxed font-sans">
+              SoilGuard: All soil metrics optimal (EC: 1.35 dS/m, Moisture: 31%). Safe window for standard fertilizer: 3.5 kg / 100m².
+            </p>
+          </div>
+
+          <div class="flex items-center justify-between text-xs text-[var(--muted-foreground)]">
+            <span>Encoding: <strong class="text-[var(--foreground)]">GSM 7-bit</strong></span>
+            <span>Characters: <strong id="sms-char-count" class="text-[var(--foreground)] font-mono">118 / 160</strong></span>
+          </div>
+        </div>
+
+        <!-- 3. Field Node Diagnostics Card -->
+        <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm space-y-2.5 text-xs">
+          <div class="flex items-center justify-between pb-2 border-b border-[var(--border)]">
+            <h2 class="text-xs font-black uppercase tracking-wider text-[var(--muted-foreground)]">Node Hardware Diagnostics</h2>
+            <span class="text-emerald-500 font-bold font-mono">ALL PASS</span>
+          </div>
+          <div class="space-y-1.5 text-[var(--muted-foreground)]">
+            <div class="flex justify-between">
+              <span>Firmware Version:</span>
+              <span class="text-[var(--foreground)] font-mono">v1.0.0 (MicroPython)</span>
+            </div>
+            <div class="flex justify-between">
+              <span>EC Probe ADC Channel:</span>
+              <span class="text-[var(--foreground)] font-mono">GPIO 34 (12-bit)</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Capacitive Sensor:</span>
+              <span class="text-[var(--foreground)] font-mono">GPIO 35 (Analog)</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Temp Probe Bus:</span>
+              <span class="text-[var(--foreground)] font-mono">GPIO 4 (1-Wire)</span>
+            </div>
+            <div class="flex justify-between">
+              <span>SPI MicroSD Storage:</span>
+              <span class="text-emerald-500 font-mono font-bold">Mounted (8GB)</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Clean Footer -->
+    <footer class="border-t border-[var(--border)] pt-4 text-center text-xs text-[var(--muted-foreground)]">
+      SoilGuard SIS — Precision Soil Salinity & Agronomic Advisory Platform · Competition Prototype 2026
+    </footer>
+
+  </div>
+
+  <script>
+    // --- Agronomic Database (FAO-56 Protocol) ---
+    const CROP_DATA = {
+      maize: { name: 'Maize (Corn)', threshold_ec: 1.70, slope: 12.0, min_moist: 22.0, max_moist: 38.0, standard_dose: '3.5 kg / 100m²' },
+      tomato: { name: 'Tomato', threshold_ec: 2.50, slope: 9.9, min_moist: 25.0, max_moist: 40.0, standard_dose: '2.8 kg / 100m²' },
+      rice: { name: 'Rice (Paddy)', threshold_ec: 3.00, slope: 12.0, min_moist: 35.0, max_moist: 55.0, standard_dose: '4.0 kg / 100m²' },
+      wheat: { name: 'Wheat', threshold_ec: 6.00, slope: 7.1, min_moist: 20.0, max_moist: 35.0, standard_dose: '3.0 kg / 100m²' }
+    };
+
+    let activeCrop = 'maize';
+    let chartRangePoints = 16;
+    let autoStreamTimer = null;
+    let telemetryStream = [];
+
+    // Initialize telemetry history
+    function initStream() {
+      telemetryStream = [];
+      const now = Date.now();
+      for (let i = 24; i >= 0; i--) {
+        const time = new Date(now - i * 900000);
+        const hour = time.getHours();
+        const base_ec = 1.30 + (24 - i) * 0.015 + (Math.random() * 0.04 - 0.02);
+        const temp = 22.0 + 6.0 * Math.sin((hour - 8) * Math.PI / 12);
+        const moist = 32.5 - (hour * 0.28) + (hour === 6 ? 10 : 0);
+        const ec_25 = base_ec / (1.0 + 0.02 * (temp - 25.0));
+
+        telemetryStream.push({
+          time: time,
+          raw_ec: Number(base_ec.toFixed(2)),
+          ec_25: Number(ec_25.toFixed(2)),
+          moist: Number(Math.max(16, moist).toFixed(1)),
+          temp: Number(temp.toFixed(1))
+        });
+      }
+      recalculateAndRender();
+    }
+
+    // Switch Field Preset
+    function selectField(cropKey) {
+      activeCrop = cropKey;
+      document.querySelectorAll('.field-btn').forEach(btn => {
+        btn.className = 'field-btn px-3 py-1 rounded-lg font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-all';
+      });
+      const activeBtn = document.getElementById(`field-${cropKey}`);
+      if (activeBtn) {
+        activeBtn.className = 'field-btn px-3 py-1 rounded-lg font-bold transition-all bg-[var(--card)] text-[var(--foreground)] shadow-xs';
+      }
+      recalculateAndRender();
+    }
+
+    // Tab Switching
+    function switchTab(tabId) {
+      ['chart', 'controls', 'prescription', 'logs'].forEach(t => {
+        document.getElementById(`tab-content-${t}`).classList.add('hidden');
+        document.getElementById(`tab-btn-${t}`).classList.remove('tab-active');
+        document.getElementById(`tab-btn-${t}`).classList.add('text-[var(--muted-foreground)]');
+      });
+      document.getElementById(`tab-content-${tabId}`).classList.remove('hidden');
+      document.getElementById(`tab-btn-${tabId}`).classList.add('tab-active');
+      document.getElementById(`tab-btn-${tabId}`).classList.remove('text-[var(--muted-foreground)]');
+    }
+
+    // Chart Range
+    function setChartRange(points) {
+      chartRangePoints = points;
+      document.querySelectorAll('.range-btn').forEach(btn => {
+        btn.className = 'range-btn px-2.5 py-1 rounded-lg text-xs text-[var(--muted-foreground)] hover:text-[var(--foreground)]';
+      });
+      if (event && event.target) {
+        event.target.className = 'range-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-[var(--card)] text-[var(--foreground)]';
+      }
+      renderChart();
+    }
+
+    // Sliders input sync
+    function syncManualInputs() {
+      const ec = parseFloat(document.getElementById('input-ec').value);
+      const moist = parseFloat(document.getElementById('input-moist').value);
+      const temp = parseFloat(document.getElementById('input-temp').value);
+
+      document.getElementById('slider-ec-val').textContent = `${ec.toFixed(2)} dS/m`;
+      document.getElementById('slider-moist-val').textContent = `${moist.toFixed(1)}%`;
+      document.getElementById('slider-temp-val').textContent = `${temp.toFixed(1)}°C`;
+
+      const factor = 1.0 + 0.02 * (temp - 25.0);
+      const ec_25 = ec / factor;
+
+      telemetryStream.push({
+        time: new Date(),
+        raw_ec: Number(ec.toFixed(2)),
+        ec_25: Number(ec_25.toFixed(2)),
+        moist: Number(moist.toFixed(1)),
+        temp: Number(temp.toFixed(1))
+      });
+
+      if (telemetryStream.length > 30) telemetryStream.shift();
+      recalculateAndRender();
+    }
+
+    function injectPreset(ec, moist, temp) {
+      document.getElementById('input-ec').value = ec;
+      document.getElementById('input-moist').value = moist;
+      document.getElementById('input-temp').value = temp;
+      syncManualInputs();
+    }
+
+    // Leaching requirement formula (FAO-56)
+    function computeLR(targetEc, waterEc = 0.6) {
+      const denom = (5.0 * targetEc) - waterEc;
+      if (denom <= 0) return 0.15;
+      const lr = waterEc / denom;
+      return Math.min(Math.max(lr, 0.05), 0.45);
+    }
+
+    // Recalculate State & Update All Descriptive Keys
+    function recalculateAndRender() {
+      const crop = CROP_DATA[activeCrop];
+      const latest = telemetryStream[telemetryStream.length - 1];
+      const ec_25 = latest.ec_25;
+      const moist = latest.moist;
+      const temp = latest.temp;
+
+      // Update header tags
+      document.getElementById('lbl-threshold').textContent = `${crop.threshold_ec.toFixed(2)} dS/m`;
+      document.getElementById('lbl-moist-band').textContent = `${crop.min_moist}% – ${crop.max_moist}%`;
+      document.getElementById('limit-ec').textContent = `≤ ${crop.threshold_ec.toFixed(2)}`;
+
+      // Update Metric Values
+      document.getElementById('metric-ec').textContent = ec_25.toFixed(2);
+      document.getElementById('metric-moist').textContent = moist.toFixed(1);
+      document.getElementById('metric-temp').textContent = temp.toFixed(1);
+
+      const is_saline = ec_25 > crop.threshold_ec;
+      const is_dry = moist < crop.min_moist;
+      const is_waterlogged = moist > crop.max_moist;
+
+      const lr = computeLR(crop.threshold_ec, 0.6);
+      const extraPercent = Math.round(lr * 100);
+
+      const statusRibbon = document.getElementById('status-ribbon');
+      const keyStatus = document.getElementById('key-status');
+      const keyAction = document.getElementById('key-action');
+      const keyFert = document.getElementById('key-fertilizer');
+      const keyLeach = document.getElementById('key-leaching');
+
+      const pillEc = document.getElementById('pill-ec');
+      const pillMoist = document.getElementById('pill-moist');
+      const pillLr = document.getElementById('pill-lr');
+
+      const beaconLight = document.getElementById('beacon-light');
+      const beaconLabel = document.getElementById('beacon-label');
+      const beaconHead = document.getElementById('beacon-headline');
+      const beaconSub = document.getElementById('beacon-subtext');
+
+      const smsText = document.getElementById('sms-content');
+      let smsString = '';
+
+      if (is_saline) {
+        // --- CRITICAL SALINITY STATE ---
+        statusRibbon.className = 'rounded-2xl p-4 border transition-all duration-300 grid grid-cols-2 sm:grid-cols-4 gap-3 shadow-sm bg-rose-500/15 border-rose-500/40 animate-pulse';
+        keyStatus.className = 'text-sm font-black text-rose-500 uppercase tracking-tight';
+        keyStatus.textContent = 'CRITICAL SALINITY FLUSH';
+
+        keyAction.className = 'text-sm font-black text-rose-400';
+        keyAction.textContent = `FLUSH ROOT ZONE (+${extraPercent}%)`;
+
+        keyFert.className = 'text-sm font-black text-rose-500';
+        keyFert.textContent = 'LOCKED (Halt Application)';
+
+        keyLeach.className = 'text-sm font-black text-amber-500 font-mono';
+        keyLeach.textContent = `+${extraPercent}% Extra Water`;
+
+        document.getElementById('metric-lr').textContent = `+${extraPercent}%`;
+        pillEc.textContent = 'EXCEEDED';
+        pillEc.className = 'text-xs font-black px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-500 border border-rose-500/40';
+
+        pillLr.textContent = 'ACTIVE FLUSH';
+        pillLr.className = 'text-xs font-black px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-500 border border-amber-500/40';
+
+        beaconLight.className = 'w-4 h-4 rounded-full bg-rose-500 beacon-glow ring-4 ring-rose-500/40';
+        beaconLabel.className = 'text-xs font-black uppercase text-rose-500';
+        beaconLabel.textContent = 'RED PULSE';
+        beaconHead.textContent = 'Critical Salinity Warning';
+        beaconSub.textContent = 'Red beacon flashes urgently. The farmer stops fertilizer immediately and applies extra flush water to drive salts below roots.';
+
+        smsString = `SoilGuard CRITICAL: High salt in ${crop.name} (${ec_25} dS/m > ${crop.threshold_ec}). Hold fertilizer! Flush root zone with ${extraPercent}% extra irrigation water.`;
+      } else if (is_dry) {
+        // --- DRY SOIL STATE ---
+        statusRibbon.className = 'rounded-2xl p-4 border transition-all duration-300 grid grid-cols-2 sm:grid-cols-4 gap-3 shadow-sm bg-amber-500/15 border-amber-500/40';
+        keyStatus.className = 'text-sm font-black text-amber-500 uppercase tracking-tight';
+        keyStatus.textContent = 'IRRIGATION DUE';
+
+        keyAction.className = 'text-sm font-black text-amber-400';
+        keyAction.textContent = 'WATER FIELD (Normal Cycle)';
+
+        keyFert.className = 'text-sm font-black text-emerald-500';
+        keyFert.textContent = 'READY (Safe Window)';
+
+        keyLeach.className = 'text-sm font-black text-emerald-500 font-mono';
+        keyLeach.textContent = '0% (Safe Buffer)';
+
+        document.getElementById('metric-lr').textContent = '+0%';
+        pillEc.textContent = 'IN SPEC';
+        pillEc.className = 'text-xs font-black px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-500 border border-emerald-500/30';
+
+        pillMoist.textContent = 'REFILL DUE';
+        pillMoist.className = 'text-xs font-black px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-500 border border-amber-500/40';
+
+        beaconLight.className = 'w-4 h-4 rounded-full bg-amber-500 beacon-glow ring-4 ring-amber-500/40';
+        beaconLabel.className = 'text-xs font-black uppercase text-amber-500';
+        beaconLabel.textContent = 'YELLOW PULSE';
+        beaconHead.textContent = 'Irrigation Due';
+        beaconSub.textContent = 'Yellow beacon signals that soil water is depleting below refill point. Standard irrigation should be initiated.';
+
+        smsString = `SoilGuard: Soil moisture is low (${moist}%). Salinity is safe (${ec_25} dS/m). Run standard irrigation today. Fertilizer dosage OK: ${crop.standard_dose}.`;
+      } else if (is_waterlogged) {
+        // --- WATERLOGGED STATE ---
+        statusRibbon.className = 'rounded-2xl p-4 border transition-all duration-300 grid grid-cols-2 sm:grid-cols-4 gap-3 shadow-sm bg-sky-500/15 border-sky-500/40';
+        keyStatus.className = 'text-sm font-black text-sky-500 uppercase tracking-tight';
+        keyStatus.textContent = 'WATERLOGGED';
+
+        keyAction.className = 'text-sm font-black text-sky-400';
+        keyAction.textContent = 'PAUSE IRRIGATION (Hypoxia Risk)';
+
+        keyFert.className = 'text-sm font-black text-amber-500';
+        keyFert.textContent = 'LOCKED (Runoff Risk)';
+
+        keyLeach.className = 'text-sm font-black text-emerald-500 font-mono';
+        keyLeach.textContent = '0% (Field Saturated)';
+
+        document.getElementById('metric-lr').textContent = '+0%';
+        pillMoist.textContent = 'SATURATED';
+        pillMoist.className = 'text-xs font-black px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-500 border border-sky-500/40';
+
+        beaconLight.className = 'w-4 h-4 rounded-full bg-amber-500 beacon-glow ring-4 ring-amber-500/40';
+        beaconLabel.className = 'text-xs font-black uppercase text-amber-500';
+        beaconLabel.textContent = 'YELLOW PULSE';
+        beaconHead.textContent = 'Waterlogging Saturation';
+        beaconSub.textContent = 'Yellow beacon alerts farmer that soil is saturated. Pause water to protect root aeration and prevent chemical runoff.';
+
+        smsString = `SoilGuard Caution: Soil saturated (${moist}%). Pause watering to prevent root hypoxia. Hold fertilizer to stop runoff.`;
+      } else {
+        // --- OPTIMAL EQUILIBRIUM ---
+        statusRibbon.className = 'rounded-2xl p-4 border transition-all duration-300 grid grid-cols-2 sm:grid-cols-4 gap-3 shadow-sm bg-emerald-500/10 border-emerald-500/30';
+        keyStatus.className = 'text-sm font-black text-emerald-500 uppercase tracking-tight';
+        keyStatus.textContent = 'OPTIMAL EQUILIBRIUM';
+
+        keyAction.className = 'text-sm font-black text-[var(--foreground)]';
+        keyAction.textContent = 'HOLD (In Target)';
+
+        keyFert.className = 'text-sm font-black text-emerald-500';
+        keyFert.textContent = 'AUTHORIZED (Standard Dose)';
+
+        keyLeach.className = 'text-sm font-black text-emerald-500 font-mono';
+        keyLeach.textContent = '0% (Buffer Safe)';
+
+        document.getElementById('metric-lr').textContent = '+0%';
+        pillEc.textContent = 'IN SPEC';
+        pillEc.className = 'text-xs font-black px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-500 border border-emerald-500/30';
+
+        pillMoist.textContent = 'OPTIMAL';
+        pillMoist.className = 'text-xs font-black px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-500 border border-emerald-500/30';
+
+        pillLr.textContent = 'NO FLUSH';
+        pillLr.className = 'text-xs font-black px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-500 border border-emerald-500/30';
+
+        beaconLight.className = 'w-4 h-4 rounded-full bg-emerald-500 beacon-glow ring-4 ring-emerald-500/30';
+        beaconLabel.className = 'text-xs font-black uppercase text-emerald-500';
+        beaconLabel.textContent = 'GREEN PULSE';
+        beaconHead.textContent = 'Equilibrium Confirmed';
+        beaconSub.textContent = 'Beacon pulses green every 10s. The farmer passing through the field sees immediately that salinity and moisture are safe.';
+
+        smsString = `SoilGuard: All soil metrics optimal (EC: ${ec_25} dS/m, Moisture: ${moist}%). Safe window for standard fertilizer: ${crop.standard_dose}.`;
+      }
+
+      // Update SMS Terminal
+      smsText.textContent = smsString;
+      document.getElementById('sms-char-count').textContent = `${smsString.length} / 160`;
+      document.getElementById('sms-clock').textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      // Update Prescription tab
+      document.getElementById('desc-crop').textContent = crop.name;
+      document.getElementById('desc-slope').textContent = `${crop.slope.toFixed(1)}% per dS/m`;
+      document.getElementById('desc-npk').textContent = crop.standard_dose;
+
+      renderChart();
+      renderLogsTable();
+    }
+
+    // Render Dynamic SVG Vector Chart
+    function renderChart() {
+      const svg = document.getElementById('svg-chart');
+      const crop = CROP_DATA[activeCrop];
+      const threshold = crop.threshold_ec;
+      document.getElementById('svg-legend-limit').textContent = threshold.toFixed(2);
+
+      const data = telemetryStream.slice(-chartRangePoints);
+      const width = 650;
+      const height = 210;
+      const padL = 40;
+      const padR = 20;
+      const padT = 20;
+      const padB = 30;
+
+      const chartW = width - padL - padR;
+      const chartH = height - padT - padB;
+
+      const values = data.map(d => d.ec_25);
+      const minVal = Math.max(0, Math.min(...values, threshold) - 0.3);
+      const maxVal = Math.max(...values, threshold) + 0.5;
+      const range = (maxVal - minVal) || 1;
+
+      const getX = (i) => padL + (i / (data.length - 1 || 1)) * chartW;
+      const getY = (v) => padT + chartH - ((v - minVal) / range) * chartH;
+
+      const threshY = getY(threshold);
+      const pts = data.map((d, i) => `${getX(i)},${getY(d.ec_25)}`).join(' ');
+
+      let markup = '';
+
+      // Grid Lines
+      [0, 0.33, 0.66, 1].forEach(ratio => {
+        const v = minVal + ratio * range;
+        const y = padT + chartH - ratio * chartH;
+        markup += `
+          <line x1="${padL}" y1="${y}" x2="${width - padR}" y2="${y}" stroke="currentColor" stroke-dasharray="3 3" opacity="0.12" />
+          <text x="${padL - 8}" y="${y + 3.5}" text-anchor="end" fill="currentColor" opacity="0.5" font-size="10" font-family="monospace">${v.toFixed(1)}</text>
+        `;
+      });
+
+      // Threshold line
+      markup += `
+        <line x1="${padL}" y1="${threshY}" x2="${width - padR}" y2="${threshY}" stroke="#f43f5e" stroke-width="1.8" stroke-dasharray="5 4" />
+      `;
+
+      // Area fill
+      markup += `
+        <polygon points="${padL},${padT + chartH} ${pts} ${width - padR},${padT + chartH}" fill="#10b981" fill-opacity="0.12" />
+      `;
+
+      // Polyline curve
+      markup += `
+        <polyline fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" points="${pts}" />
+      `;
+
+      // Active Points
+      data.forEach((d, i) => {
+        const cx = getX(i);
+        const cy = getY(d.ec_25);
+        const isHot = d.ec_25 > threshold;
+        const isLatest = i === data.length - 1;
+        markup += `
+          <circle cx="${cx}" cy="${cy}" r="${isLatest ? 5.5 : 3}" fill="${isHot ? '#f43f5e' : '#10b981'}" stroke="#0f172a" stroke-width="1.5" />
+        `;
+      });
+
+      svg.innerHTML = markup;
+    }
+
+    // Render 15-Minute Logs Table
+    function renderLogsTable() {
+      const tbody = document.getElementById('table-log-body');
+      const crop = CROP_DATA[activeCrop];
+      const rows = [...telemetryStream].reverse().slice(0, 8);
+      let html = '';
+
+      rows.forEach(r => {
+        const timeStr = r.time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const isSaline = r.ec_25 > crop.threshold_ec;
+        const statusKey = isSaline ? 'CRITICAL' : (r.moist < crop.min_moist ? 'IRRIGATE' : 'OPTIMAL');
+        const actionKey = isSaline ? 'FLUSH_SALTS' : (r.moist < crop.min_moist ? 'WATER_FIELD' : 'NONE');
+        const badgeClass = isSaline ? 'text-rose-500 bg-rose-500/15' : (r.moist < crop.min_moist ? 'text-amber-500 bg-amber-500/15' : 'text-emerald-500 bg-emerald-500/15');
+
+        html += `
+          <tr class="hover:bg-[var(--background)] transition-colors">
+            <td class="py-2 px-2.5 font-sans text-[var(--muted-foreground)]">${timeStr}</td>
+            <td class="py-2 px-2.5">${r.raw_ec.toFixed(2)}</td>
+            <td class="py-2 px-2.5 font-bold ${isSaline ? 'text-rose-500' : 'text-emerald-500'}">${r.ec_25.toFixed(2)}</td>
+            <td class="py-2 px-2.5">${r.moist.toFixed(1)}%</td>
+            <td class="py-2 px-2.5">${r.temp.toFixed(1)}°C</td>
+            <td class="py-2 px-2.5 font-sans"><span class="px-2 py-0.5 rounded font-bold text-[11px] ${badgeClass}">${statusKey}</span></td>
+            <td class="py-2 px-2.5 font-sans text-[var(--muted-foreground)]">${actionKey}</td>
+          </tr>
+        `;
+      });
+
+      tbody.innerHTML = html;
+    }
+
+    function resetData() {
+      initStream();
+    }
+
+    // Auto Simulation Ticker
+    let simHour = 8;
+    let simDay = 1;
+    function toggleAutoStream() {
+      const btn = document.getElementById('btn-stream');
+      const icon = document.getElementById('stream-icon');
+      const text = document.getElementById('stream-text');
+
+      if (autoStreamTimer) {
+        clearInterval(autoStreamTimer);
+        autoStreamTimer = null;
+        icon.textContent = '▶';
+        text.textContent = 'Live Ticker';
+        btn.className = 'px-3.5 py-1.5 rounded-xl font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition-all shadow-sm flex items-center gap-1.5 ml-1';
+      } else {
+        icon.textContent = '⏸';
+        text.textContent = 'Pause Ticker';
+        btn.className = 'px-3.5 py-1.5 rounded-xl font-bold bg-amber-600 hover:bg-amber-500 text-white transition-all shadow-sm flex items-center gap-1.5 ml-1';
+
+        autoStreamTimer = setInterval(() => {
+          simHour = (simHour + 1) % 24;
+          if (simHour === 0) simDay++;
+
+          const temp = 22.0 + 7.0 * Math.sin((simHour - 8) * Math.PI / 12) + (Math.random() * 0.4 - 0.2);
+          let moist = 33.0 - (simHour * 0.32);
+          if (simHour === 6) moist += 12.0;
+          moist = Math.max(16, Math.min(moist + (Math.random() * 0.4 - 0.2), 48.0));
+
+          const raw_ec = 1.28 + (simDay * 0.04) + (Math.random() * 0.04 - 0.02);
+
+          document.getElementById('input-ec').value = raw_ec.toFixed(2);
+          document.getElementById('input-moist').value = moist.toFixed(1);
+          document.getElementById('input-temp').value = temp.toFixed(1);
+
+          document.getElementById('slider-ec-val').textContent = `${raw_ec.toFixed(2)} dS/m`;
+          document.getElementById('slider-moist-val').textContent = `${moist.toFixed(1)}%`;
+          document.getElementById('slider-temp-val').textContent = `${temp.toFixed(1)}°C`;
+
+          const factor = 1.0 + 0.02 * (temp - 25.0);
+          const ec_25 = raw_ec / factor;
+
+          telemetryStream.push({
+            time: new Date(),
+            raw_ec: Number(raw_ec.toFixed(2)),
+            ec_25: Number(ec_25.toFixed(2)),
+            moist: Number(moist.toFixed(1)),
+            temp: Number(temp.toFixed(1))
+          });
+
+          if (telemetryStream.length > 30) telemetryStream.shift();
+          recalculateAndRender();
+        }, 1400);
+      }
+    }
+
+    // Startup
+    window.addEventListener('DOMContentLoaded', initStream);
+  </script>
+</body>
+</html>
