@@ -1,0 +1,1673 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "SoilGuard Cloud Platform",
+    "description": "Industrial-grade Cloud Platform & Agronomic Advisory Engine for SoilGuard (SIS)",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/v1/ingest/telemetry": {
+      "post": {
+        "tags": [
+          "Edge Ingest"
+        ],
+        "summary": "Ingest Telemetry",
+        "description": "Ingests 15-minute telemetry from ESP32 edge node.",
+        "operationId": "ingest_telemetry_api_v1_ingest_telemetry_post",
+        "parameters": [
+          {
+            "name": "x-device-psk",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Device-Psk"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TelemetryIngest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/farms/": {
+      "get": {
+        "tags": [
+          "Farms"
+        ],
+        "summary": "List Farms",
+        "description": "List all registered farms",
+        "operationId": "list_farms_api_v1_farms__get",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "title": "Skip"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FarmOut"
+                  },
+                  "title": "Response List Farms Api V1 Farms  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Farms"
+        ],
+        "summary": "Create Farm",
+        "description": "Register a new pilot farm",
+        "operationId": "create_farm_api_v1_farms__post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FarmCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FarmOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/farms/{farm_id}": {
+      "get": {
+        "tags": [
+          "Farms"
+        ],
+        "summary": "Get Farm",
+        "description": "Get single farm details",
+        "operationId": "get_farm_api_v1_farms__farm_id__get",
+        "parameters": [
+          {
+            "name": "farm_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Farm Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FarmOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Farms"
+        ],
+        "summary": "Update Farm",
+        "description": "Update farm parameters",
+        "operationId": "update_farm_api_v1_farms__farm_id__put",
+        "parameters": [
+          {
+            "name": "farm_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Farm Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FarmUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FarmOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Farms"
+        ],
+        "summary": "Delete Farm",
+        "description": "Remove a farm",
+        "operationId": "delete_farm_api_v1_farms__farm_id__delete",
+        "parameters": [
+          {
+            "name": "farm_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Farm Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/nodes/": {
+      "get": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "List Nodes",
+        "description": "List all deployed edge nodes",
+        "operationId": "list_nodes_api_v1_nodes__get",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "title": "Skip"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NodeOut"
+                  },
+                  "title": "Response List Nodes Api V1 Nodes  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Register Node",
+        "description": "Register an edge node",
+        "operationId": "register_node_api_v1_nodes__post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NodeCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NodeOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/nodes/{device_id}": {
+      "get": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Get Node",
+        "description": "Query single node status",
+        "operationId": "get_node_api_v1_nodes__device_id__get",
+        "parameters": [
+          {
+            "name": "device_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Device Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NodeOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/nodes/{device_id}/assign/{farm_id}": {
+      "put": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Assign Node To Farm",
+        "description": "Links an edge node to a specific farm",
+        "operationId": "assign_node_to_farm_api_v1_nodes__device_id__assign__farm_id__put",
+        "parameters": [
+          {
+            "name": "device_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Device Id"
+            }
+          },
+          {
+            "name": "farm_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Farm Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NodeOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/telemetry/": {
+      "get": {
+        "tags": [
+          "Telemetry"
+        ],
+        "summary": "Query Telemetry",
+        "description": "Returns time-series telemetry records ordered by timestamp descending.",
+        "operationId": "query_telemetry_api_v1_telemetry__get",
+        "parameters": [
+          {
+            "name": "device_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Device Id"
+            }
+          },
+          {
+            "name": "farm_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Farm Id"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 1000,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TelemetryOut"
+                  },
+                  "title": "Response Query Telemetry Api V1 Telemetry  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/telemetry/summary/{device_id}": {
+      "get": {
+        "tags": [
+          "Telemetry"
+        ],
+        "summary": "Get Node Telemetry Summary",
+        "description": "Computes quick real-time status summary for a specific edge node.",
+        "operationId": "get_node_telemetry_summary_api_v1_telemetry_summary__device_id__get",
+        "parameters": [
+          {
+            "name": "device_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Device Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TelemetrySummary"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/advisory/evaluate": {
+      "post": {
+        "tags": [
+          "Advisory"
+        ],
+        "summary": "Evaluate Soil Metrics",
+        "description": "Simulates or verifies FAO-56 decision evaluation for an arbitrary field vector.",
+        "operationId": "evaluate_soil_metrics_api_v1_advisory_evaluate_post",
+        "parameters": [
+          {
+            "name": "crop_name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Crop Name"
+            }
+          },
+          {
+            "name": "raw_ec",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "title": "Raw Ec"
+            }
+          },
+          {
+            "name": "temp_c",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "title": "Temp C"
+            }
+          },
+          {
+            "name": "moisture_vwc",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "title": "Moisture Vwc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdvisoryOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/advisory/leaching": {
+      "post": {
+        "tags": [
+          "Advisory"
+        ],
+        "summary": "Calculate Leaching",
+        "description": "Computes standard FAO-56 Leaching Requirement (LR):\nLR = ECw / (5 * ECe - ECw)",
+        "operationId": "calculate_leaching_api_v1_advisory_leaching_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LeachingRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeachingResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/advisory/alerts": {
+      "get": {
+        "tags": [
+          "Advisory"
+        ],
+        "summary": "List Alerts",
+        "description": "Query historical critical alerts and SMS dispatch records.",
+        "operationId": "list_alerts_api_v1_advisory_alerts_get",
+        "parameters": [
+          {
+            "name": "device_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Device Id"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AlertOut"
+                  },
+                  "title": "Response List Alerts Api V1 Advisory Alerts Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": [
+          "System"
+        ],
+        "summary": "Health Check",
+        "description": "Service health probe",
+        "operationId": "health_check_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "tags": [
+          "System"
+        ],
+        "summary": "Root",
+        "description": "Platform root information and documentation link",
+        "operationId": "root__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AdvisoryOut": {
+        "properties": {
+          "crop_name": {
+            "type": "string",
+            "title": "Crop Name"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "action": {
+            "type": "string",
+            "title": "Action"
+          },
+          "allow_fertilizer": {
+            "type": "boolean",
+            "title": "Allow Fertilizer"
+          },
+          "normalized_ec_25": {
+            "type": "number",
+            "title": "Normalized Ec 25"
+          },
+          "threshold_ec": {
+            "type": "number",
+            "title": "Threshold Ec"
+          },
+          "leaching_fraction": {
+            "type": "number",
+            "title": "Leaching Fraction"
+          },
+          "extra_water_percent": {
+            "type": "integer",
+            "title": "Extra Water Percent"
+          },
+          "projected_yield_loss_percent": {
+            "type": "number",
+            "title": "Projected Yield Loss Percent"
+          },
+          "fertilizer_guidance": {
+            "type": "string",
+            "title": "Fertilizer Guidance"
+          },
+          "advisory_message": {
+            "type": "string",
+            "title": "Advisory Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "crop_name",
+          "status",
+          "action",
+          "allow_fertilizer",
+          "normalized_ec_25",
+          "threshold_ec",
+          "leaching_fraction",
+          "extra_water_percent",
+          "projected_yield_loss_percent",
+          "fertilizer_guidance",
+          "advisory_message"
+        ],
+        "title": "AdvisoryOut"
+      },
+      "AlertOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "device_id": {
+            "type": "string",
+            "title": "Device Id"
+          },
+          "farm_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Farm Id"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Timestamp"
+          },
+          "alert_level": {
+            "type": "string",
+            "title": "Alert Level"
+          },
+          "action": {
+            "type": "string",
+            "title": "Action"
+          },
+          "salinity_ec_25": {
+            "type": "number",
+            "title": "Salinity Ec 25"
+          },
+          "moisture_vwc": {
+            "type": "number",
+            "title": "Moisture Vwc"
+          },
+          "sms_recipient": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sms Recipient"
+          },
+          "sms_content": {
+            "type": "string",
+            "title": "Sms Content"
+          },
+          "sms_dispatched": {
+            "type": "boolean",
+            "title": "Sms Dispatched"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "device_id",
+          "farm_id",
+          "timestamp",
+          "alert_level",
+          "action",
+          "salinity_ec_25",
+          "moisture_vwc",
+          "sms_recipient",
+          "sms_content",
+          "sms_dispatched"
+        ],
+        "title": "AlertOut"
+      },
+      "FarmCreate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "farmer_name": {
+            "type": "string",
+            "title": "Farmer Name"
+          },
+          "farmer_phone": {
+            "type": "string",
+            "title": "Farmer Phone"
+          },
+          "district": {
+            "type": "string",
+            "title": "District",
+            "default": "Central"
+          },
+          "crop_type": {
+            "type": "string",
+            "title": "Crop Type",
+            "default": "maize"
+          },
+          "hectares": {
+            "type": "number",
+            "title": "Hectares",
+            "default": 1.5
+          },
+          "latitude": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latitude"
+          },
+          "longitude": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Longitude"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "farmer_name",
+          "farmer_phone"
+        ],
+        "title": "FarmCreate"
+      },
+      "FarmOut": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "farmer_name": {
+            "type": "string",
+            "title": "Farmer Name"
+          },
+          "farmer_phone": {
+            "type": "string",
+            "title": "Farmer Phone"
+          },
+          "district": {
+            "type": "string",
+            "title": "District",
+            "default": "Central"
+          },
+          "crop_type": {
+            "type": "string",
+            "title": "Crop Type",
+            "default": "maize"
+          },
+          "hectares": {
+            "type": "number",
+            "title": "Hectares",
+            "default": 1.5
+          },
+          "latitude": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latitude"
+          },
+          "longitude": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Longitude"
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "farmer_name",
+          "farmer_phone",
+          "id",
+          "created_at"
+        ],
+        "title": "FarmOut"
+      },
+      "FarmUpdate": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "farmer_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Farmer Name"
+          },
+          "farmer_phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Farmer Phone"
+          },
+          "district": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "District"
+          },
+          "crop_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Crop Type"
+          },
+          "hectares": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hectares"
+          },
+          "latitude": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latitude"
+          },
+          "longitude": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Longitude"
+          }
+        },
+        "type": "object",
+        "title": "FarmUpdate"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "LeachingRequest": {
+        "properties": {
+          "crop_name": {
+            "type": "string",
+            "title": "Crop Name"
+          },
+          "soil_ec": {
+            "type": "number",
+            "title": "Soil Ec"
+          },
+          "irrigation_water_ec": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Irrigation Water Ec",
+            "default": 0.6
+          }
+        },
+        "type": "object",
+        "required": [
+          "crop_name",
+          "soil_ec"
+        ],
+        "title": "LeachingRequest"
+      },
+      "LeachingResponse": {
+        "properties": {
+          "crop_name": {
+            "type": "string",
+            "title": "Crop Name"
+          },
+          "safe_threshold_ec": {
+            "type": "number",
+            "title": "Safe Threshold Ec"
+          },
+          "irrigation_water_ec": {
+            "type": "number",
+            "title": "Irrigation Water Ec"
+          },
+          "leaching_requirement": {
+            "type": "number",
+            "title": "Leaching Requirement"
+          },
+          "extra_water_percent": {
+            "type": "integer",
+            "title": "Extra Water Percent"
+          },
+          "formula_reference": {
+            "type": "string",
+            "title": "Formula Reference",
+            "default": "FAO-56: LR = ECw / (5 * ECe - ECw)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "crop_name",
+          "safe_threshold_ec",
+          "irrigation_water_ec",
+          "leaching_requirement",
+          "extra_water_percent"
+        ],
+        "title": "LeachingResponse"
+      },
+      "NodeCreate": {
+        "properties": {
+          "device_id": {
+            "type": "string",
+            "title": "Device Id"
+          },
+          "firmware_version": {
+            "type": "string",
+            "title": "Firmware Version",
+            "default": "1.0.0"
+          },
+          "farm_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Farm Id"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "device_id"
+        ],
+        "title": "NodeCreate"
+      },
+      "NodeOut": {
+        "properties": {
+          "device_id": {
+            "type": "string",
+            "title": "Device Id"
+          },
+          "firmware_version": {
+            "type": "string",
+            "title": "Firmware Version",
+            "default": "1.0.0"
+          },
+          "farm_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Farm Id"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "default": true
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "battery_voltage": {
+            "type": "number",
+            "title": "Battery Voltage"
+          },
+          "last_seen": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Last Seen"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "device_id",
+          "id",
+          "battery_voltage",
+          "last_seen",
+          "created_at"
+        ],
+        "title": "NodeOut"
+      },
+      "TelemetryIngest": {
+        "properties": {
+          "device_id": {
+            "type": "string",
+            "title": "Device Id",
+            "example": "SG-NODE-001"
+          },
+          "timestamp": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Timestamp"
+          },
+          "crop_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Crop Name",
+            "default": "maize"
+          },
+          "soil_temp_c": {
+            "type": "number",
+            "title": "Soil Temp C",
+            "example": 24.5
+          },
+          "raw_ec": {
+            "type": "number",
+            "title": "Raw Ec",
+            "example": 1.45
+          },
+          "normalized_ec_25": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Normalized Ec 25"
+          },
+          "moisture_vwc": {
+            "type": "number",
+            "title": "Moisture Vwc",
+            "example": 32.0
+          },
+          "battery_voltage": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Battery Voltage",
+            "default": 4.0
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          },
+          "action": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Action"
+          },
+          "allow_fertilizer": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Allow Fertilizer"
+          },
+          "leaching_fraction": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Leaching Fraction"
+          }
+        },
+        "type": "object",
+        "required": [
+          "device_id",
+          "soil_temp_c",
+          "raw_ec",
+          "moisture_vwc"
+        ],
+        "title": "TelemetryIngest"
+      },
+      "TelemetryOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "device_id": {
+            "type": "string",
+            "title": "Device Id"
+          },
+          "farm_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Farm Id"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Timestamp"
+          },
+          "soil_temp_c": {
+            "type": "number",
+            "title": "Soil Temp C"
+          },
+          "raw_ec": {
+            "type": "number",
+            "title": "Raw Ec"
+          },
+          "normalized_ec_25": {
+            "type": "number",
+            "title": "Normalized Ec 25"
+          },
+          "moisture_vwc": {
+            "type": "number",
+            "title": "Moisture Vwc"
+          },
+          "battery_voltage": {
+            "type": "number",
+            "title": "Battery Voltage"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "action": {
+            "type": "string",
+            "title": "Action"
+          },
+          "allow_fertilizer": {
+            "type": "boolean",
+            "title": "Allow Fertilizer"
+          },
+          "leaching_fraction": {
+            "type": "number",
+            "title": "Leaching Fraction"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "device_id",
+          "farm_id",
+          "timestamp",
+          "soil_temp_c",
+          "raw_ec",
+          "normalized_ec_25",
+          "moisture_vwc",
+          "battery_voltage",
+          "status",
+          "action",
+          "allow_fertilizer",
+          "leaching_fraction"
+        ],
+        "title": "TelemetryOut"
+      },
+      "TelemetrySummary": {
+        "properties": {
+          "total_records": {
+            "type": "integer",
+            "title": "Total Records"
+          },
+          "latest_ec_25": {
+            "type": "number",
+            "title": "Latest Ec 25"
+          },
+          "latest_moisture_vwc": {
+            "type": "number",
+            "title": "Latest Moisture Vwc"
+          },
+          "latest_soil_temp_c": {
+            "type": "number",
+            "title": "Latest Soil Temp C"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "action": {
+            "type": "string",
+            "title": "Action"
+          },
+          "allow_fertilizer": {
+            "type": "boolean",
+            "title": "Allow Fertilizer"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_records",
+          "latest_ec_25",
+          "latest_moisture_vwc",
+          "latest_soil_temp_c",
+          "status",
+          "action",
+          "allow_fertilizer"
+        ],
+        "title": "TelemetrySummary"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}
