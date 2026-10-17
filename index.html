@@ -2,11 +2,31 @@
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>SoilGuard — Real-Time Soil Intelligence & Agronomic Console</title>
   <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
   <style>
-    /* Technical Precision & Minimalist Palette */
+    /* Strict Box-Sizing & Viewport Containment to Prevent Any Overflows */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    html {
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+    body {
+      max-width: 100%;
+      overflow-x: hidden;
+      margin: 0;
+      padding: 0.6rem;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      transition: background-color 0.2s ease, color 0.2s ease;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Technical Minimalist Instrument Palette */
     :root, [data-theme="light"] {
       --bg: #f8fafc;
       --bg-surface: #ffffff;
@@ -75,19 +95,12 @@
       --chart-thresh: #f87171;
     }
 
-    body {
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      transition: background-color 0.2s ease, color 0.2s ease;
-      font-variant-numeric: tabular-nums;
-    }
-
     /* Minimalist Technical Tabs */
     .tab-btn {
       border-bottom: 2px solid transparent;
       color: var(--text-muted);
       transition: all 0.15s ease;
+      white-space: nowrap;
     }
     .tab-btn:hover {
       color: var(--text);
@@ -118,7 +131,23 @@
       box-shadow: 0 1px 2px rgba(0,0,0,0.2);
     }
 
-    /* Micro blinking hardware LED */
+    /* Compact scrollbars */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 2px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--border-strong);
+    }
+
+    /* LED blink */
     @keyframes blink {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.3; }
@@ -128,53 +157,54 @@
     }
   </style>
 </head>
-<body class="antialiased min-h-screen p-3 sm:p-6 text-sm">
+<body class="antialiased text-sm">
 
-  <div class="max-w-7xl mx-auto space-y-4">
+  <!-- Main Container: Constrained to 100% width, no horizontal spill -->
+  <div class="w-full max-w-7xl mx-auto space-y-2.5">
 
-    <!-- Top Instrumentation Bar & Minimalist Controls -->
-    <header class="bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg px-4 py-3 flex flex-col md:flex-row md:items-center justify-between gap-3">
-      <div class="flex items-center space-x-3">
-        <div class="w-8 h-8 rounded border border-[var(--border)] bg-[var(--bg-subtle)] flex items-center justify-center font-mono font-bold text-xs">
+    <!-- Top Instrumentation Bar & Theme Switcher -->
+    <header class="bg-[var(--bg-surface)] border border-[var(--border)] rounded-md px-3.5 py-2 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+      <div class="flex items-center space-x-2.5">
+        <div class="w-7 h-7 rounded border border-[var(--border)] bg-[var(--bg-subtle)] flex items-center justify-center font-mono font-bold text-xs shrink-0">
           SG
         </div>
         <div>
-          <div class="flex items-center gap-2">
-            <h1 class="text-sm font-bold tracking-tight uppercase">SoilGuard Console</h1>
-            <span class="text-[10px] font-mono px-1.5 py-0.2 rounded border border-[var(--border)] text-[var(--text-muted)]">
-              v1.3·PRECISION
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <h1 class="text-xs font-bold tracking-tight uppercase">SoilGuard Console</h1>
+            <span class="text-[9px] font-mono px-1 py-0.2 rounded border border-[var(--border)] text-[var(--text-muted)]">
+              v1.4·100% FIT
             </span>
           </div>
-          <p class="text-xs text-[var(--text-muted)]">Soil Intelligence & Agronomic Decision System</p>
+          <p class="text-[11px] text-[var(--text-muted)]">Real-Time Soil Salinity & Agronomic Decision System</p>
         </div>
       </div>
 
-      <!-- Quick Telemetry Chips & Theme Switcher -->
-      <div class="flex flex-wrap items-center gap-2 text-xs font-mono">
-        <div class="flex items-center gap-1.5 px-2.5 py-1 rounded border border-[var(--border)] bg-[var(--bg-subtle)]">
+      <!-- Quick Telemetry Chips & Controls -->
+      <div class="flex flex-wrap items-center gap-1.5 text-xs font-mono">
+        <div class="flex items-center gap-1 px-2 py-0.5 rounded border border-[var(--border)] bg-[var(--bg-subtle)]">
           <span class="w-1.5 h-1.5 rounded-full bg-[var(--c-green)] led-blink"></span>
           <span class="text-[var(--text-muted)]">NODE:</span>
           <span>SG-001</span>
         </div>
 
-        <div class="flex items-center gap-1.5 px-2.5 py-1 rounded border border-[var(--border)] bg-[var(--bg-subtle)]">
+        <div class="flex items-center gap-1 px-2 py-0.5 rounded border border-[var(--border)] bg-[var(--bg-subtle)]">
           <span class="text-[var(--text-muted)]">PWR:</span>
-          <span id="header-batt">4.18V · SOLAR</span>
+          <span id="header-batt">4.18V</span>
         </div>
 
-        <div class="flex items-center gap-1.5 px-2.5 py-1 rounded border border-[var(--border)] bg-[var(--bg-subtle)]">
+        <div class="flex items-center gap-1 px-2 py-0.5 rounded border border-[var(--border)] bg-[var(--bg-subtle)]">
           <span class="text-[var(--text-muted)]">CELL:</span>
           <span>CSQ 26/31</span>
         </div>
 
         <!-- 15m Ticker Button -->
-        <button id="btn-stream" onclick="toggleAutoStream()" class="px-2.5 py-1 rounded border border-[var(--border-strong)] bg-[var(--bg-subtle)] hover:bg-[var(--border)] transition-colors flex items-center gap-1 font-sans font-medium cursor-pointer">
+        <button id="btn-stream" onclick="toggleAutoStream()" class="px-2 py-0.5 rounded border border-[var(--border-strong)] bg-[var(--bg-subtle)] hover:bg-[var(--border)] transition-colors flex items-center gap-1 font-sans text-xs cursor-pointer">
           <span id="stream-icon">▶</span>
           <span id="stream-text">15m Ticker</span>
         </button>
 
-        <!-- LIGHT / DARK MODE TOGGLE (MINIMALIST) -->
-        <button id="theme-toggle-btn" onclick="toggleTheme()" class="px-2.5 py-1 rounded border border-[var(--border-strong)] bg-[var(--bg-subtle)] hover:bg-[var(--border)] transition-colors flex items-center gap-1.5 font-sans font-medium cursor-pointer" title="Toggle Light/Dark Mode">
+        <!-- Light / Dark Mode Toggle Button -->
+        <button id="theme-toggle-btn" onclick="toggleTheme()" class="px-2 py-0.5 rounded border border-[var(--border-strong)] bg-[var(--bg-subtle)] hover:bg-[var(--border)] transition-colors flex items-center gap-1 font-sans text-xs cursor-pointer" title="Toggle Light/Dark Theme">
           <span id="theme-icon">☼</span>
           <span id="theme-label">Light</span>
         </button>
@@ -182,42 +212,42 @@
     </header>
 
     <!-- Crop & Phenological Stage Configuration Ribbon -->
-    <div class="bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg p-3.5 space-y-3">
-      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 text-xs">
+    <div class="bg-[var(--bg-surface)] border border-[var(--border)] rounded-md p-2.5 space-y-2">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-2 text-xs">
         
         <!-- Crop Selector -->
-        <div class="flex flex-wrap items-center gap-2">
-          <span class="font-mono text-[var(--text-muted)] uppercase text-[11px]">Crop:</span>
+        <div class="flex flex-wrap items-center gap-1.5">
+          <span class="font-mono text-[var(--text-muted)] uppercase text-[10px]">Crop:</span>
           <div class="inline-flex rounded border border-[var(--border)] p-0.5 bg-[var(--bg-subtle)] gap-0.5">
-            <button onclick="selectField('maize')" id="field-maize" class="field-btn px-2.5 py-1 rounded font-medium text-xs bg-[var(--bg-surface)] text-[var(--text)] border border-[var(--border)]">
+            <button onclick="selectField('maize')" id="field-maize" class="field-btn px-2 py-0.5 rounded font-medium text-xs bg-[var(--bg-surface)] text-[var(--text)] border border-[var(--border)]">
               Maize (Corn)
             </button>
-            <button onclick="selectField('tomato')" id="field-tomato" class="field-btn px-2.5 py-1 rounded font-medium text-xs text-[var(--text-muted)] hover:text-[var(--text)]">
+            <button onclick="selectField('tomato')" id="field-tomato" class="field-btn px-2 py-0.5 rounded font-medium text-xs text-[var(--text-muted)] hover:text-[var(--text)]">
               Tomato
             </button>
-            <button onclick="selectField('rice')" id="field-rice" class="field-btn px-2.5 py-1 rounded font-medium text-xs text-[var(--text-muted)] hover:text-[var(--text)]">
+            <button onclick="selectField('rice')" id="field-rice" class="field-btn px-2 py-0.5 rounded font-medium text-xs text-[var(--text-muted)] hover:text-[var(--text)]">
               Rice (Paddy)
             </button>
-            <button onclick="selectField('wheat')" id="field-wheat" class="field-btn px-2.5 py-1 rounded font-medium text-xs text-[var(--text-muted)] hover:text-[var(--text)]">
+            <button onclick="selectField('wheat')" id="field-wheat" class="field-btn px-2 py-0.5 rounded font-medium text-xs text-[var(--text-muted)] hover:text-[var(--text)]">
               Wheat
             </button>
           </div>
         </div>
 
         <!-- Phenological Stage Selector -->
-        <div class="flex flex-wrap items-center gap-2">
-          <span class="font-mono text-[var(--text-muted)] uppercase text-[11px]">Growth Stage:</span>
+        <div class="flex flex-wrap items-center gap-1.5">
+          <span class="font-mono text-[var(--text-muted)] uppercase text-[10px]">Growth Stage:</span>
           <div class="inline-flex rounded border border-[var(--border)] p-0.5 bg-[var(--bg-subtle)] gap-0.5">
-            <button onclick="selectStage('germination')" id="stage-germination" class="stage-btn px-2 py-1 rounded text-xs font-medium text-[var(--text-muted)] hover:text-[var(--text)]">
+            <button onclick="selectStage('germination')" id="stage-germination" class="stage-btn px-2 py-0.5 rounded text-xs font-medium text-[var(--text-muted)] hover:text-[var(--text)]">
               1. Germination
             </button>
-            <button onclick="selectStage('vegetative')" id="stage-vegetative" class="stage-btn px-2 py-1 rounded text-xs font-medium bg-[var(--bg-surface)] text-[var(--text)] border border-[var(--border)]">
+            <button onclick="selectStage('vegetative')" id="stage-vegetative" class="stage-btn px-2 py-0.5 rounded text-xs font-medium bg-[var(--bg-surface)] text-[var(--text)] border border-[var(--border)]">
               2. Vegetative
             </button>
-            <button onclick="selectStage('flowering')" id="stage-flowering" class="stage-btn px-2 py-1 rounded text-xs font-medium text-[var(--text-muted)] hover:text-[var(--text)]">
-              3. Flowering / Fruit
+            <button onclick="selectStage('flowering')" id="stage-flowering" class="stage-btn px-2 py-0.5 rounded text-xs font-medium text-[var(--text-muted)] hover:text-[var(--text)]">
+              3. Flowering
             </button>
-            <button onclick="selectStage('maturity')" id="stage-maturity" class="stage-btn px-2 py-1 rounded text-xs font-medium text-[var(--text-muted)] hover:text-[var(--text)]">
+            <button onclick="selectStage('maturity')" id="stage-maturity" class="stage-btn px-2 py-0.5 rounded text-xs font-medium text-[var(--text-muted)] hover:text-[var(--text)]">
               4. Maturity
             </button>
           </div>
@@ -225,7 +255,7 @@
       </div>
 
       <!-- Live Agronomic Specifications Strip -->
-      <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-2 border-t border-[var(--border)] text-xs font-mono text-[var(--text-muted)]">
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-1.5 pt-1.5 border-t border-[var(--border)] text-[11px] font-mono text-[var(--text-muted)]">
         <div>Root Depth: <span id="lbl-root-depth" class="text-[var(--text)] font-semibold">-20 cm</span></div>
         <div>Safe EC Limit: <span id="lbl-threshold" class="text-[var(--text)] font-semibold">1.70 dS/m</span></div>
         <div>Moisture Band: <span id="lbl-moist-band" class="text-[var(--text)] font-semibold">22% – 38%</span></div>
@@ -235,219 +265,215 @@
     </div>
 
     <!-- Operational State Directive Banner -->
-    <div id="status-ribbon" class="rounded-lg p-3.5 border transition-colors grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[var(--bg-surface)] border-[var(--border)]">
-      <div>
-        <span class="text-[10px] font-mono uppercase text-[var(--text-muted)] block">Field Status</span>
-        <span id="key-status" class="text-xs font-bold uppercase tracking-tight text-[var(--c-green)]">OPTIMAL EQUILIBRIUM</span>
+    <div id="status-ribbon" class="rounded-md p-2.5 border transition-colors grid grid-cols-2 sm:grid-cols-4 gap-2 bg-[var(--bg-surface)] border-[var(--border)]">
+      <div class="min-w-0">
+        <span class="text-[9px] font-mono uppercase text-[var(--text-muted)] block truncate">Field Status</span>
+        <span id="key-status" class="text-xs font-bold uppercase tracking-tight text-[var(--c-green)] truncate block">OPTIMAL EQUILIBRIUM</span>
       </div>
 
-      <div>
-        <span class="text-[10px] font-mono uppercase text-[var(--text-muted)] block">Irrigation Action</span>
-        <span id="key-action" class="text-xs font-bold text-[var(--text)]">HOLD (Moisture In Target)</span>
+      <div class="min-w-0">
+        <span class="text-[9px] font-mono uppercase text-[var(--text-muted)] block truncate">Irrigation Action</span>
+        <span id="key-action" class="text-xs font-bold text-[var(--text)] truncate block">HOLD (Moisture In Target)</span>
       </div>
 
-      <div>
-        <span class="text-[10px] font-mono uppercase text-[var(--text-muted)] block">Fertilizer Protocol</span>
-        <span id="key-fertilizer" class="text-xs font-bold text-[var(--c-green)]">AUTHORIZED (Stage: Vegetative)</span>
+      <div class="min-w-0">
+        <span class="text-[9px] font-mono uppercase text-[var(--text-muted)] block truncate">Fertilizer Protocol</span>
+        <span id="key-fertilizer" class="text-xs font-bold text-[var(--c-green)] truncate block">AUTHORIZED (Vegetative)</span>
       </div>
 
-      <div>
-        <span class="text-[10px] font-mono uppercase text-[var(--text-muted)] block">Leaching Requirement</span>
-        <span id="key-leaching" class="text-xs font-bold font-mono text-[var(--text)]">0% (Baseline Safe)</span>
+      <div class="min-w-0">
+        <span class="text-[9px] font-mono uppercase text-[var(--text-muted)] block truncate">Leaching Requirement</span>
+        <span id="key-leaching" class="text-xs font-bold font-mono text-[var(--text)] truncate block">0% (Baseline Safe)</span>
       </div>
     </div>
 
     <!-- 4 Primary Instrument Dials (Technical Readouts) -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
       <!-- 1. Salinity EC -->
-      <div class="bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg p-3.5 flex flex-col justify-between">
+      <div class="bg-[var(--bg-surface)] border border-[var(--border)] rounded-md p-2.5 flex flex-col justify-between min-w-0">
         <div class="flex items-center justify-between text-xs font-mono">
-          <span class="text-[var(--text-muted)] uppercase">EC<sub>25</sub> (Salinity)</span>
-          <span id="pill-ec" class="text-[10px] px-1.5 py-0.2 rounded border border-[var(--c-green-border)] bg-[var(--c-green-bg)] text-[var(--c-green)] font-semibold">
+          <span class="text-[var(--text-muted)] uppercase text-[10px] truncate">EC<sub>25</sub> (Salinity)</span>
+          <span id="pill-ec" class="text-[9px] px-1 py-0.2 rounded border border-[var(--c-green-border)] bg-[var(--c-green-bg)] text-[var(--c-green)] font-semibold shrink-0">
             IN SPEC
           </span>
         </div>
-        <div class="my-2 flex items-baseline gap-1.5">
-          <span id="metric-ec" class="text-2xl font-bold font-mono text-[var(--text)]">1.35</span>
-          <span class="text-xs text-[var(--text-muted)]">dS/m</span>
+        <div class="my-1.5 flex items-baseline gap-1">
+          <span id="metric-ec" class="text-xl font-bold font-mono text-[var(--text)]">1.35</span>
+          <span class="text-[10px] text-[var(--text-muted)]">dS/m</span>
         </div>
-        <div class="text-[11px] font-mono text-[var(--text-muted)] flex justify-between pt-2 border-t border-[var(--border)]">
+        <div class="text-[10px] font-mono text-[var(--text-muted)] flex justify-between pt-1.5 border-t border-[var(--border)]">
           <span>Limit: <strong id="limit-ec" class="text-[var(--text)]">&le; 1.70</strong></span>
-          <span>Osmotic: <strong id="lbl-osmotic" class="text-[var(--text)]">-0.49 bar</strong></span>
+          <span>Osm: <strong id="lbl-osmotic" class="text-[var(--text)]">-0.49b</strong></span>
         </div>
       </div>
 
       <!-- 2. Soil Moisture -->
-      <div class="bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg p-3.5 flex flex-col justify-between">
+      <div class="bg-[var(--bg-surface)] border border-[var(--border)] rounded-md p-2.5 flex flex-col justify-between min-w-0">
         <div class="flex items-center justify-between text-xs font-mono">
-          <span class="text-[var(--text-muted)] uppercase">Moisture (VWC)</span>
-          <span id="pill-moist" class="text-[10px] px-1.5 py-0.2 rounded border border-[var(--c-green-border)] bg-[var(--c-green-bg)] text-[var(--c-green)] font-semibold">
+          <span class="text-[var(--text-muted)] uppercase text-[10px] truncate">Moisture (VWC)</span>
+          <span id="pill-moist" class="text-[9px] px-1 py-0.2 rounded border border-[var(--c-green-border)] bg-[var(--c-green-bg)] text-[var(--c-green)] font-semibold shrink-0">
             OPTIMAL
           </span>
         </div>
-        <div class="my-2 flex items-baseline gap-1.5">
-          <span id="metric-moist" class="text-2xl font-bold font-mono text-[var(--text)]">31.4</span>
-          <span class="text-xs text-[var(--text-muted)]">%</span>
+        <div class="my-1.5 flex items-baseline gap-1">
+          <span id="metric-moist" class="text-xl font-bold font-mono text-[var(--text)]">31.4</span>
+          <span class="text-[10px] text-[var(--text-muted)]">%</span>
         </div>
-        <div class="text-[11px] font-mono text-[var(--text-muted)] flex justify-between pt-2 border-t border-[var(--border)]">
+        <div class="text-[10px] font-mono text-[var(--text-muted)] flex justify-between pt-1.5 border-t border-[var(--border)]">
           <span>Refill: <strong class="text-[var(--text)]">22%</strong></span>
-          <span>Capacity: <strong class="text-[var(--text)]">38%</strong></span>
+          <span>Cap: <strong class="text-[var(--text)]">38%</strong></span>
         </div>
       </div>
 
       <!-- 3. Soil Temperature -->
-      <div class="bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg p-3.5 flex flex-col justify-between">
+      <div class="bg-[var(--bg-surface)] border border-[var(--border)] rounded-md p-2.5 flex flex-col justify-between min-w-0">
         <div class="flex items-center justify-between text-xs font-mono">
-          <span class="text-[var(--text-muted)] uppercase">Root Temp</span>
-          <span class="text-[10px] px-1.5 py-0.2 rounded border border-[var(--c-green-border)] bg-[var(--c-green-bg)] text-[var(--c-green)] font-semibold">
+          <span class="text-[var(--text-muted)] uppercase text-[10px] truncate">Root Temp</span>
+          <span class="text-[9px] px-1 py-0.2 rounded border border-[var(--c-green-border)] bg-[var(--c-green-bg)] text-[var(--c-green)] font-semibold shrink-0">
             DS18B20
           </span>
         </div>
-        <div class="my-2 flex items-baseline gap-1.5">
-          <span id="metric-temp" class="text-2xl font-bold font-mono text-[var(--text)]">23.8</span>
-          <span class="text-xs text-[var(--text-muted)]">°C</span>
+        <div class="my-1.5 flex items-baseline gap-1">
+          <span id="metric-temp" class="text-xl font-bold font-mono text-[var(--text)]">23.8</span>
+          <span class="text-[10px] text-[var(--text-muted)]">°C</span>
         </div>
-        <div class="text-[11px] font-mono text-[var(--text-muted)] flex justify-between pt-2 border-t border-[var(--border)]">
-          <span>1-Wire Bus: <strong class="text-[var(--text)]">GPIO 4</strong></span>
-          <span>Comp: <strong class="text-[var(--text)]">25°C Base</strong></span>
+        <div class="text-[10px] font-mono text-[var(--text-muted)] flex justify-between pt-1.5 border-t border-[var(--border)]">
+          <span>GPIO: <strong class="text-[var(--text)]">Pin 4</strong></span>
+          <span>Target: <strong class="text-[var(--text)]">18–32°C</strong></span>
         </div>
       </div>
 
       <!-- 4. Leaching Requirement -->
-      <div class="bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg p-3.5 flex flex-col justify-between">
+      <div class="bg-[var(--bg-surface)] border border-[var(--border)] rounded-md p-2.5 flex flex-col justify-between min-w-0">
         <div class="flex items-center justify-between text-xs font-mono">
-          <span class="text-[var(--text-muted)] uppercase">FAO-56 Leach (LR)</span>
-          <span id="pill-lr" class="text-[10px] px-1.5 py-0.2 rounded border border-[var(--border)] bg-[var(--bg-subtle)] text-[var(--text-muted)] font-semibold">
+          <span class="text-[var(--text-muted)] uppercase text-[10px] truncate">FAO Leach (LR)</span>
+          <span id="pill-lr" class="text-[9px] px-1 py-0.2 rounded border border-[var(--border)] bg-[var(--bg-subtle)] text-[var(--text-muted)] font-semibold shrink-0">
             NO FLUSH
           </span>
         </div>
-        <div class="my-2 flex items-baseline gap-1.5">
-          <span id="metric-lr" class="text-2xl font-bold font-mono text-[var(--text)]">+0%</span>
-          <span class="text-xs text-[var(--text-muted)]">Extra Volume</span>
+        <div class="my-1.5 flex items-baseline gap-1">
+          <span id="metric-lr" class="text-xl font-bold font-mono text-[var(--text)]">+0%</span>
+          <span class="text-[10px] text-[var(--text-muted)]">Extra Vol</span>
         </div>
-        <div class="text-[11px] font-mono text-[var(--text-muted)] flex justify-between pt-2 border-t border-[var(--border)]">
-          <span>Water EC<sub>w</sub>: <strong class="text-[var(--text)]">0.60 dS/m</strong></span>
+        <div class="text-[10px] font-mono text-[var(--text-muted)] flex justify-between pt-1.5 border-t border-[var(--border)]">
+          <span>Water: <strong class="text-[var(--text)]">0.60 dS/m</strong></span>
           <span>Soak: <strong id="lbl-flush-time" class="text-[var(--text)]">0 min</strong></span>
         </div>
       </div>
     </div>
 
     <!-- Diagnostic Color Matrix & Field Protocol Directives -->
-    <section class="bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg p-4 space-y-3">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-[var(--border)] pb-2.5">
+    <section class="bg-[var(--bg-surface)] border border-[var(--border)] rounded-md p-3 space-y-2">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 border-b border-[var(--border)] pb-2">
         <div>
           <h2 class="text-xs font-bold uppercase tracking-wider text-[var(--text)]">Optical Sentry & Diagnostic Color Action Protocols</h2>
-          <p class="text-xs text-[var(--text-muted)]">
-            Prescribed physical agronomic measures for farmers and extension agents corresponding to hardware beacon signals.
+          <p class="text-[11px] text-[var(--text-muted)]">
+            Prescribed physical agronomic measures corresponding to hardware beacon signals.
           </p>
         </div>
-        <div class="flex items-center gap-2 text-xs font-mono">
-          <span class="text-[var(--text-muted)]">Active Signal:</span>
-          <span id="active-color-badge" class="px-2 py-0.5 rounded border border-[var(--c-green-border)] bg-[var(--c-green-bg)] text-[var(--c-green)] font-semibold">
+        <div class="flex items-center gap-1.5 text-xs font-mono shrink-0">
+          <span class="text-[var(--text-muted)] text-[10px]">Active Signal:</span>
+          <span id="active-color-badge" class="px-2 py-0.5 rounded border border-[var(--c-green-border)] bg-[var(--c-green-bg)] text-[var(--c-green)] font-semibold text-[11px]">
             🟢 GREEN (EQUILIBRIUM)
           </span>
         </div>
       </div>
 
-      <!-- 4 Semantic Color Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+      <!-- 4 Semantic Color Cards Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 text-xs">
         
         <!-- GREEN CARD -->
-        <div id="card-color-green" class="rounded border p-3 space-y-2.5 border-[var(--c-green-border)] bg-[var(--c-green-bg)]">
+        <div id="card-color-green" class="rounded border p-2.5 space-y-2 border-[var(--c-green-border)] bg-[var(--c-green-bg)] min-w-0">
           <div class="flex items-center justify-between">
-            <span class="font-bold text-[var(--c-green)] flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-[var(--c-green)]"></span>
+            <span class="font-bold text-[var(--c-green)] flex items-center gap-1.5 text-xs">
+              <span class="w-2 h-2 rounded-full bg-[var(--c-green)] shrink-0"></span>
               GREEN SIGNAL
             </span>
-            <span class="font-mono text-[10px] text-[var(--text-muted)]">EC &le; Limit</span>
+            <span class="font-mono text-[9px] text-[var(--text-muted)]">EC &le; Limit</span>
           </div>
           <div>
-            <div class="font-semibold text-[var(--text)] mb-0.5">Optimal Soil Equilibrium</div>
-            <p class="text-[var(--text-muted)] text-[11px] leading-relaxed">
-              Salinity within biological tolerance. Moisture at field capacity (22–38%). Root osmotic potential supports unobstructed nutrient uptake.
+            <div class="font-semibold text-[var(--text)] text-xs mb-0.5">Optimal Soil Equilibrium</div>
+            <p class="text-[var(--text-muted)] text-[10px] leading-relaxed">
+              Salinity safe; moisture 22–38%. Root osmotic gradient unobstructed.
             </p>
           </div>
-          <div class="pt-2 border-t border-[var(--border)] space-y-1">
-            <div class="font-mono text-[10px] uppercase text-[var(--text-muted)] font-semibold">Action Protocol:</div>
-            <ul class="text-[11px] text-[var(--text)] space-y-1 list-disc list-inside">
-              <li><strong>Irrigation:</strong> Maintain scheduled 40-minute cycle. Do not over-water.</li>
-              <li><strong>Fertilizer:</strong> Authorized for full growth-stage dose. Uptake efficiency ~95%.</li>
-              <li><strong>Monitoring:</strong> Beacon pulses green every 10s. Normal observation.</li>
+          <div class="pt-1.5 border-t border-[var(--border)] space-y-0.5 text-[10px]">
+            <ul class="text-[var(--text)] space-y-0.5 list-disc list-inside">
+              <li><strong>Water:</strong> Normal 40m cycle. Do not over-irrigate.</li>
+              <li><strong>Fert:</strong> Standard stage dose (95% uptake).</li>
+              <li><strong>Beacon:</strong> Pulses green every 10s. All safe.</li>
             </ul>
           </div>
         </div>
 
         <!-- AMBER CARD -->
-        <div id="card-color-amber" class="rounded border p-3 space-y-2.5 border-[var(--border)] bg-[var(--bg-surface)] opacity-85 hover:opacity-100">
+        <div id="card-color-amber" class="rounded border p-2.5 space-y-2 border-[var(--border)] bg-[var(--bg-surface)] opacity-85 hover:opacity-100 min-w-0">
           <div class="flex items-center justify-between">
-            <span class="font-bold text-[var(--c-amber)] flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-[var(--c-amber)]"></span>
+            <span class="font-bold text-[var(--c-amber)] flex items-center gap-1.5 text-xs">
+              <span class="w-2 h-2 rounded-full bg-[var(--c-amber)] shrink-0"></span>
               AMBER SIGNAL
             </span>
-            <span class="font-mono text-[10px] text-[var(--text-muted)]">85% Limit / Dry</span>
+            <span class="font-mono text-[9px] text-[var(--text-muted)]">85% Limit / Dry</span>
           </div>
           <div>
-            <div class="font-semibold text-[var(--text)] mb-0.5">Pre-Stress Advisory</div>
-            <p class="text-[var(--text-muted)] text-[11px] leading-relaxed">
-              EC approaching crop threshold OR moisture near refill point (&lt; 22%). Evaporative loss is concentrating salts around root hairs.
+            <div class="font-semibold text-[var(--text)] text-xs mb-0.5">Pre-Stress Advisory</div>
+            <p class="text-[var(--text-muted)] text-[10px] leading-relaxed">
+              EC near limit or moisture &lt; 22%. Evaporation concentrating salts.
             </p>
           </div>
-          <div class="pt-2 border-t border-[var(--border)] space-y-1">
-            <div class="font-mono text-[10px] uppercase text-[var(--text-muted)] font-semibold">Action Protocol:</div>
-            <ul class="text-[11px] text-[var(--text)] space-y-1 list-disc list-inside">
-              <li><strong>Irrigation:</strong> If dry, water immediately (+10% runtime) to dilute root salts.</li>
-              <li><strong>Fertilizer:</strong> <strong>HOLD OR HALVE DOSE</strong>. Never apply full mineral salts now.</li>
-              <li><strong>Inspection:</strong> Re-check console telemetry in 4–6 hours.</li>
+          <div class="pt-1.5 border-t border-[var(--border)] space-y-0.5 text-[10px]">
+            <ul class="text-[var(--text)] space-y-0.5 list-disc list-inside">
+              <li><strong>Water:</strong> Irrigate (+10% runtime) to dilute salts.</li>
+              <li><strong>Fert:</strong> <strong>HOLD OR HALVE DOSE</strong>.</li>
+              <li><strong>Verify:</strong> Re-check console telemetry in 4–6 hours.</li>
             </ul>
           </div>
         </div>
 
         <!-- RED CARD -->
-        <div id="card-color-red" class="rounded border p-3 space-y-2.5 border-[var(--border)] bg-[var(--bg-surface)] opacity-85 hover:opacity-100">
+        <div id="card-color-red" class="rounded border p-2.5 space-y-2 border-[var(--border)] bg-[var(--bg-surface)] opacity-85 hover:opacity-100 min-w-0">
           <div class="flex items-center justify-between">
-            <span class="font-bold text-[var(--c-red)] flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-[var(--c-red)]"></span>
+            <span class="font-bold text-[var(--c-red)] flex items-center gap-1.5 text-xs">
+              <span class="w-2 h-2 rounded-full bg-[var(--c-red)] shrink-0"></span>
               RED SIGNAL
             </span>
-            <span class="font-mono text-[10px] text-[var(--text-muted)]">EC &gt; Threshold</span>
+            <span class="font-mono text-[9px] text-[var(--text-muted)]">EC &gt; Limit</span>
           </div>
           <div>
-            <div class="font-semibold text-[var(--text)] mb-0.5">Critical Saline Hazard</div>
-            <p class="text-[var(--text-muted)] text-[11px] leading-relaxed">
-              <strong>Physiological Drought.</strong> Osmotic suction pulls water *out* of roots into soil. Root damage and yield decline underway.
+            <div class="font-semibold text-[var(--text)] text-xs mb-0.5">Critical Saline Hazard</div>
+            <p class="text-[var(--text-muted)] text-[10px] leading-relaxed">
+              <strong>Physiological Drought:</strong> Osmosis pulls water out of roots.
             </p>
           </div>
-          <div class="pt-2 border-t border-[var(--border)] space-y-1">
-            <div class="font-mono text-[10px] uppercase text-[var(--text-muted)] font-semibold">Action Protocol:</div>
-            <ul class="text-[11px] text-[var(--text)] space-y-1 list-disc list-inside">
-              <li><strong>FERTILIZER BAN:</strong> 100% halt on all chemical inputs for minimum 7 days.</li>
-              <li><strong>LEACH FLUSH:</strong> Apply calculated FAO-56 extra water (+25% to +40%) in deep soak.</li>
-              <li><strong>DRAINAGE:</strong> Open perimeter furrows so salt water exits field.</li>
+          <div class="pt-1.5 border-t border-[var(--border)] space-y-0.5 text-[10px]">
+            <ul class="text-[var(--text)] space-y-0.5 list-disc list-inside">
+              <li><strong>FERT BAN:</strong> 100% halt on chemicals for 7 days.</li>
+              <li><strong>LEACH:</strong> Flush +25% to +40% extra water deep.</li>
+              <li><strong>DRAIN:</strong> Ensure perimeter runoff ditches open.</li>
             </ul>
           </div>
         </div>
 
         <!-- BLUE CARD -->
-        <div id="card-color-blue" class="rounded border p-3 space-y-2.5 border-[var(--border)] bg-[var(--bg-surface)] opacity-85 hover:opacity-100">
+        <div id="card-color-blue" class="rounded border p-2.5 space-y-2 border-[var(--border)] bg-[var(--bg-surface)] opacity-85 hover:opacity-100 min-w-0">
           <div class="flex items-center justify-between">
-            <span class="font-bold text-[var(--c-blue)] flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-[var(--c-blue)]"></span>
+            <span class="font-bold text-[var(--c-blue)] flex items-center gap-1.5 text-xs">
+              <span class="w-2 h-2 rounded-full bg-[var(--c-blue)] shrink-0"></span>
               BLUE SIGNAL
             </span>
-            <span class="font-mono text-[10px] text-[var(--text-muted)]">Moist &gt; 38% Sat</span>
+            <span class="font-mono text-[9px] text-[var(--text-muted)]">&gt; 38% Saturation</span>
           </div>
           <div>
-            <div class="font-semibold text-[var(--text)] mb-0.5">Waterlogging & Hypoxia</div>
-            <p class="text-[var(--text-muted)] text-[11px] leading-relaxed">
-              Soil macropores choked with water. Oxygen drops below 5%, suffocating roots and triggering rapid denitrification.
+            <div class="font-semibold text-[var(--text)] text-xs mb-0.5">Waterlogging & Hypoxia</div>
+            <p class="text-[var(--text-muted)] text-[10px] leading-relaxed">
+              Soil pores flooded. Oxygen &lt; 5%, roots suffocating.
             </p>
           </div>
-          <div class="pt-2 border-t border-[var(--border)] space-y-1">
-            <div class="font-mono text-[10px] uppercase text-[var(--text-muted)] font-semibold">Action Protocol:</div>
-            <ul class="text-[11px] text-[var(--text)] space-y-1 list-disc list-inside">
-              <li><strong>SHUT VALVES:</strong> Stop all irrigation pumps and divert canal lines immediately.</li>
-              <li><strong>RELIEF DITCHES:</strong> Rake or trench surface furrows to drain standing ponded water.</li>
-              <li><strong>NO FERTILIZER:</strong> Zero fertilizer; prevents complete denitrification runoff.</li>
+          <div class="pt-1.5 border-t border-[var(--border)] space-y-0.5 text-[10px]">
+            <ul class="text-[var(--text)] space-y-0.5 list-disc list-inside">
+              <li><strong>SHUT VALVES:</strong> Stop all irrigation pumps now.</li>
+              <li><strong>DRAIN:</strong> Trench surface furrows to drain ponding.</li>
+              <li><strong>NO FERT:</strong> Zero fertilizer to stop denitrification.</li>
             </ul>
           </div>
         </div>
@@ -455,102 +481,104 @@
       </div>
     </section>
 
-    <!-- Main Tabbed Workstation + Side Hardware/SMS Deck -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+    <!-- Main Workspace (2 Columns on Desktop, 1 Column on Mobile) -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-3">
 
-      <!-- LEFT 2 COLS: Minimalist Tab Panels -->
-      <div class="lg:col-span-2 space-y-4">
+      <!-- LEFT 2 COLS: Tabbed Workstation -->
+      <div class="lg:col-span-2 space-y-3 min-w-0">
 
-        <!-- Navigation Tabs -->
-        <div class="border-b border-[var(--border)] flex flex-wrap gap-4 text-xs font-medium">
-          <button onclick="switchTab('chart')" id="tab-btn-chart" class="tab-btn tab-active pb-2.5 cursor-pointer">
-            Telemetry Curve
-          </button>
-          <button onclick="switchTab('controls')" id="tab-btn-controls" class="tab-btn pb-2.5 cursor-pointer">
-            Sensor Simulator
-          </button>
-          <button onclick="switchTab('phenology')" id="tab-btn-phenology" class="tab-btn pb-2.5 cursor-pointer">
-            FAO Science & Phenology
-          </button>
-          <button onclick="switchTab('hardware')" id="tab-btn-hardware" class="tab-btn pb-2.5 cursor-pointer">
-            $30 Hardware BOM
-          </button>
-          <button onclick="switchTab('roi')" id="tab-btn-roi" class="tab-btn pb-2.5 cursor-pointer">
-            Smallholder ROI
-          </button>
-          <button onclick="switchTab('logs')" id="tab-btn-logs" class="tab-btn pb-2.5 cursor-pointer">
-            15m Rolling Log
-          </button>
+        <!-- Navigation Tabs Container (Scrollable Horizontally if narrow) -->
+        <div class="overflow-x-auto max-w-full pb-0.5">
+          <div class="border-b border-[var(--border)] flex gap-4 text-xs font-medium min-w-max">
+            <button onclick="switchTab('chart')" id="tab-btn-chart" class="tab-btn tab-active pb-2 cursor-pointer">
+              Telemetry Curve
+            </button>
+            <button onclick="switchTab('controls')" id="tab-btn-controls" class="tab-btn pb-2 cursor-pointer">
+              Sensor Simulator
+            </button>
+            <button onclick="switchTab('phenology')" id="tab-btn-phenology" class="tab-btn pb-2 cursor-pointer">
+              FAO Science & Phenology
+            </button>
+            <button onclick="switchTab('hardware')" id="tab-btn-hardware" class="tab-btn pb-2 cursor-pointer">
+              $30 Hardware BOM
+            </button>
+            <button onclick="switchTab('roi')" id="tab-btn-roi" class="tab-btn pb-2 cursor-pointer">
+              Smallholder ROI
+            </button>
+            <button onclick="switchTab('logs')" id="tab-btn-logs" class="tab-btn pb-2 cursor-pointer">
+              15m Rolling Log
+            </button>
+          </div>
         </div>
 
         <!-- TAB 1: Live Curve Canvas -->
-        <div id="tab-content-chart" class="bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg p-4 space-y-3">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+        <div id="tab-content-chart" class="bg-[var(--bg-surface)] border border-[var(--border)] rounded-md p-3 space-y-2.5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 text-xs">
             <div>
-              <h3 class="font-bold text-[var(--text)]">Salinity Trajectory vs Biological Tolerance</h3>
-              <p class="text-[var(--text-muted)] text-[11px]">Normalized EC<sub>25</sub> rolling telemetry against crop stress boundary</p>
+              <h3 class="font-bold text-[var(--text)] text-xs">Salinity Trajectory vs Biological Tolerance</h3>
+              <p class="text-[var(--text-muted)] text-[10px]">Normalized EC<sub>25</sub> rolling telemetry against crop stress boundary</p>
             </div>
             <!-- Range Filter -->
-            <div class="inline-flex rounded border border-[var(--border)] p-0.5 bg-[var(--bg-subtle)] font-mono text-xs">
+            <div class="inline-flex rounded border border-[var(--border)] p-0.5 bg-[var(--bg-subtle)] font-mono text-[10px] self-start sm:self-auto">
               <button onclick="setChartRange(8)" class="range-btn px-2 py-0.5 rounded bg-[var(--bg-surface)] text-[var(--text)] font-semibold">8h</button>
               <button onclick="setChartRange(16)" class="range-btn px-2 py-0.5 rounded text-[var(--text-muted)] hover:text-[var(--text)]">16h</button>
               <button onclick="setChartRange(24)" class="range-btn px-2 py-0.5 rounded text-[var(--text-muted)] hover:text-[var(--text)]">24h</button>
             </div>
           </div>
 
-          <!-- Dynamic SVG Vector Chart -->
-          <div class="w-full bg-[var(--bg)] rounded border border-[var(--border)] p-2 overflow-hidden">
-            <svg id="svg-chart" viewBox="0 0 650 200" class="w-full h-auto overflow-visible"></svg>
+          <!-- Dynamic SVG Vector Chart (Fully Responsive, max-h contained) -->
+          <div class="w-full bg-[var(--bg)] rounded border border-[var(--border)] p-1.5 overflow-hidden">
+            <svg id="svg-chart" viewBox="0 0 650 175" class="w-full h-auto max-h-[220px] overflow-visible"></svg>
           </div>
 
-          <div class="flex flex-wrap items-center justify-between text-[11px] font-mono text-[var(--text-muted)] gap-2">
-            <div class="flex items-center gap-4">
-              <span class="flex items-center gap-1.5"><span class="w-2.5 h-0.5 bg-[var(--chart-line)]"></span> Actual EC<sub>25</sub></span>
-              <span class="flex items-center gap-1.5"><span class="w-2.5 h-0.5 border-b border-dashed border-[var(--chart-thresh)]"></span> Safe Limit (<span id="svg-legend-limit">1.70</span> dS/m)</span>
+          <div class="flex flex-wrap items-center justify-between text-[10px] font-mono text-[var(--text-muted)] gap-1.5">
+            <div class="flex items-center gap-3">
+              <span class="flex items-center gap-1"><span class="w-2.5 h-0.5 bg-[var(--chart-line)]"></span> Actual EC<sub>25</sub></span>
+              <span class="flex items-center gap-1"><span class="w-2.5 h-0.5 border-b border-dashed border-[var(--chart-thresh)]"></span> Safe Limit (<span id="svg-legend-limit">1.70</span> dS/m)</span>
             </div>
             <span>MicroSD SPI Log: Buffered</span>
           </div>
         </div>
 
         <!-- TAB 2: Probe Stress Simulator -->
-        <div id="tab-content-controls" class="hidden bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg p-4 space-y-4">
+        <div id="tab-content-controls" class="hidden bg-[var(--bg-surface)] border border-[var(--border)] rounded-md p-3 space-y-3">
           <div>
-            <h3 class="font-bold text-[var(--text)]">Field Sensor Vector Injector</h3>
-            <p class="text-xs text-[var(--text-muted)]">Manually test the edge decision engine and color protocol transitions</p>
+            <h3 class="font-bold text-[var(--text)] text-xs">Field Sensor Vector Injector</h3>
+            <p class="text-[10px] text-[var(--text-muted)]">Manually test the edge decision engine and color protocol transitions</p>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div class="p-3 rounded border border-[var(--border)] bg-[var(--bg-subtle)] space-y-2">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <div class="p-2.5 rounded border border-[var(--border)] bg-[var(--bg-subtle)] space-y-1.5">
               <div class="flex justify-between items-center text-xs font-mono">
-                <span class="text-[var(--text-muted)]">Raw EC Probe:</span>
+                <span class="text-[var(--text-muted)] text-[10px]">Raw EC:</span>
                 <span id="slider-ec-val" class="font-bold text-[var(--text)]">1.35 dS/m</span>
               </div>
               <input type="range" id="input-ec" min="0.4" max="4.5" step="0.05" value="1.35" oninput="syncManualInputs()" class="w-full cursor-pointer">
-              <div class="flex justify-between text-[10px] font-mono text-[var(--text-muted)]">
+              <div class="flex justify-between text-[9px] font-mono text-[var(--text-muted)]">
                 <span>0.4 (Fresh)</span>
                 <span>4.5 (Saline)</span>
               </div>
             </div>
 
-            <div class="p-3 rounded border border-[var(--border)] bg-[var(--bg-subtle)] space-y-2">
+            <div class="p-2.5 rounded border border-[var(--border)] bg-[var(--bg-subtle)] space-y-1.5">
               <div class="flex justify-between items-center text-xs font-mono">
-                <span class="text-[var(--text-muted)]">Moisture Probe:</span>
+                <span class="text-[var(--text-muted)] text-[10px]">Moisture:</span>
                 <span id="slider-moist-val" class="font-bold text-[var(--text)]">31.4%</span>
               </div>
               <input type="range" id="input-moist" min="10" max="50" step="0.5" value="31.4" oninput="syncManualInputs()" class="w-full cursor-pointer">
-              <div class="flex justify-between text-[10px] font-mono text-[var(--text-muted)]">
+              <div class="flex justify-between text-[9px] font-mono text-[var(--text-muted)]">
                 <span>10% (Wilting)</span>
                 <span>50% (Ponding)</span>
               </div>
             </div>
 
-            <div class="p-3 rounded border border-[var(--border)] bg-[var(--bg-subtle)] space-y-2">
+            <div class="p-2.5 rounded border border-[var(--border)] bg-[var(--bg-subtle)] space-y-1.5">
               <div class="flex justify-between items-center text-xs font-mono">
-                <span class="text-[var(--text-muted)]">Temperature Probe:</span>
+                <span class="text-[var(--text-muted)] text-[10px]">Temperature:</span>
                 <span id="slider-temp-val" class="font-bold text-[var(--text)]">23.8°C</span>
               </div>
               <input type="range" id="input-temp" min="15" max="38" step="0.5" value="23.8" oninput="syncManualInputs()" class="w-full cursor-pointer">
-              <div class="flex justify-between text-[10px] font-mono text-[var(--text-muted)]">
+              <div class="flex justify-between text-[9px] font-mono text-[var(--text-muted)]">
                 <span>15°C (Morning)</span>
                 <span>38°C (Peak)</span>
               </div>
@@ -559,18 +587,18 @@
 
           <!-- Scenario Presets -->
           <div class="pt-1">
-            <span class="text-xs font-mono uppercase text-[var(--text-muted)] block mb-2">Preset Field Stress Conditions:</span>
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              <button onclick="injectPreset(1.3, 31.0, 24.0)" class="p-2 rounded border border-[var(--border)] bg-[var(--bg-subtle)] hover:bg-[var(--border)] transition-colors text-xs font-medium text-left cursor-pointer">
+            <span class="text-[10px] font-mono uppercase text-[var(--text-muted)] block mb-1.5">Preset Field Stress Conditions:</span>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+              <button onclick="injectPreset(1.3, 31.0, 24.0)" class="p-1.5 rounded border border-[var(--border)] bg-[var(--bg-subtle)] hover:bg-[var(--border)] transition-colors text-xs font-medium text-left cursor-pointer">
                 🟢 Optimal Field
               </button>
-              <button onclick="injectPreset(1.2, 17.0, 29.0)" class="p-2 rounded border border-[var(--border)] bg-[var(--bg-subtle)] hover:bg-[var(--border)] transition-colors text-xs font-medium text-left cursor-pointer">
+              <button onclick="injectPreset(1.2, 17.0, 29.0)" class="p-1.5 rounded border border-[var(--border)] bg-[var(--bg-subtle)] hover:bg-[var(--border)] transition-colors text-xs font-medium text-left cursor-pointer">
                 🟡 Drought Depletion
               </button>
-              <button onclick="injectPreset(3.1, 28.0, 25.0)" class="p-2 rounded border border-[var(--border)] bg-[var(--bg-subtle)] hover:bg-[var(--border)] transition-colors text-xs font-medium text-left cursor-pointer">
+              <button onclick="injectPreset(3.1, 28.0, 25.0)" class="p-1.5 rounded border border-[var(--border)] bg-[var(--bg-subtle)] hover:bg-[var(--border)] transition-colors text-xs font-medium text-left cursor-pointer">
                 🔴 Salt Stress Shock
               </button>
-              <button onclick="injectPreset(1.3, 46.0, 21.0)" class="p-2 rounded border border-[var(--border)] bg-[var(--bg-subtle)] hover:bg-[var(--border)] transition-colors text-xs font-medium text-left cursor-pointer">
+              <button onclick="injectPreset(1.3, 46.0, 21.0)" class="p-1.5 rounded border border-[var(--border)] bg-[var(--bg-subtle)] hover:bg-[var(--border)] transition-colors text-xs font-medium text-left cursor-pointer">
                 🔵 Flood Waterlog
               </button>
             </div>
@@ -578,79 +606,79 @@
         </div>
 
         <!-- TAB 3: FAO Agronomic Science & Phenology -->
-        <div id="tab-content-phenology" class="hidden bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg p-4 space-y-4 text-xs">
+        <div id="tab-content-phenology" class="hidden bg-[var(--bg-surface)] border border-[var(--border)] rounded-md p-3 space-y-3 text-xs">
           <div>
-            <h3 class="font-bold text-[var(--text)]">FAO-56 Agronomic Formulations & Biological Models</h3>
-            <p class="text-[var(--text-muted)] text-[11px]">Mathematical standards governing edge recommendations</p>
+            <h3 class="font-bold text-[var(--text)] text-xs">FAO-56 Agronomic Formulations & Biological Models</h3>
+            <p class="text-[var(--text-muted)] text-[10px]">Mathematical standards governing edge recommendations</p>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 font-mono">
-            <div class="p-3 rounded border border-[var(--border)] bg-[var(--bg-subtle)] space-y-1">
-              <span class="text-[var(--text-muted)] text-[10px] uppercase block">Leaching Fraction (LR)</span>
-              <div class="font-bold text-[var(--text)]">LR = ECw / (5&times;ECe - ECw)</div>
-              <p class="font-sans text-[var(--text-muted)] text-[11px] leading-snug">Calculates fraction of surplus water needed to leach root zone salts.</p>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 font-mono">
+            <div class="p-2.5 rounded border border-[var(--border)] bg-[var(--bg-subtle)] space-y-1">
+              <span class="text-[var(--text-muted)] text-[9px] uppercase block">Leaching Fraction (LR)</span>
+              <div class="font-bold text-[var(--text)] text-[11px]">LR = ECw / (5&times;ECe - ECw)</div>
+              <p class="font-sans text-[var(--text-muted)] text-[10px] leading-snug">Calculates fraction of surplus water to flush salts.</p>
             </div>
 
-            <div class="p-3 rounded border border-[var(--border)] bg-[var(--bg-subtle)] space-y-1">
-              <span class="text-[var(--text-muted)] text-[10px] uppercase block">Temp Compensation (25°C)</span>
-              <div class="font-bold text-[var(--text)]">EC25 = EC / [1 + 0.02(T-25)]</div>
-              <p class="font-sans text-[var(--text-muted)] text-[11px] leading-snug">Normalizes electrical conductivity across diurnal shifts.</p>
+            <div class="p-2.5 rounded border border-[var(--border)] bg-[var(--bg-subtle)] space-y-1">
+              <span class="text-[var(--text-muted)] text-[9px] uppercase block">Temp Compensation (25°C)</span>
+              <div class="font-bold text-[var(--text)] text-[11px]">EC25 = EC / [1 + 0.02(T-25)]</div>
+              <p class="font-sans text-[var(--text-muted)] text-[10px] leading-snug">Normalizes electrical conductivity across diurnal shifts.</p>
             </div>
 
-            <div class="p-3 rounded border border-[var(--border)] bg-[var(--bg-subtle)] space-y-1">
-              <span class="text-[var(--text-muted)] text-[10px] uppercase block">Root Osmotic Potential</span>
-              <div class="font-bold text-[var(--text)]">&Psi;s &approx; -0.36 &times; EC (bars)</div>
-              <p class="font-sans text-[var(--text-muted)] text-[11px] leading-snug">Quantifies negative hydraulic suction roots must overcome to drink.</p>
+            <div class="p-2.5 rounded border border-[var(--border)] bg-[var(--bg-subtle)] space-y-1">
+              <span class="text-[var(--text-muted)] text-[9px] uppercase block">Root Osmotic Potential</span>
+              <div class="font-bold text-[var(--text)] text-[11px]">&Psi;s &approx; -0.36 &times; EC (bars)</div>
+              <p class="font-sans text-[var(--text-muted)] text-[10px] leading-snug">Hydraulic suction roots must exert to extract water.</p>
             </div>
           </div>
 
-          <!-- Crop Table -->
-          <div class="space-y-1.5">
-            <div class="font-mono text-[10px] uppercase text-[var(--text-muted)]">Biological Crop Threshold Registry</div>
-            <div class="overflow-x-auto rounded border border-[var(--border)]">
-              <table class="w-full text-left text-xs font-mono">
-                <thead class="bg-[var(--bg-subtle)] text-[var(--text-muted)] border-b border-[var(--border)]">
+          <!-- Crop Table (Contained with overflow-x-auto) -->
+          <div class="space-y-1">
+            <div class="font-mono text-[9px] uppercase text-[var(--text-muted)]">Biological Crop Threshold Registry</div>
+            <div class="overflow-x-auto max-w-full rounded border border-[var(--border)]">
+              <table class="w-full text-left text-xs font-mono whitespace-nowrap">
+                <thead class="bg-[var(--bg-subtle)] text-[var(--text-muted)] border-b border-[var(--border)] text-[11px]">
                   <tr>
-                    <th class="py-2 px-3 font-sans">Crop</th>
-                    <th class="py-2 px-3">Safe ECe</th>
-                    <th class="py-2 px-3">Decline Slope</th>
-                    <th class="py-2 px-3">Active Depth</th>
-                    <th class="py-2 px-3">Optimal VWC</th>
-                    <th class="py-2 px-3 font-sans">Sensitivity</th>
+                    <th class="py-1.5 px-2.5 font-sans">Crop</th>
+                    <th class="py-1.5 px-2.5">Safe ECe</th>
+                    <th class="py-1.5 px-2.5">Decline Slope</th>
+                    <th class="py-1.5 px-2.5">Active Depth</th>
+                    <th class="py-1.5 px-2.5">Optimal VWC</th>
+                    <th class="py-1.5 px-2.5 font-sans">Sensitivity</th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-[var(--border)]">
+                <tbody class="divide-y divide-[var(--border)] text-[11px]">
                   <tr>
-                    <td class="py-1.5 px-3 font-sans font-medium text-[var(--text)]">Maize (Corn)</td>
-                    <td class="py-1.5 px-3">1.70 dS/m</td>
-                    <td class="py-1.5 px-3">12.0% / dS/m</td>
-                    <td class="py-1.5 px-3">-20 cm</td>
-                    <td class="py-1.5 px-3">22% – 38%</td>
-                    <td class="py-1.5 px-3 font-sans text-[var(--text-muted)]">Mod. Sensitive</td>
+                    <td class="py-1 px-2.5 font-sans font-medium text-[var(--text)]">Maize (Corn)</td>
+                    <td class="py-1 px-2.5">1.70 dS/m</td>
+                    <td class="py-1 px-2.5">12.0% / dS/m</td>
+                    <td class="py-1 px-2.5">-20 cm</td>
+                    <td class="py-1 px-2.5">22% – 38%</td>
+                    <td class="py-1 px-2.5 font-sans text-[var(--text-muted)]">Mod. Sensitive</td>
                   </tr>
                   <tr>
-                    <td class="py-1.5 px-3 font-sans font-medium text-[var(--text)]">Tomato</td>
-                    <td class="py-1.5 px-3">2.50 dS/m</td>
-                    <td class="py-1.5 px-3">9.9% / dS/m</td>
-                    <td class="py-1.5 px-3">-15 cm</td>
-                    <td class="py-1.5 px-3">25% – 40%</td>
-                    <td class="py-1.5 px-3 font-sans text-[var(--text-muted)]">Mod. Sensitive</td>
+                    <td class="py-1 px-2.5 font-sans font-medium text-[var(--text)]">Tomato</td>
+                    <td class="py-1 px-2.5">2.50 dS/m</td>
+                    <td class="py-1 px-2.5">9.9% / dS/m</td>
+                    <td class="py-1 px-2.5">-15 cm</td>
+                    <td class="py-1 px-2.5">25% – 40%</td>
+                    <td class="py-1 px-2.5 font-sans text-[var(--text-muted)]">Mod. Sensitive</td>
                   </tr>
                   <tr>
-                    <td class="py-1.5 px-3 font-sans font-medium text-[var(--text)]">Rice (Paddy)</td>
-                    <td class="py-1.5 px-3">3.00 dS/m</td>
-                    <td class="py-1.5 px-3">12.0% / dS/m</td>
-                    <td class="py-1.5 px-3">-10 cm</td>
-                    <td class="py-1.5 px-3">35% – 55%</td>
-                    <td class="py-1.5 px-3 font-sans text-[var(--text-muted)]">Sensitive (Seedling)</td>
+                    <td class="py-1 px-2.5 font-sans font-medium text-[var(--text)]">Rice (Paddy)</td>
+                    <td class="py-1 px-2.5">3.00 dS/m</td>
+                    <td class="py-1 px-2.5">12.0% / dS/m</td>
+                    <td class="py-1 px-2.5">-10 cm</td>
+                    <td class="py-1 px-2.5">35% – 55%</td>
+                    <td class="py-1 px-2.5 font-sans text-[var(--text-muted)]">Sensitive</td>
                   </tr>
                   <tr>
-                    <td class="py-1.5 px-3 font-sans font-medium text-[var(--text)]">Wheat</td>
-                    <td class="py-1.5 px-3">6.00 dS/m</td>
-                    <td class="py-1.5 px-3">7.1% / dS/m</td>
-                    <td class="py-1.5 px-3">-25 cm</td>
-                    <td class="py-1.5 px-3">20% – 35%</td>
-                    <td class="py-1.5 px-3 font-sans text-[var(--text-muted)]">Mod. Tolerant</td>
+                    <td class="py-1 px-2.5 font-sans font-medium text-[var(--text)]">Wheat</td>
+                    <td class="py-1 px-2.5">6.00 dS/m</td>
+                    <td class="py-1 px-2.5">7.1% / dS/m</td>
+                    <td class="py-1 px-2.5">-25 cm</td>
+                    <td class="py-1 px-2.5">20% – 35%</td>
+                    <td class="py-1 px-2.5 font-sans text-[var(--text-muted)]">Mod. Tolerant</td>
                   </tr>
                 </tbody>
               </table>
@@ -659,68 +687,68 @@
         </div>
 
         <!-- TAB 4: $30 Hardware Node Specs -->
-        <div id="tab-content-hardware" class="hidden bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg p-4 space-y-4 text-xs">
+        <div id="tab-content-hardware" class="hidden bg-[var(--bg-surface)] border border-[var(--border)] rounded-md p-3 space-y-3 text-xs">
           <div>
-            <h3 class="font-bold text-[var(--text)]">Field-Deployable Hardware Architecture ($30 Bill-of-Materials)</h3>
-            <p class="text-[var(--text-muted)] text-[11px]">Commodity rural components vs $500–$3,000 industrial sensors</p>
+            <h3 class="font-bold text-[var(--text)] text-xs">Field-Deployable Hardware Architecture ($30 Bill-of-Materials)</h3>
+            <p class="text-[var(--text-muted)] text-[10px]">Commodity rural components vs $500–$3,000 industrial sensors</p>
           </div>
 
-          <div class="overflow-x-auto rounded border border-[var(--border)]">
-            <table class="w-full text-left font-mono text-xs">
-              <thead class="bg-[var(--bg-subtle)] text-[var(--text-muted)] border-b border-[var(--border)]">
+          <div class="overflow-x-auto max-w-full rounded border border-[var(--border)]">
+            <table class="w-full text-left font-mono text-xs whitespace-nowrap">
+              <thead class="bg-[var(--bg-subtle)] text-[var(--text-muted)] border-b border-[var(--border)] text-[11px]">
                 <tr>
-                  <th class="py-2 px-3 font-sans">Subsystem</th>
-                  <th class="py-2 px-3">Component Choice</th>
-                  <th class="py-2 px-3 font-sans">Role in Node</th>
-                  <th class="py-2 px-3">Cost (USD)</th>
+                  <th class="py-1.5 px-2.5 font-sans">Subsystem</th>
+                  <th class="py-1.5 px-2.5">Component Choice</th>
+                  <th class="py-1.5 px-2.5 font-sans">Role in Node</th>
+                  <th class="py-1.5 px-2.5">Cost (USD)</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-[var(--border)]">
+              <tbody class="divide-y divide-[var(--border)] text-[11px]">
                 <tr>
-                  <td class="py-1.5 px-3 font-sans font-medium text-[var(--text)]">Edge Processor</td>
-                  <td class="py-1.5 px-3">ESP32-WROOM-32D</td>
-                  <td class="py-1.5 px-3 font-sans text-[var(--text-muted)]">Executes FAO-56 logic locally</td>
-                  <td class="py-1.5 px-3">$4.80</td>
+                  <td class="py-1 px-2.5 font-sans font-medium text-[var(--text)]">Edge Processor</td>
+                  <td class="py-1 px-2.5">ESP32-WROOM-32D</td>
+                  <td class="py-1 px-2.5 font-sans text-[var(--text-muted)]">Executes FAO-56 logic locally</td>
+                  <td class="py-1 px-2.5">$4.80</td>
                 </tr>
                 <tr>
-                  <td class="py-1.5 px-3 font-sans font-medium text-[var(--text)]">Salinity Probe</td>
-                  <td class="py-1.5 px-3">Analog EC/TDS K=1.0</td>
-                  <td class="py-1.5 px-3 font-sans text-[var(--text-muted)]">Direct root-zone conductivity</td>
-                  <td class="py-1.5 px-3">$7.90</td>
+                  <td class="py-1 px-2.5 font-sans font-medium text-[var(--text)]">Salinity Probe</td>
+                  <td class="py-1 px-2.5">Analog EC/TDS K=1.0</td>
+                  <td class="py-1 px-2.5 font-sans text-[var(--text-muted)]">Direct conductivity electrode</td>
+                  <td class="py-1 px-2.5">$7.90</td>
                 </tr>
                 <tr>
-                  <td class="py-1.5 px-3 font-sans font-medium text-[var(--text)]">Moisture Probe</td>
-                  <td class="py-1.5 px-3">Capacitive V1.2</td>
-                  <td class="py-1.5 px-3 font-sans text-[var(--text-muted)]">Corrosion-free volumetric moisture</td>
-                  <td class="py-1.5 px-3">$2.80</td>
+                  <td class="py-1 px-2.5 font-sans font-medium text-[var(--text)]">Moisture Probe</td>
+                  <td class="py-1 px-2.5">Capacitive V1.2</td>
+                  <td class="py-1 px-2.5 font-sans text-[var(--text-muted)]">Corrosion-free VWC probe</td>
+                  <td class="py-1 px-2.5">$2.80</td>
                 </tr>
                 <tr>
-                  <td class="py-1.5 px-3 font-sans font-medium text-[var(--text)]">Temperature</td>
-                  <td class="py-1.5 px-3">DS18B20 1-Wire</td>
-                  <td class="py-1.5 px-3 font-sans text-[var(--text-muted)]">Dynamic 25°C compensation</td>
-                  <td class="py-1.5 px-3">$1.80</td>
+                  <td class="py-1 px-2.5 font-sans font-medium text-[var(--text)]">Temperature</td>
+                  <td class="py-1 px-2.5">DS18B20 1-Wire</td>
+                  <td class="py-1 px-2.5 font-sans text-[var(--text-muted)]">Dynamic 25°C compensation</td>
+                  <td class="py-1 px-2.5">$1.80</td>
                 </tr>
                 <tr>
-                  <td class="py-1.5 px-3 font-sans font-medium text-[var(--text)]">Power System</td>
-                  <td class="py-1.5 px-3">5W Solar + 2200mAh LiPo</td>
-                  <td class="py-1.5 px-3 font-sans text-[var(--text-muted)]">3-Day autonomous solar operation</td>
-                  <td class="py-1.5 px-3">$7.50</td>
+                  <td class="py-1 px-2.5 font-sans font-medium text-[var(--text)]">Power System</td>
+                  <td class="py-1 px-2.5">5W Solar + 2200mAh LiPo</td>
+                  <td class="py-1 px-2.5 font-sans text-[var(--text-muted)]">3-Day autonomous solar operation</td>
+                  <td class="py-1 px-2.5">$7.50</td>
                 </tr>
                 <tr>
-                  <td class="py-1.5 px-3 font-sans font-medium text-[var(--text)]">Enclosure & Optical</td>
-                  <td class="py-1.5 px-3">IP65 Housing + RGB LED</td>
-                  <td class="py-1.5 px-3 font-sans text-[var(--text-muted)]">Weatherproof zero-text status</td>
-                  <td class="py-1.5 px-3">$3.20</td>
+                  <td class="py-1 px-2.5 font-sans font-medium text-[var(--text)]">Enclosure & LED</td>
+                  <td class="py-1 px-2.5">IP65 Housing + RGB LED</td>
+                  <td class="py-1 px-2.5 font-sans text-[var(--text-muted)]">Weatherproof zero-text status</td>
+                  <td class="py-1 px-2.5">$3.20</td>
                 </tr>
                 <tr>
-                  <td class="py-1.5 px-3 font-sans font-medium text-[var(--text)]">Local Buffer</td>
-                  <td class="py-1.5 px-3">SPI MicroSD 8GB</td>
-                  <td class="py-1.5 px-3 font-sans text-[var(--text-muted)]">Offline rolling data logging</td>
-                  <td class="py-1.5 px-3">$2.50</td>
+                  <td class="py-1 px-2.5 font-sans font-medium text-[var(--text)]">Local Buffer</td>
+                  <td class="py-1 px-2.5">SPI MicroSD 8GB</td>
+                  <td class="py-1 px-2.5 font-sans text-[var(--text-muted)]">Offline rolling data logging</td>
+                  <td class="py-1 px-2.5">$2.50</td>
                 </tr>
                 <tr class="bg-[var(--bg-subtle)] font-bold text-[var(--text)]">
-                  <td class="py-2 px-3 font-sans" colspan="3">Total Unit Bill-of-Materials</td>
-                  <td class="py-2 px-3">$30.50 USD</td>
+                  <td class="py-1.5 px-2.5 font-sans" colspan="3">Total Unit Bill-of-Materials</td>
+                  <td class="py-1.5 px-2.5">$30.50 USD</td>
                 </tr>
               </tbody>
             </table>
@@ -728,59 +756,59 @@
         </div>
 
         <!-- TAB 5: Smallholder ROI & Impact Model -->
-        <div id="tab-content-roi" class="hidden bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg p-4 space-y-4 text-xs">
+        <div id="tab-content-roi" class="hidden bg-[var(--bg-surface)] border border-[var(--border)] rounded-md p-3 space-y-3 text-xs">
           <div>
-            <h3 class="font-bold text-[var(--text)]">Smallholder Financial ROI & Resource Conservation Model</h3>
-            <p class="text-[var(--text-muted)] text-[11px]">Cost-benefit analysis calibrated to typical sub-Saharan smallholder plots</p>
+            <h3 class="font-bold text-[var(--text)] text-xs">Smallholder Financial ROI & Resource Conservation Model</h3>
+            <p class="text-[var(--text-muted)] text-[10px]">Cost-benefit analysis calibrated to typical sub-Saharan smallholder plots</p>
           </div>
 
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 font-mono">
-            <div class="p-2.5 rounded border border-[var(--border)] bg-[var(--bg-subtle)]">
-              <span class="text-[10px] text-[var(--text-muted)] block uppercase">Water Saved</span>
-              <div class="text-base font-bold text-[var(--text)]">30% – 50%</div>
-              <p class="font-sans text-[11px] text-[var(--text-muted)] mt-0.5">Saves ~2,500 m³/ha.</p>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono">
+            <div class="p-2 rounded border border-[var(--border)] bg-[var(--bg-subtle)]">
+              <span class="text-[9px] text-[var(--text-muted)] block uppercase">Water Saved</span>
+              <div class="text-sm font-bold text-[var(--text)]">30% – 50%</div>
+              <p class="font-sans text-[10px] text-[var(--text-muted)] mt-0.5">Saves ~2,500 m³/ha.</p>
             </div>
-            <div class="p-2.5 rounded border border-[var(--border)] bg-[var(--bg-subtle)]">
-              <span class="text-[10px] text-[var(--text-muted)] block uppercase">Fertilizer Saved</span>
-              <div class="text-base font-bold text-[var(--text)]">25% – 40%</div>
-              <p class="font-sans text-[11px] text-[var(--text-muted)] mt-0.5">Halts salt over-application.</p>
+            <div class="p-2 rounded border border-[var(--border)] bg-[var(--bg-subtle)]">
+              <span class="text-[9px] text-[var(--text-muted)] block uppercase">Fertilizer Saved</span>
+              <div class="text-sm font-bold text-[var(--text)]">25% – 40%</div>
+              <p class="font-sans text-[10px] text-[var(--text-muted)] mt-0.5">Halts salt excess.</p>
             </div>
-            <div class="p-2.5 rounded border border-[var(--border)] bg-[var(--bg-subtle)]">
-              <span class="text-[10px] text-[var(--text-muted)] block uppercase">Yield Gain</span>
-              <div class="text-base font-bold text-[var(--text)]">+15% – 30%</div>
-              <p class="font-sans text-[11px] text-[var(--text-muted)] mt-0.5">Prevents osmotic wilt.</p>
+            <div class="p-2 rounded border border-[var(--border)] bg-[var(--bg-subtle)]">
+              <span class="text-[9px] text-[var(--text-muted)] block uppercase">Yield Gain</span>
+              <div class="text-sm font-bold text-[var(--text)]">+15% – 30%</div>
+              <p class="font-sans text-[10px] text-[var(--text-muted)] mt-0.5">Prevents salt wilt.</p>
             </div>
-            <div class="p-2.5 rounded border border-[var(--border)] bg-[var(--bg-subtle)]">
-              <span class="text-[10px] text-[var(--text-muted)] block uppercase">Payback Time</span>
-              <div class="text-base font-bold text-[var(--text)]">&lt; 1 Season</div>
-              <p class="font-sans text-[11px] text-[var(--text-muted)] mt-0.5">$30 unit repaid first crop.</p>
+            <div class="p-2 rounded border border-[var(--border)] bg-[var(--bg-subtle)]">
+              <span class="text-[9px] text-[var(--text-muted)] block uppercase">Payback Time</span>
+              <div class="text-sm font-bold text-[var(--text)]">&lt; 1 Season</div>
+              <p class="font-sans text-[10px] text-[var(--text-muted)] mt-0.5">$30 repaid 1st crop.</p>
             </div>
           </div>
 
           <!-- Dynamic ROI Calculator -->
-          <div class="p-3.5 rounded border border-[var(--border)] bg-[var(--bg-subtle)] space-y-2.5">
+          <div class="p-2.5 rounded border border-[var(--border)] bg-[var(--bg-subtle)] space-y-2">
             <div class="flex items-center justify-between text-xs">
               <span class="font-semibold text-[var(--text)]">Smallholder Plot Size Calculator:</span>
               <span class="font-mono text-[var(--text)]"><strong id="calc-area-lbl">1.5 Hectares</strong></span>
             </div>
             <input type="range" id="input-area" min="0.5" max="5.0" step="0.5" value="1.5" oninput="calcROI()" class="w-full cursor-pointer">
-            <div class="flex justify-between text-[10px] font-mono text-[var(--text-muted)]">
+            <div class="flex justify-between text-[9px] font-mono text-[var(--text-muted)]">
               <span>0.5 ha</span>
               <span>1.5 ha (Average)</span>
               <span>5.0 ha</span>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 font-mono text-center">
-              <div class="p-2 rounded border border-[var(--border)] bg-[var(--bg-surface)]">
-                <span class="text-[10px] text-[var(--text-muted)] block">Fertilizer Saved:</span>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-1.5 pt-1 font-mono text-center">
+              <div class="p-1.5 rounded border border-[var(--border)] bg-[var(--bg-surface)]">
+                <span class="text-[9px] text-[var(--text-muted)] block">Fertilizer Saved:</span>
                 <span id="roi-fert-val" class="font-bold text-[var(--text)]">$60 USD</span>
               </div>
-              <div class="p-2 rounded border border-[var(--border)] bg-[var(--bg-surface)]">
-                <span class="text-[10px] text-[var(--text-muted)] block">Yield Protected:</span>
+              <div class="p-1.5 rounded border border-[var(--border)] bg-[var(--bg-surface)]">
+                <span class="text-[9px] text-[var(--text-muted)] block">Yield Protected:</span>
                 <span id="roi-yield-val" class="font-bold text-[var(--text)]">+$180 USD</span>
               </div>
-              <div class="p-2 rounded border border-[var(--border)] bg-[var(--bg-surface)] font-bold text-[var(--c-green)]">
-                <span class="text-[10px] text-[var(--text-muted)] block">Net Seasonal Gain:</span>
+              <div class="p-1.5 rounded border border-[var(--border)] bg-[var(--bg-surface)] font-bold text-[var(--c-green)]">
+                <span class="text-[9px] text-[var(--text-muted)] block">Net Gain:</span>
                 <span id="roi-net-val">+$240 USD</span>
               </div>
             </div>
@@ -788,36 +816,36 @@
         </div>
 
         <!-- TAB 6: 15-Minute Rolling Log Table -->
-        <div id="tab-content-logs" class="hidden bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg p-4 space-y-3">
+        <div id="tab-content-logs" class="hidden bg-[var(--bg-surface)] border border-[var(--border)] rounded-md p-3 space-y-2.5">
           <div class="flex items-center justify-between text-xs">
             <div>
-              <h3 class="font-bold text-[var(--text)]">MicroSD Rolling Telemetry Stream</h3>
-              <p class="text-[var(--text-muted)] text-[11px]">Timestamped 15-minute cycles stored on SPI card</p>
+              <h3 class="font-bold text-[var(--text)] text-xs">MicroSD Rolling Telemetry Stream</h3>
+              <p class="text-[var(--text-muted)] text-[10px]">Timestamped 15-minute cycles stored on SPI card</p>
             </div>
-            <div class="flex items-center gap-1.5 font-mono">
-              <button onclick="downloadCSV()" class="px-2 py-0.5 rounded border border-[var(--border-strong)] bg-[var(--bg-subtle)] hover:bg-[var(--border)] text-xs cursor-pointer">
+            <div class="flex items-center gap-1 font-mono">
+              <button onclick="downloadCSV()" class="px-2 py-0.5 rounded border border-[var(--border-strong)] bg-[var(--bg-subtle)] hover:bg-[var(--border)] text-[11px] cursor-pointer">
                 Export CSV
               </button>
-              <button onclick="resetData()" class="px-2 py-0.5 rounded border border-[var(--border-strong)] bg-[var(--bg-subtle)] hover:bg-[var(--border)] text-xs cursor-pointer">
+              <button onclick="resetData()" class="px-2 py-0.5 rounded border border-[var(--border-strong)] bg-[var(--bg-subtle)] hover:bg-[var(--border)] text-[11px] cursor-pointer">
                 Reset
               </button>
             </div>
           </div>
 
-          <div class="overflow-x-auto">
-            <table class="w-full text-left font-mono text-xs">
-              <thead class="bg-[var(--bg-subtle)] text-[var(--text-muted)] border-b border-[var(--border)]">
+          <div class="overflow-x-auto max-w-full rounded border border-[var(--border)]">
+            <table class="w-full text-left font-mono text-xs whitespace-nowrap">
+              <thead class="bg-[var(--bg-subtle)] text-[var(--text-muted)] border-b border-[var(--border)] text-[11px]">
                 <tr>
-                  <th class="py-1.5 px-2.5 font-sans">Time</th>
-                  <th class="py-1.5 px-2.5">Raw EC</th>
-                  <th class="py-1.5 px-2.5">EC<sub>25</sub></th>
-                  <th class="py-1.5 px-2.5">Moist</th>
-                  <th class="py-1.5 px-2.5">Temp</th>
-                  <th class="py-1.5 px-2.5 font-sans">Signal</th>
-                  <th class="py-1.5 px-2.5 font-sans">Directive</th>
+                  <th class="py-1 px-2 font-sans">Time</th>
+                  <th class="py-1 px-2">Raw EC</th>
+                  <th class="py-1 px-2">EC<sub>25</sub></th>
+                  <th class="py-1 px-2">Moist</th>
+                  <th class="py-1 px-2">Temp</th>
+                  <th class="py-1 px-2 font-sans">Signal</th>
+                  <th class="py-1 px-2 font-sans">Directive</th>
                 </tr>
               </thead>
-              <tbody id="table-log-body" class="divide-y divide-[var(--border)]">
+              <tbody id="table-log-body" class="divide-y divide-[var(--border)] text-[11px]">
                 <!-- Dynamically populated -->
               </tbody>
             </table>
@@ -827,51 +855,51 @@
       </div>
 
       <!-- RIGHT 1 COL: Hardware Sentry & SMS Deck -->
-      <div class="space-y-4">
+      <div class="space-y-3 min-w-0">
 
         <!-- 1. Optical Hardware Sentry -->
-        <div class="bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg p-3.5 space-y-2.5">
-          <div class="flex items-center justify-between border-b border-[var(--border)] pb-2">
+        <div class="bg-[var(--bg-surface)] border border-[var(--border)] rounded-md p-3 space-y-2">
+          <div class="flex items-center justify-between border-b border-[var(--border)] pb-1.5">
             <div>
               <h3 class="text-xs font-bold uppercase font-mono tracking-wider">Optical Sentry</h3>
-              <span class="text-[11px] text-[var(--text-muted)]">Physical RGB Pulse Pip</span>
+              <span class="text-[10px] text-[var(--text-muted)]">Physical RGB Pulse Pip</span>
             </div>
             <div class="flex items-center gap-1.5">
-              <span id="beacon-light" class="w-2.5 h-2.5 rounded-full bg-[var(--c-green)]"></span>
+              <span id="beacon-light" class="w-2.5 h-2.5 rounded-full bg-[var(--c-green)] shrink-0"></span>
               <span id="beacon-label" class="text-xs font-mono font-bold text-[var(--c-green)]">GREEN</span>
             </div>
           </div>
 
-          <div class="p-2.5 rounded border border-[var(--border)] bg-[var(--bg-subtle)] space-y-1 text-xs">
-            <div id="beacon-headline" class="font-semibold text-[var(--text)]">Equilibrium Confirmed</div>
-            <p id="beacon-subtext" class="text-[var(--text-muted)] text-[11px] leading-relaxed">
+          <div class="p-2 rounded border border-[var(--border)] bg-[var(--bg-subtle)] space-y-1 text-xs">
+            <div id="beacon-headline" class="font-semibold text-[var(--text)] text-xs">Equilibrium Confirmed</div>
+            <p id="beacon-subtext" class="text-[var(--text-muted)] text-[10px] leading-relaxed">
               Pulsing green every 10s. The farmer passing through the field sees immediately that salinity and moisture are safe.
             </p>
           </div>
 
-          <div class="flex justify-between text-[11px] font-mono text-[var(--text-muted)] pt-1">
+          <div class="flex justify-between text-[10px] font-mono text-[var(--text-muted)] pt-0.5">
             <span>Visual Literacy:</span>
             <span class="text-[var(--text)] font-medium">Zero-Text Iconography</span>
           </div>
         </div>
 
         <!-- 2. Cellular SMS Terminal (Nokia 105 Emulation) -->
-        <div class="bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg p-3.5 space-y-2.5">
-          <div class="flex items-center justify-between border-b border-[var(--border)] pb-2">
+        <div class="bg-[var(--bg-surface)] border border-[var(--border)] rounded-md p-3 space-y-2">
+          <div class="flex items-center justify-between border-b border-[var(--border)] pb-1.5">
             <div>
               <h3 class="text-xs font-bold uppercase font-mono tracking-wider">SMS Dispatch</h3>
-              <span class="text-[11px] text-[var(--text-muted)]">Feature Phone Interface</span>
+              <span class="text-[10px] text-[var(--text-muted)]">Feature Phone Interface</span>
             </div>
             <div class="flex items-center gap-1 font-mono text-xs">
-              <button onclick="toggleSmsLang()" id="btn-sms-lang" class="px-1.5 py-0.5 rounded border border-[var(--border-strong)] bg-[var(--bg-subtle)] hover:bg-[var(--border)] text-[10px] cursor-pointer">
+              <button onclick="toggleSmsLang()" id="btn-sms-lang" class="px-1.5 py-0.5 rounded border border-[var(--border-strong)] bg-[var(--bg-subtle)] hover:bg-[var(--border)] text-[9px] cursor-pointer">
                 EN &bull; SWA
               </button>
-              <span class="text-[10px] text-[var(--text-muted)]">Nokia 105</span>
+              <span class="text-[9px] text-[var(--text-muted)]">Nokia 105</span>
             </div>
           </div>
 
-          <div class="bg-[var(--bg-subtle)] border border-[var(--border)] rounded p-3 space-y-1.5">
-            <div class="flex justify-between text-[10px] font-mono text-[var(--text-muted)] border-b border-[var(--border)] pb-1">
+          <div class="bg-[var(--bg-subtle)] border border-[var(--border)] rounded p-2.5 space-y-1">
+            <div class="flex justify-between text-[9px] font-mono text-[var(--text-muted)] border-b border-[var(--border)] pb-1">
               <span>+254 712 345 678</span>
               <span id="sms-clock">18:40</span>
             </div>
@@ -880,19 +908,19 @@
             </p>
           </div>
 
-          <div class="flex justify-between text-[11px] font-mono text-[var(--text-muted)]">
+          <div class="flex justify-between text-[10px] font-mono text-[var(--text-muted)]">
             <span>Encoding: GSM 7-bit</span>
             <span>Length: <strong id="sms-char-count" class="text-[var(--text)]">118 / 160</strong></span>
           </div>
         </div>
 
         <!-- 3. Hardware Bus Diagnostics -->
-        <div class="bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg p-3.5 space-y-2 text-xs font-mono">
-          <div class="flex items-center justify-between border-b border-[var(--border)] pb-1.5">
-            <span class="font-bold text-[var(--text)] uppercase text-[11px]">Hardware Buses</span>
-            <span class="text-[var(--c-green)] font-semibold text-[11px]">ALL OK</span>
+        <div class="bg-[var(--bg-surface)] border border-[var(--border)] rounded-md p-3 space-y-1.5 text-xs font-mono">
+          <div class="flex items-center justify-between border-b border-[var(--border)] pb-1">
+            <span class="font-bold text-[var(--text)] uppercase text-[10px]">Hardware Buses</span>
+            <span class="text-[var(--c-green)] font-semibold text-[10px]">ALL OK</span>
           </div>
-          <div class="space-y-1 text-[11px] text-[var(--text-muted)]">
+          <div class="space-y-0.5 text-[10px] text-[var(--text-muted)]">
             <div class="flex justify-between">
               <span>EC Probe ADC:</span>
               <span class="text-[var(--text)]">GPIO 34 (12-bit)</span>
@@ -921,7 +949,7 @@
     </div>
 
     <!-- Minimalist Footer -->
-    <footer class="border-t border-[var(--border)] pt-3 pb-2 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-[var(--text-muted)] font-mono">
+    <footer class="border-t border-[var(--border)] pt-2.5 pb-2 flex flex-col sm:flex-row items-center justify-between gap-1 text-[11px] text-[var(--text-muted)] font-mono">
       <div>SoilGuard SIS &bull; Precision Agriculture Instrument &bull; 2026</div>
       <div>Sub-Saharan Africa Smallholder Deployment</div>
     </footer>
@@ -1052,11 +1080,11 @@
     function selectField(cropKey) {
       activeCrop = cropKey;
       document.querySelectorAll('.field-btn').forEach(btn => {
-        btn.className = 'field-btn px-2.5 py-1 rounded font-medium text-xs text-[var(--text-muted)] hover:text-[var(--text)]';
+        btn.className = 'field-btn px-2 py-0.5 rounded font-medium text-xs text-[var(--text-muted)] hover:text-[var(--text)]';
       });
       const activeBtn = document.getElementById(`field-${cropKey}`);
       if (activeBtn) {
-        activeBtn.className = 'field-btn px-2.5 py-1 rounded font-medium text-xs bg-[var(--bg-surface)] text-[var(--text)] border border-[var(--border)]';
+        activeBtn.className = 'field-btn px-2 py-0.5 rounded font-medium text-xs bg-[var(--bg-surface)] text-[var(--text)] border border-[var(--border)]';
       }
       recalculateAndRender();
     }
@@ -1065,11 +1093,11 @@
     function selectStage(stageKey) {
       activeStage = stageKey;
       document.querySelectorAll('.stage-btn').forEach(btn => {
-        btn.className = 'stage-btn px-2 py-1 rounded text-xs font-medium text-[var(--text-muted)] hover:text-[var(--text)]';
+        btn.className = 'stage-btn px-2 py-0.5 rounded text-xs font-medium text-[var(--text-muted)] hover:text-[var(--text)]';
       });
       const activeBtn = document.getElementById(`stage-${stageKey}`);
       if (activeBtn) {
-        activeBtn.className = 'stage-btn px-2 py-1 rounded text-xs font-medium bg-[var(--bg-surface)] text-[var(--text)] border border-[var(--border)]';
+        activeBtn.className = 'stage-btn px-2 py-0.5 rounded text-xs font-medium bg-[var(--bg-surface)] text-[var(--text)] border border-[var(--border)]';
       }
       recalculateAndRender();
     }
@@ -1158,7 +1186,7 @@
       document.getElementById('limit-ec').textContent = `≤ ${crop.threshold_ec.toFixed(2)}`;
 
       const osmoticPressure = (-0.36 * ec_25).toFixed(2);
-      document.getElementById('lbl-osmotic').textContent = `${osmoticPressure} bar`;
+      document.getElementById('lbl-osmotic').textContent = `${osmoticPressure}b`;
 
       // Update Metric Values
       document.getElementById('metric-ec').textContent = ec_25.toFixed(2);
@@ -1197,43 +1225,43 @@
 
       // Reset matrix cards
       [cardGreen, cardAmber, cardRed, cardBlue].forEach(c => {
-        c.className = 'rounded border p-3 space-y-2.5 border-[var(--border)] bg-[var(--bg-surface)] opacity-85 hover:opacity-100';
+        c.className = 'rounded border p-2.5 space-y-2 border-[var(--border)] bg-[var(--bg-surface)] opacity-85 hover:opacity-100 min-w-0';
       });
 
       let smsString = '';
 
       if (is_saline) {
         // --- 1. RED STATE ---
-        statusRibbon.className = 'rounded-lg p-3.5 border transition-colors grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[var(--c-red-bg)] border-[var(--c-red-border)]';
-        keyStatus.className = 'text-xs font-bold uppercase tracking-tight text-[var(--c-red)]';
+        statusRibbon.className = 'rounded-md p-2.5 border transition-colors grid grid-cols-2 sm:grid-cols-4 gap-2 bg-[var(--c-red-bg)] border-[var(--c-red-border)]';
+        keyStatus.className = 'text-xs font-bold uppercase tracking-tight text-[var(--c-red)] truncate block';
         keyStatus.textContent = 'CRITICAL SALINITY FLUSH';
 
-        keyAction.className = 'text-xs font-bold text-[var(--c-red)]';
+        keyAction.className = 'text-xs font-bold text-[var(--c-red)] truncate block';
         keyAction.textContent = `FLUSH ROOT ZONE (+${extraPercent}%)`;
 
-        keyFert.className = 'text-xs font-bold text-[var(--c-red)]';
+        keyFert.className = 'text-xs font-bold text-[var(--c-red)] truncate block';
         keyFert.textContent = 'LOCKED (Zero Chemical Inputs)';
 
-        keyLeach.className = 'text-xs font-bold font-mono text-[var(--c-amber)]';
+        keyLeach.className = 'text-xs font-bold font-mono text-[var(--c-amber)] truncate block';
         keyLeach.textContent = `+${extraPercent}% Extra Water`;
 
         document.getElementById('metric-lr').textContent = `+${extraPercent}%`;
         document.getElementById('lbl-flush-time').textContent = `+${extraMinutes} min`;
 
         pillEc.textContent = 'EXCEEDED';
-        pillEc.className = 'text-[10px] px-1.5 py-0.2 rounded border border-[var(--c-red-border)] bg-[var(--c-red-bg)] text-[var(--c-red)] font-semibold';
+        pillEc.className = 'text-[9px] px-1 py-0.2 rounded border border-[var(--c-red-border)] bg-[var(--c-red-bg)] text-[var(--c-red)] font-semibold shrink-0';
 
         pillLr.textContent = 'ACTIVE FLUSH';
-        pillLr.className = 'text-[10px] px-1.5 py-0.2 rounded border border-[var(--c-amber-border)] bg-[var(--c-amber-bg)] text-[var(--c-amber)] font-semibold';
+        pillLr.className = 'text-[9px] px-1 py-0.2 rounded border border-[var(--c-amber-border)] bg-[var(--c-amber-bg)] text-[var(--c-amber)] font-semibold shrink-0';
 
-        beaconLight.className = 'w-2.5 h-2.5 rounded-full bg-[var(--c-red)]';
+        beaconLight.className = 'w-2.5 h-2.5 rounded-full bg-[var(--c-red)] shrink-0';
         beaconLabel.className = 'text-xs font-mono font-bold text-[var(--c-red)]';
         beaconLabel.textContent = 'RED';
         beaconHead.textContent = 'Critical Salinity Warning';
         beaconSub.textContent = 'Red beacon indicates salinity exceeding plant tolerance. Stop fertilizer immediately and apply extra flush water.';
 
-        cardRed.className = 'rounded border p-3 space-y-2.5 border-[var(--c-red-border)] bg-[var(--c-red-bg)] font-medium';
-        activeBadge.className = 'px-2 py-0.5 rounded border border-[var(--c-red-border)] bg-[var(--c-red-bg)] text-[var(--c-red)] font-semibold';
+        cardRed.className = 'rounded border p-2.5 space-y-2 border-[var(--c-red-border)] bg-[var(--c-red-bg)] font-medium min-w-0';
+        activeBadge.className = 'px-2 py-0.5 rounded border border-[var(--c-red-border)] bg-[var(--c-red-bg)] text-[var(--c-red)] font-semibold text-[11px]';
         activeBadge.innerHTML = '🔴 RED (CRITICAL SALINE HAZARD)';
 
         if (smsLang === 'swa') {
@@ -1243,33 +1271,33 @@
         }
       } else if (is_waterlogged) {
         // --- 2. BLUE STATE ---
-        statusRibbon.className = 'rounded-lg p-3.5 border transition-colors grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[var(--c-blue-bg)] border-[var(--c-blue-border)]';
-        keyStatus.className = 'text-xs font-bold uppercase tracking-tight text-[var(--c-blue)]';
+        statusRibbon.className = 'rounded-md p-2.5 border transition-colors grid grid-cols-2 sm:grid-cols-4 gap-2 bg-[var(--c-blue-bg)] border-[var(--c-blue-border)]';
+        keyStatus.className = 'text-xs font-bold uppercase tracking-tight text-[var(--c-blue)] truncate block';
         keyStatus.textContent = 'WATERLOGGED SOIL';
 
-        keyAction.className = 'text-xs font-bold text-[var(--c-blue)]';
+        keyAction.className = 'text-xs font-bold text-[var(--c-blue)] truncate block';
         keyAction.textContent = 'SHUT VALVES & DRAIN TRENCHES';
 
-        keyFert.className = 'text-xs font-bold text-[var(--c-amber)]';
+        keyFert.className = 'text-xs font-bold text-[var(--c-amber)] truncate block';
         keyFert.textContent = 'PROHIBITED (Denitrification)';
 
-        keyLeach.className = 'text-xs font-bold font-mono text-[var(--text)]';
+        keyLeach.className = 'text-xs font-bold font-mono text-[var(--text)] truncate block';
         keyLeach.textContent = '0% (Pores Saturated)';
 
         document.getElementById('metric-lr').textContent = '+0%';
         document.getElementById('lbl-flush-time').textContent = '0 min';
 
         pillMoist.textContent = 'SATURATED';
-        pillMoist.className = 'text-[10px] px-1.5 py-0.2 rounded border border-[var(--c-blue-border)] bg-[var(--c-blue-bg)] text-[var(--c-blue)] font-semibold';
+        pillMoist.className = 'text-[9px] px-1 py-0.2 rounded border border-[var(--c-blue-border)] bg-[var(--c-blue-bg)] text-[var(--c-blue)] font-semibold shrink-0';
 
-        beaconLight.className = 'w-2.5 h-2.5 rounded-full bg-[var(--c-blue)]';
+        beaconLight.className = 'w-2.5 h-2.5 rounded-full bg-[var(--c-blue)] shrink-0';
         beaconLabel.className = 'text-xs font-mono font-bold text-[var(--c-blue)]';
         beaconLabel.textContent = 'BLUE';
         beaconHead.textContent = 'Waterlogging Saturation';
         beaconSub.textContent = 'Blue beacon signals soil waterlogging. Shut off irrigation immediately and dig relief furrows to restore root oxygen.';
 
-        cardBlue.className = 'rounded border p-3 space-y-2.5 border-[var(--c-blue-border)] bg-[var(--c-blue-bg)] font-medium';
-        activeBadge.className = 'px-2 py-0.5 rounded border border-[var(--c-blue-border)] bg-[var(--c-blue-bg)] text-[var(--c-blue)] font-semibold';
+        cardBlue.className = 'rounded border p-2.5 space-y-2 border-[var(--c-blue-border)] bg-[var(--c-blue-bg)] font-medium min-w-0';
+        activeBadge.className = 'px-2 py-0.5 rounded border border-[var(--c-blue-border)] bg-[var(--c-blue-bg)] text-[var(--c-blue)] font-semibold text-[11px]';
         activeBadge.innerHTML = '🔵 BLUE (WATERLOGGED SATURATION)';
 
         if (smsLang === 'swa') {
@@ -1279,36 +1307,36 @@
         }
       } else if (is_dry || is_approaching_saline) {
         // --- 3. AMBER STATE ---
-        statusRibbon.className = 'rounded-lg p-3.5 border transition-colors grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[var(--c-amber-bg)] border-[var(--c-amber-border)]';
-        keyStatus.className = 'text-xs font-bold uppercase tracking-tight text-[var(--c-amber)]';
+        statusRibbon.className = 'rounded-md p-2.5 border transition-colors grid grid-cols-2 sm:grid-cols-4 gap-2 bg-[var(--c-amber-bg)] border-[var(--c-amber-border)]';
+        keyStatus.className = 'text-xs font-bold uppercase tracking-tight text-[var(--c-amber)] truncate block';
         keyStatus.textContent = is_dry ? 'IRRIGATION DUE (REFILL)' : 'ELEVATED SALINITY ADVISORY';
 
-        keyAction.className = 'text-xs font-bold text-[var(--c-amber)]';
+        keyAction.className = 'text-xs font-bold text-[var(--c-amber)] truncate block';
         keyAction.textContent = is_dry ? 'WATER FIELD (Standard Cycle)' : 'IRRIGATE (+10% Buffer)';
 
-        keyFert.className = 'text-xs font-bold text-[var(--c-amber)]';
+        keyFert.className = 'text-xs font-bold text-[var(--c-amber)] truncate block';
         keyFert.textContent = 'DEFER / HALVE DOSE';
 
-        keyLeach.className = 'text-xs font-bold font-mono text-[var(--text)]';
+        keyLeach.className = 'text-xs font-bold font-mono text-[var(--text)] truncate block';
         keyLeach.textContent = '0% (Buffer Safe)';
 
         document.getElementById('metric-lr').textContent = '+0%';
         document.getElementById('lbl-flush-time').textContent = '0 min';
 
         pillEc.textContent = is_approaching_saline ? 'ELEVATED' : 'IN SPEC';
-        pillEc.className = is_approaching_saline ? 'text-[10px] px-1.5 py-0.2 rounded border border-[var(--c-amber-border)] bg-[var(--c-amber-bg)] text-[var(--c-amber)] font-semibold' : 'text-[10px] px-1.5 py-0.2 rounded border border-[var(--c-green-border)] bg-[var(--c-green-bg)] text-[var(--c-green)] font-semibold';
+        pillEc.className = is_approaching_saline ? 'text-[9px] px-1 py-0.2 rounded border border-[var(--c-amber-border)] bg-[var(--c-amber-bg)] text-[var(--c-amber)] font-semibold shrink-0' : 'text-[9px] px-1 py-0.2 rounded border border-[var(--c-green-border)] bg-[var(--c-green-bg)] text-[var(--c-green)] font-semibold shrink-0';
 
         pillMoist.textContent = is_dry ? 'REFILL DUE' : 'OPTIMAL';
-        pillMoist.className = is_dry ? 'text-[10px] px-1.5 py-0.2 rounded border border-[var(--c-amber-border)] bg-[var(--c-amber-bg)] text-[var(--c-amber)] font-semibold' : 'text-[10px] px-1.5 py-0.2 rounded border border-[var(--c-green-border)] bg-[var(--c-green-bg)] text-[var(--c-green)] font-semibold';
+        pillMoist.className = is_dry ? 'text-[9px] px-1 py-0.2 rounded border border-[var(--c-amber-border)] bg-[var(--c-amber-bg)] text-[var(--c-amber)] font-semibold shrink-0' : 'text-[9px] px-1 py-0.2 rounded border border-[var(--c-green-border)] bg-[var(--c-green-bg)] text-[var(--c-green)] font-semibold shrink-0';
 
-        beaconLight.className = 'w-2.5 h-2.5 rounded-full bg-[var(--c-amber)]';
+        beaconLight.className = 'w-2.5 h-2.5 rounded-full bg-[var(--c-amber)] shrink-0';
         beaconLabel.className = 'text-xs font-mono font-bold text-[var(--c-amber)]';
         beaconLabel.textContent = 'AMBER';
         beaconHead.textContent = is_dry ? 'Irrigation Due (Refill)' : 'Salinity Creeping Up';
         beaconSub.textContent = 'Amber beacon signals moisture depletion or early salt concentration. Water field; hold or halve planned fertilizer.';
 
-        cardAmber.className = 'rounded border p-3 space-y-2.5 border-[var(--c-amber-border)] bg-[var(--c-amber-bg)] font-medium';
-        activeBadge.className = 'px-2 py-0.5 rounded border border-[var(--c-amber-border)] bg-[var(--c-amber-bg)] text-[var(--c-amber)] font-semibold';
+        cardAmber.className = 'rounded border p-2.5 space-y-2 border-[var(--c-amber-border)] bg-[var(--c-amber-bg)] font-medium min-w-0';
+        activeBadge.className = 'px-2 py-0.5 rounded border border-[var(--c-amber-border)] bg-[var(--c-amber-bg)] text-[var(--c-amber)] font-semibold text-[11px]';
         activeBadge.innerHTML = '🟡 AMBER (PRE-STRESS ADVISORY)';
 
         if (smsLang === 'swa') {
@@ -1318,39 +1346,39 @@
         }
       } else {
         // --- 4. GREEN STATE ---
-        statusRibbon.className = 'rounded-lg p-3.5 border transition-colors grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[var(--c-green-bg)] border-[var(--c-green-border)]';
-        keyStatus.className = 'text-xs font-bold uppercase tracking-tight text-[var(--c-green)]';
+        statusRibbon.className = 'rounded-md p-2.5 border transition-colors grid grid-cols-2 sm:grid-cols-4 gap-2 bg-[var(--c-green-bg)] border-[var(--c-green-border)]';
+        keyStatus.className = 'text-xs font-bold uppercase tracking-tight text-[var(--c-green)] truncate block';
         keyStatus.textContent = 'OPTIMAL EQUILIBRIUM';
 
-        keyAction.className = 'text-xs font-bold text-[var(--text)]';
+        keyAction.className = 'text-xs font-bold text-[var(--text)] truncate block';
         keyAction.textContent = 'HOLD (In Target)';
 
-        keyFert.className = 'text-xs font-bold text-[var(--c-green)]';
+        keyFert.className = 'text-xs font-bold text-[var(--c-green)] truncate block';
         keyFert.textContent = `AUTHORIZED (${stage.name})`;
 
-        keyLeach.className = 'text-xs font-bold font-mono text-[var(--text)]';
+        keyLeach.className = 'text-xs font-bold font-mono text-[var(--text)] truncate block';
         keyLeach.textContent = '0% (Buffer Safe)';
 
         document.getElementById('metric-lr').textContent = '+0%';
         document.getElementById('lbl-flush-time').textContent = '0 min';
 
         pillEc.textContent = 'IN SPEC';
-        pillEc.className = 'text-[10px] px-1.5 py-0.2 rounded border border-[var(--c-green-border)] bg-[var(--c-green-bg)] text-[var(--c-green)] font-semibold';
+        pillEc.className = 'text-[9px] px-1 py-0.2 rounded border border-[var(--c-green-border)] bg-[var(--c-green-bg)] text-[var(--c-green)] font-semibold shrink-0';
 
         pillMoist.textContent = 'OPTIMAL';
-        pillMoist.className = 'text-[10px] px-1.5 py-0.2 rounded border border-[var(--c-green-border)] bg-[var(--c-green-bg)] text-[var(--c-green)] font-semibold';
+        pillMoist.className = 'text-[9px] px-1 py-0.2 rounded border border-[var(--c-green-border)] bg-[var(--c-green-bg)] text-[var(--c-green)] font-semibold shrink-0';
 
         pillLr.textContent = 'NO FLUSH';
-        pillLr.className = 'text-[10px] px-1.5 py-0.2 rounded border border-[var(--border)] bg-[var(--bg-subtle)] text-[var(--text-muted)] font-semibold';
+        pillLr.className = 'text-[9px] px-1 py-0.2 rounded border border-[var(--border)] bg-[var(--bg-subtle)] text-[var(--text-muted)] font-semibold shrink-0';
 
-        beaconLight.className = 'w-2.5 h-2.5 rounded-full bg-[var(--c-green)]';
+        beaconLight.className = 'w-2.5 h-2.5 rounded-full bg-[var(--c-green)] shrink-0';
         beaconLabel.className = 'text-xs font-mono font-bold text-[var(--c-green)]';
         beaconLabel.textContent = 'GREEN';
         beaconHead.textContent = 'Equilibrium Confirmed';
         beaconSub.textContent = 'Beacon pulses green every 10s. The farmer passing through the field sees immediately that salinity and moisture are safe.';
 
-        cardGreen.className = 'rounded border p-3 space-y-2.5 border-[var(--c-green-border)] bg-[var(--c-green-bg)] font-medium';
-        activeBadge.className = 'px-2 py-0.5 rounded border border-[var(--c-green-border)] bg-[var(--c-green-bg)] text-[var(--c-green)] font-semibold';
+        cardGreen.className = 'rounded border p-2.5 space-y-2 border-[var(--c-green-border)] bg-[var(--c-green-bg)] font-medium min-w-0';
+        activeBadge.className = 'px-2 py-0.5 rounded border border-[var(--c-green-border)] bg-[var(--c-green-bg)] text-[var(--c-green)] font-semibold text-[11px]';
         activeBadge.innerHTML = '🟢 GREEN (EQUILIBRIUM)';
 
         if (smsLang === 'swa') {
@@ -1399,11 +1427,11 @@
 
       const data = telemetryStream.slice(-chartRangePoints);
       const width = 650;
-      const height = 200;
-      const padL = 40;
-      const padR = 20;
+      const height = 175;
+      const padL = 36;
+      const padR = 15;
       const padT = 15;
-      const padB = 25;
+      const padB = 22;
 
       const chartW = width - padL - padR;
       const chartH = height - padT - padB;
@@ -1454,7 +1482,7 @@
         const isHot = d.ec_25 > threshold;
         const isLatest = i === data.length - 1;
         markup += `
-          <circle cx="${cx}" cy="${cy}" r="${isLatest ? 4 : 2.5}" fill="${isHot ? 'var(--chart-thresh)' : 'var(--chart-line)'}" stroke="var(--bg-surface)" stroke-width="1" />
+          <circle cx="${cx}" cy="${cy}" r="${isLatest ? 3.5 : 2.2}" fill="${isHot ? 'var(--chart-thresh)' : 'var(--chart-line)'}" stroke="var(--bg-surface)" stroke-width="1" />
         `;
       });
 
@@ -1474,29 +1502,29 @@
         const isDry = r.moist < crop.min_moist;
         const isSat = r.moist > crop.max_moist;
 
-        let beaconBadge = '<span class="px-1.5 py-0.2 rounded text-[10px] text-[var(--c-green)] bg-[var(--c-green-bg)] font-semibold">GREEN</span>';
+        let beaconBadge = '<span class="px-1.5 py-0.2 rounded text-[9px] text-[var(--c-green)] bg-[var(--c-green-bg)] font-semibold">GREEN</span>';
         let actionStr = 'HOLD (In Target)';
 
         if (isSaline) {
-          beaconBadge = '<span class="px-1.5 py-0.2 rounded text-[10px] text-[var(--c-red)] bg-[var(--c-red-bg)] font-semibold">RED</span>';
+          beaconBadge = '<span class="px-1.5 py-0.2 rounded text-[9px] text-[var(--c-red)] bg-[var(--c-red-bg)] font-semibold">RED</span>';
           actionStr = 'FLUSH ROOT ZONE';
         } else if (isSat) {
-          beaconBadge = '<span class="px-1.5 py-0.2 rounded text-[10px] text-[var(--c-blue)] bg-[var(--c-blue-bg)] font-semibold">BLUE</span>';
+          beaconBadge = '<span class="px-1.5 py-0.2 rounded text-[9px] text-[var(--c-blue)] bg-[var(--c-blue-bg)] font-semibold">BLUE</span>';
           actionStr = 'SHUT VALVES';
         } else if (isDry) {
-          beaconBadge = '<span class="px-1.5 py-0.2 rounded text-[10px] text-[var(--c-amber)] bg-[var(--c-amber-bg)] font-semibold">AMBER</span>';
+          beaconBadge = '<span class="px-1.5 py-0.2 rounded text-[9px] text-[var(--c-amber)] bg-[var(--c-amber-bg)] font-semibold">AMBER</span>';
           actionStr = 'WATER FIELD (40M)';
         }
 
         html += `
           <tr class="hover:bg-[var(--bg-subtle)] transition-colors">
-            <td class="py-1.5 px-2.5 font-sans text-[var(--text-muted)]">${timeStr}</td>
-            <td class="py-1.5 px-2.5">${r.raw_ec.toFixed(2)}</td>
-            <td class="py-1.5 px-2.5 font-bold ${isSaline ? 'text-[var(--c-red)]' : 'text-[var(--text)]'}">${r.ec_25.toFixed(2)}</td>
-            <td class="py-1.5 px-2.5">${r.moist.toFixed(1)}%</td>
-            <td class="py-1.5 px-2.5">${r.temp.toFixed(1)}°C</td>
-            <td class="py-1.5 px-2.5 font-sans">${beaconBadge}</td>
-            <td class="py-1.5 px-2.5 font-sans text-[var(--text)]">${actionStr}</td>
+            <td class="py-1 px-2 font-sans text-[var(--text-muted)]">${timeStr}</td>
+            <td class="py-1 px-2">${r.raw_ec.toFixed(2)}</td>
+            <td class="py-1 px-2 font-bold ${isSaline ? 'text-[var(--c-red)]' : 'text-[var(--text)]'}">${r.ec_25.toFixed(2)}</td>
+            <td class="py-1 px-2">${r.moist.toFixed(1)}%</td>
+            <td class="py-1 px-2">${r.temp.toFixed(1)}°C</td>
+            <td class="py-1 px-2 font-sans">${beaconBadge}</td>
+            <td class="py-1 px-2 font-sans text-[var(--text)] truncate max-w-[140px]">${actionStr}</td>
           </tr>
         `;
       });
@@ -1538,11 +1566,11 @@
         autoStreamTimer = null;
         icon.textContent = '▶';
         text.textContent = '15m Ticker';
-        btn.className = 'px-2.5 py-1 rounded border border-[var(--border-strong)] bg-[var(--bg-subtle)] hover:bg-[var(--border)] transition-colors flex items-center gap-1 font-sans font-medium cursor-pointer';
+        btn.className = 'px-2 py-0.5 rounded border border-[var(--border-strong)] bg-[var(--bg-subtle)] hover:bg-[var(--border)] transition-colors flex items-center gap-1 font-sans text-xs cursor-pointer';
       } else {
         icon.textContent = '⏸';
         text.textContent = 'Pause Ticker';
-        btn.className = 'px-2.5 py-1 rounded border border-[var(--border-strong)] bg-[var(--border)] transition-colors flex items-center gap-1 font-sans font-medium cursor-pointer';
+        btn.className = 'px-2 py-0.5 rounded border border-[var(--border-strong)] bg-[var(--border)] transition-colors flex items-center gap-1 font-sans text-xs cursor-pointer';
 
         autoStreamTimer = setInterval(() => {
           simHour = (simHour + 1) % 24;
