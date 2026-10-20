@@ -1,6 +1,6 @@
-# 🔌 SoilGuard — Hardware Pinout, Schematic & BOM
+# 🔌 Zerthiva — Hardware Pinout, Schematic & BOM
 
-This document provides the complete hardware wiring diagram, Bill of Materials (BOM), and laboratory calibration protocols for the **SoilGuard Edge Field Node**.
+This document provides the complete hardware wiring diagram, Bill of Materials (BOM), and laboratory calibration protocols for the **Zerthiva Edge Field Node**.
 
 ---
 

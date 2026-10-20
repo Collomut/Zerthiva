@@ -1,3 +1,3 @@
 """
-SoilGuard Synthetic Sensor & Field Emulator Package
+Zerthiva Synthetic Sensor & Field Emulator Package
 """

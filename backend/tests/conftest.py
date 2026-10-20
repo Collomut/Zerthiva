@@ -1,5 +1,5 @@
 """
-Pytest configuration and test fixtures for SoilGuard Backend
+Pytest configuration and test fixtures for Zerthiva Backend
 """
 
 import pytest

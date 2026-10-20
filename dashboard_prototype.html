@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>SoilGuard — Real-Time Soil Intelligence & Agronomic Console</title>
+  <title>Zerthiva — Real-Time Soil Intelligence & Agronomic Console</title>
   <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
   <style>
     /* Strict Box-Sizing & Viewport Containment */
@@ -175,7 +175,7 @@
         </div>
         <div class="min-w-0">
           <div class="flex items-center gap-1.5 flex-wrap">
-            <h1 class="text-xs font-bold tracking-tight uppercase truncate">SoilGuard SIS</h1>
+            <h1 class="text-xs font-bold tracking-tight uppercase truncate">Zerthiva SIS</h1>
             <span class="text-[9px] font-mono px-1 py-0.2 rounded border border-[var(--border)] text-[var(--text-muted)] shrink-0">
               v2.0·ADAPTIVE
             </span>
@@ -896,7 +896,7 @@
               <span id="sms-clock">18:40</span>
             </div>
             <p id="sms-content" class="text-xs text-[var(--text)] leading-relaxed">
-              SoilGuard: All soil metrics optimal (EC: 1.35 dS/m, Moisture: 31%). Safe window for stage fertilizer: 3.5 kg / 100m².
+              Zerthiva: All soil metrics optimal (EC: 1.35 dS/m, Moisture: 31%). Safe window for stage fertilizer: 3.5 kg / 100m².
             </p>
           </div>
 
@@ -942,7 +942,7 @@
 
     <!-- Minimalist Footer -->
     <footer class="w-full border-t border-[var(--border)] pt-2 pb-2 flex flex-col sm:flex-row items-center justify-between gap-1 text-[10px] text-[var(--text-muted)] font-mono">
-      <div>SoilGuard SIS &bull; Precision Agriculture Instrument &bull; 2026</div>
+      <div>Zerthiva SIS &bull; Precision Agriculture Instrument &bull; 2026</div>
       <div>Sub-Saharan Africa Smallholder Deployment</div>
     </footer>
 
@@ -1018,13 +1018,13 @@
 
     // Theme Management
     function initTheme() {
-      const saved = localStorage.getItem('soilguard_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      const saved = localStorage.getItem('zerthiva_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
       applyTheme(saved);
     }
 
     function applyTheme(theme) {
       document.documentElement.setAttribute('data-theme', theme);
-      localStorage.setItem('soilguard_theme', theme);
+      localStorage.setItem('zerthiva_theme', theme);
 
       const icon = document.getElementById('theme-icon');
       const label = document.getElementById('theme-label');
@@ -1253,9 +1253,9 @@
         if (cardRed) cardRed.className = 'rounded border p-2.5 space-y-1.5 border-[var(--c-red-border)] bg-[var(--c-red-bg)] ring-1 ring-[var(--c-red)]';
 
         if (smsLang === 'swa') {
-          smsString = `SoilGuard HATARI: Chumvi nyingi kwa ${crop.name} (${ec_25} dS/m > ${crop.threshold_ec}). ACHA mbolea mara moja! Mwagia maji ya ziada (+${extraPercent}%) kuosha mizizi.`;
+          smsString = `Zerthiva HATARI: Chumvi nyingi kwa ${crop.name} (${ec_25} dS/m > ${crop.threshold_ec}). ACHA mbolea mara moja! Mwagia maji ya ziada (+${extraPercent}%) kuosha mizizi.`;
         } else {
-          smsString = `SoilGuard CRITICAL: High salt in ${crop.name} (${ec_25} dS/m > ${crop.threshold_ec}). Hold fertilizer! Flush root zone with ${extraPercent}% extra irrigation water.`;
+          smsString = `Zerthiva CRITICAL: High salt in ${crop.name} (${ec_25} dS/m > ${crop.threshold_ec}). Hold fertilizer! Flush root zone with ${extraPercent}% extra irrigation water.`;
         }
       } else if (is_waterlogged) {
         // --- 2. BLUE STATE ---
@@ -1281,9 +1281,9 @@
         if (cardBlue) cardBlue.className = 'rounded border p-2.5 space-y-1.5 border-[var(--c-blue-border)] bg-[var(--c-blue-bg)] ring-1 ring-[var(--c-blue)]';
 
         if (smsLang === 'swa') {
-          smsString = `SoilGuard TAHADHARI: Maji mengi shambani (${moist}%). Funga maji mara moja kuzuia mizizi kuoza. Usiweke mbolea sasa.`;
+          smsString = `Zerthiva TAHADHARI: Maji mengi shambani (${moist}%). Funga maji mara moja kuzuia mizizi kuoza. Usiweke mbolea sasa.`;
         } else {
-          smsString = `SoilGuard Caution: Soil saturated (${moist}%). Shut off irrigation immediately to prevent root hypoxia. Hold fertilizer to stop runoff.`;
+          smsString = `Zerthiva Caution: Soil saturated (${moist}%). Shut off irrigation immediately to prevent root hypoxia. Hold fertilizer to stop runoff.`;
         }
       } else if (is_dry || is_approaching_saline) {
         // --- 3. AMBER STATE ---
@@ -1314,9 +1314,9 @@
         if (cardAmber) cardAmber.className = 'rounded border p-2.5 space-y-1.5 border-[var(--c-amber-border)] bg-[var(--c-amber-bg)] ring-1 ring-[var(--c-amber)]';
 
         if (smsLang === 'swa') {
-          smsString = `SoilGuard: Udongo umekauka (${moist}%). Chumvi iko salama (${ec_25} dS/m). Mwagia maji leo dakika 40. Punguza mbolea nusu: ${stage.dose}.`;
+          smsString = `Zerthiva: Udongo umekauka (${moist}%). Chumvi iko salama (${ec_25} dS/m). Mwagia maji leo dakika 40. Punguza mbolea nusu: ${stage.dose}.`;
         } else {
-          smsString = `SoilGuard: Soil moisture low (${moist}%). Salinity safe (${ec_25} dS/m). Run standard irrigation today. Hold or halve fertilizer: ${stage.dose}.`;
+          smsString = `Zerthiva: Soil moisture low (${moist}%). Salinity safe (${ec_25} dS/m). Run standard irrigation today. Hold or halve fertilizer: ${stage.dose}.`;
         }
       } else {
         // --- 4. GREEN STATE ---
@@ -1348,9 +1348,9 @@
         if (cardGreen) cardGreen.className = 'rounded border p-2.5 space-y-1.5 border-[var(--c-green-border)] bg-[var(--c-green-bg)] ring-1 ring-[var(--c-green)]';
 
         if (smsLang === 'swa') {
-          smsString = `SoilGuard: Hali ya udongo ni nzuri (EC: ${ec_25} dS/m, Maji: ${moist}%). Unaweza kuweka mbolea ya awamu hii: ${stage.dose}.`;
+          smsString = `Zerthiva: Hali ya udongo ni nzuri (EC: ${ec_25} dS/m, Maji: ${moist}%). Unaweza kuweka mbolea ya awamu hii: ${stage.dose}.`;
         } else {
-          smsString = `SoilGuard: All soil metrics optimal (EC: ${ec_25} dS/m, Moisture: ${moist}%). Safe window for stage fertilizer: ${stage.dose}.`;
+          smsString = `Zerthiva: All soil metrics optimal (EC: ${ec_25} dS/m, Moisture: ${moist}%). Safe window for stage fertilizer: ${stage.dose}.`;
         }
       }
 
@@ -1512,7 +1512,7 @@
       const a = document.createElement('a');
       a.setAttribute('hidden', '');
       a.setAttribute('href', url);
-      a.setAttribute('download', `soilguard_telemetry_${Date.now()}.csv`);
+      a.setAttribute('download', `zerthiva_telemetry_${Date.now()}.csv`);
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);

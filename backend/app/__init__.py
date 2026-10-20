@@ -1,4 +1,4 @@
 """
-SoilGuard Cloud Telemetry & Agronomic Advisory Backend
+Zerthiva Cloud Telemetry & Agronomic Advisory Backend
 """
 __version__ = "1.0.0"

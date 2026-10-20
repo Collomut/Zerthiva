@@ -1,5 +1,5 @@
 """
-SoilGuard Capacitive Soil Moisture Sensor Driver
+Zerthiva Capacitive Soil Moisture Sensor Driver
 Translates dielectric capacitance readings into Volumetric Water Content percentage (VWC%).
 """
 

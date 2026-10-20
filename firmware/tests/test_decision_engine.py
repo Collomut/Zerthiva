@@ -1,5 +1,5 @@
 """
-Unit tests for the SoilGuard Agronomic Decision Engine (FAO-56)
+Unit tests for the Zerthiva Agronomic Decision Engine (FAO-56)
 """
 
 import unittest

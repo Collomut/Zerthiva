@@ -1,5 +1,5 @@
 """
-SoilGuard Electrical Conductivity (EC / TDS) Sensor Driver
+Zerthiva Electrical Conductivity (EC / TDS) Sensor Driver
 Handles analog-to-digital conversion and 25°C baseline temperature compensation.
 """
 

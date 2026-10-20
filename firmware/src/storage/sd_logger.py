@@ -1,5 +1,5 @@
 """
-SoilGuard MicroSD Storage Driver & Rolling CSV Logger
+Zerthiva MicroSD Storage Driver & Rolling CSV Logger
 Stores timestamped field telemetry locally for offline auditing and field technician readout.
 """
 
@@ -20,7 +20,7 @@ class SDLogger:
     def __init__(self, cs_pin: int = 5, mosi: int = 23, miso: int = 19, sck: int = 18, mount_point: str = "/sd"):
         self.mount_point = mount_point
         self.is_mounted = False
-        self.csv_path = f"{mount_point}/soilguard_telemetry.csv"
+        self.csv_path = f"{mount_point}/zerthiva_telemetry.csv"
 
         if machine and uos and sdcard:
             try:
@@ -32,10 +32,10 @@ class SDLogger:
                 print(f"MicroSD mounted at {self.mount_point}")
             except Exception as e:
                 print(f"MicroSD mount warning: {e}. Falling back to internal flash.")
-                self.csv_path = "/soilguard_telemetry.csv"
+                self.csv_path = "/zerthiva_telemetry.csv"
         else:
             # Desktop fallback path
-            self.csv_path = "soilguard_telemetry.csv"
+            self.csv_path = "zerthiva_telemetry.csv"
 
         self._ensure_header()
 

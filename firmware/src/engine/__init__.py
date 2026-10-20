@@ -1,3 +1,3 @@
 """
-SoilGuard Agronomic Decision Engine Package
+Zerthiva Agronomic Decision Engine Package
 """

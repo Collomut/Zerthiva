@@ -108,7 +108,7 @@ async def ingest_telemetry(
     sms_dispatched = False
     if status_str == "CRITICAL":
         recipient = farm.farmer_phone if farm else "+254700000000"
-        sms_body = f"SoilGuard CRITICAL: High salt ({normalized_ec} dS/m) in your {crop}. Hold fertilizer! Flush root zone with {int(leaching_fraction * 100)}% extra water."
+        sms_body = f"Zerthiva CRITICAL: High salt ({normalized_ec} dS/m) in your {crop}. Hold fertilizer! Flush root zone with {int(leaching_fraction * 100)}% extra water."
 
         sms_result = await SMSGateway.send_sms(recipient, sms_body)
         sms_dispatched = sms_result.get("success", False)

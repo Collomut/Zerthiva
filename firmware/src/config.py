@@ -1,5 +1,5 @@
 """
-SoilGuard Edge Firmware Configuration
+Zerthiva Edge Firmware Configuration
 Hardware Pinout, Agronomic Constants, and Sensor Calibration Parameters
 """
 
@@ -57,5 +57,5 @@ DEFAULT_EC_WATER = 0.6   # Typical irrigation water salinity in dS/m
 FARMER_PHONE_NUMBER = "+254700000000"
 
 # Cloud Ingestion Endpoint (when cellular GPRS or WiFi active)
-CLOUD_INGEST_URL = "http://api.soilguard.org/api/v1/ingest/telemetry"
+CLOUD_INGEST_URL = "http://api.zerthiva.org/api/v1/ingest/telemetry"
 DEVICE_PSK = "sg-field-device-pre-shared-key-2026"

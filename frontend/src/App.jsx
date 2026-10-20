@@ -73,7 +73,7 @@ export default function App() {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-base font-extrabold tracking-tight text-white">SoilGuard</h1>
+              <h1 className="text-base font-extrabold tracking-tight text-white">Zerthiva</h1>
               <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
                 SIS v1.0
               </span>
@@ -305,7 +305,7 @@ export default function App() {
 
       {/* Footer */}
       <footer className="border-t border-slate-900 bg-slate-950 px-8 py-5 text-center text-xs text-slate-500">
-        <p>SoilGuard — Soil Intelligence System (SIS) · Agricultural Technology & Innovation Competition 2026</p>
+        <p>Zerthiva — Soil Intelligence System (SIS) · Agricultural Technology & Innovation Competition 2026</p>
         <p className="mt-1 text-[11px] text-slate-600">Hardware BOM Target: $30–35 · Peer-Reviewed FAO-56 Agronomic Decision Core</p>
       </footer>
     </div>

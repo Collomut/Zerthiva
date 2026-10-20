@@ -1,5 +1,5 @@
 """
-SoilGuard SIM800L Cellular Modem Driver
+Zerthiva SIM800L Cellular Modem Driver
 Handles cellular AT commands for plain-language SMS dispatch and GPRS HTTP POST telemetry upload.
 """
 

@@ -13,7 +13,7 @@ async def test_health_and_root(client):
 
     res_root = await client.get("/")
     assert res_root.status_code == 200
-    assert "SoilGuard" in res_root.json()["message"]
+    assert "Zerthiva" in res_root.json()["message"]
 
 
 @pytest.mark.asyncio

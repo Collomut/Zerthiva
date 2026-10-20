@@ -1,4 +1,4 @@
 """
-SoilGuard Edge Firmware Package
+Zerthiva Edge Firmware Package
 """
 __version__ = "1.0.0"

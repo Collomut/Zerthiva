@@ -1,6 +1,6 @@
-# 📐 SoilGuard — UML Architecture Diagrams
+# 📐 Zerthiva — UML Architecture Diagrams
 
-This document contains the complete Unified Modeling Language (UML) specifications for the **SoilGuard Soil Intelligence System (SIS)**.
+This document contains the complete Unified Modeling Language (UML) specifications for the **Zerthiva Soil Intelligence System (SIS)**.
 
 ---
 
@@ -115,7 +115,7 @@ sequenceDiagram
 
     alt Salinity Critical or Daily Sync Due
         Main->>GSM: power_on_uart()
-        Main->>GSM: send_sms(phone, "SoilGuard Alert: High salt in tomato field. Hold fertilizer. Water for 45 min extra to flush.")
+        Main->>GSM: send_sms(phone, "Zerthiva Alert: High salt in tomato field. Hold fertilizer. Water for 45 min extra to flush.")
         GSM-->>Main: SMS Sent OK
         Main->>GSM: http_post(endpoint="/v1/telemetry", payload=JSON)
         Cloud-->>GSM: 201 Created

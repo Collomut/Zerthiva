@@ -1,5 +1,5 @@
 """
-SoilGuard Automated Field Telemetry Streamer
+Zerthiva Automated Field Telemetry Streamer
 Sends synthetic time-series telemetry to the cloud backend or outputs to stdout.
 """
 
@@ -14,7 +14,7 @@ from mock_field_node import MockFieldNode
 
 def stream_telemetry(endpoint: str, psk: str, node_id: str, crop: str, interval: float, steps: int, standalone: bool):
     print("=" * 60)
-    print("🌱 SoilGuard Synthetic Field Node Streamer")
+    print("🌱 Zerthiva Synthetic Field Node Streamer")
     print(f"Device ID:  {node_id}")
     print(f"Crop Type:  {crop}")
     print(f"Mode:       {'Standalone JSON' if standalone else 'Live HTTP POST'}")
@@ -62,7 +62,7 @@ def stream_telemetry(endpoint: str, psk: str, node_id: str, crop: str, interval:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="SoilGuard Telemetry Simulator")
+    parser = argparse.ArgumentParser(description="Zerthiva Telemetry Simulator")
     parser.add_argument("--endpoint", default="http://localhost:8000/api/v1/ingest/telemetry", help="Backend ingest URL")
     parser.add_argument("--psk", default="sg-field-device-pre-shared-key-2026", help="Device Pre-Shared Key")
     parser.add_argument("--node-id", default="SG-NODE-001", help="Node ID")

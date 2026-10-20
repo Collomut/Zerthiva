@@ -1,5 +1,5 @@
 """
-SoilGuard Tri-Color Visual Sentry LED Controller
+Zerthiva Tri-Color Visual Sentry LED Controller
 Drives Common-Cathode RGB LED to communicate soil state to farmers without text or smartphone.
 """
 

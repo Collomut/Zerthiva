@@ -85,7 +85,7 @@ export async function fetchAlerts(deviceId = null) {
         salinity_ec_25: 2.85,
         moisture_vwc: 29.4,
         sms_recipient: '+254 712 345 678',
-        sms_content: 'SoilGuard CRITICAL: High salt (2.85 dS/m) in your Tomato. Hold fertilizer! Flush root zone with 23% extra water.',
+        sms_content: 'Zerthiva CRITICAL: High salt (2.85 dS/m) in your Tomato. Hold fertilizer! Flush root zone with 23% extra water.',
         sms_dispatched: true
       }
     ];

@@ -1,4 +1,4 @@
-## 🌾 SoilGuard Pull Request
+## 🌾 Zerthiva Pull Request
 
 ### Summary of Changes
 <!-- Provide a clear, concise overview of what has been implemented or resolved -->

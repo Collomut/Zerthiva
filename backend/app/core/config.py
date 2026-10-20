@@ -8,14 +8,14 @@ from pydantic import AnyHttpUrl, validator
 
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "SoilGuard Cloud Platform"
+    PROJECT_NAME: str = "Zerthiva Cloud Platform"
     VERSION: str = "1.0.0"
     API_V1_STR: str = "/api/v1"
     ENVIRONMENT: str = "development"
     DEBUG: bool = True
 
     # Security
-    SECRET_KEY: str = "soilguard-super-secret-key-change-in-production-min-32-chars"
+    SECRET_KEY: str = "zerthiva-super-secret-key-change-in-production-min-32-chars"
     DEVICE_PSK: str = "sg-field-device-pre-shared-key-2026"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 1440
     ALGORITHM: str = "HS256"
@@ -31,13 +31,13 @@ class Settings(BaseSettings):
 
     # Database
     # Default to async SQLite for local zero-dependency testing; can be overridden by environment variable
-    DATABASE_URL: str = "sqlite+aiosqlite:///./soilguard.db"
+    DATABASE_URL: str = "sqlite+aiosqlite:///./zerthiva.db"
 
     # SMS Gateway Configuration
     SMS_PROVIDER: str = "mock" # "mock", "africastalking", "twilio"
     AFRICASTALKING_USERNAME: str = "sandbox"
     AFRICASTALKING_API_KEY: str = ""
-    AFRICASTALKING_SENDER_ID: str = "SoilGuard"
+    AFRICASTALKING_SENDER_ID: str = "Zerthiva"
 
     # Agronomic Thresholds
     DEFAULT_IRRIGATION_WATER_EC: float = 0.6

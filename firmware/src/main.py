@@ -1,5 +1,5 @@
 """
-SoilGuard Edge Firmware Main Orchestrator
+Zerthiva Edge Firmware Main Orchestrator
 Executes the 15-minute sensor acquisition, FAO agronomic evaluation,
 local sentry actuation, MicroSD logging, and cellular alert dispatch.
 """
@@ -22,7 +22,7 @@ from .storage.sd_logger import SDLogger
 from .comms.gsm_sim800 import SIM800L
 
 
-class SoilGuardNode:
+class ZerthivaNode:
     def __init__(self):
         self.device_id = config.DEVICE_ID
         self.crop_name = config.DEFAULT_CROP
@@ -90,7 +90,7 @@ class SoilGuardNode:
         """
         Executes a single 15-minute sense-decide-alert-log loop.
         """
-        print(f"\n--- [{time.time()}] SoilGuard Cycle Begin ({self.device_id}) ---")
+        print(f"\n--- [{time.time()}] Zerthiva Cycle Begin ({self.device_id}) ---")
         self.cycle_count += 1
 
         # 1. Power up sensors
@@ -205,7 +205,7 @@ class SoilGuardNode:
 
 
 def main():
-    node = SoilGuardNode()
+    node = ZerthivaNode()
     while True:
         node.run_cycle()
         node.sleep(config.CYCLE_INTERVAL_SEC)

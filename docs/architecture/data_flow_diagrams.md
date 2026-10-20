@@ -1,6 +1,6 @@
-# 🌊 SoilGuard — Data Flow Diagrams (DFD)
+# 🌊 Zerthiva — Data Flow Diagrams (DFD)
 
-This document formalizes the data flow pathways across the **SoilGuard Soil Intelligence System (SIS)** at Level 0 (System Context) and Level 1 (Subsystem Decomposition).
+This document formalizes the data flow pathways across the **Zerthiva Soil Intelligence System (SIS)** at Level 0 (System Context) and Level 1 (Subsystem Decomposition).
 
 ---
 
@@ -14,7 +14,7 @@ flowchart TD
         SOIL[("Field Soil & Crop Root Zone\n(-20cm Depth)")]
     end
 
-    subgraph EdgeDevice ["SoilGuard Edge Node (Field Installed)"]
+    subgraph EdgeDevice ["Zerthiva Edge Node (Field Installed)"]
         NODE["ESP32 Microcontroller\n+ Multi-Sensor Probes\n+ Local FAO Decision Engine"]
     end
 
@@ -23,7 +23,7 @@ flowchart TD
         OFFICER["🧑‍💼 Extension Officer / Agronomist\n(Smartphone / Web Browser)"]
     end
 
-    subgraph Cloud ["SoilGuard Cloud Infrastructure"]
+    subgraph Cloud ["Zerthiva Cloud Infrastructure"]
         BACKEND["FastAPI Gateway\n+ TimescaleDB Database\n+ SMS Engine"]
     end
 

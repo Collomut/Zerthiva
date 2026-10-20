@@ -1,8 +1,8 @@
-# 🌾 SoilGuard — Soil Intelligence System (SIS)
+# 🌾 Zerthiva — Soil Intelligence System (SIS)
 
-[![CI - Edge Firmware](https://github.com/Collomut/soilGuard/actions/workflows/firmware-ci.yml/badge.svg)](https://github.com/Collomut/soilGuard/actions/workflows/firmware-ci.yml)
-[![CI - Cloud Backend](https://github.com/Collomut/soilGuard/actions/workflows/backend-ci.yml/badge.svg)](https://github.com/Collomut/soilGuard/actions/workflows/backend-ci.yml)
-[![CI - Regional Dashboard](https://github.com/Collomut/soilGuard/actions/workflows/frontend-ci.yml/badge.svg)](https://github.com/Collomut/soilGuard/actions/workflows/frontend-ci.yml)
+[![CI - Edge Firmware](https://github.com/Collomut/Zerthiva/actions/workflows/firmware-ci.yml/badge.svg)](https://github.com/Collomut/Zerthiva/actions/workflows/firmware-ci.yml)
+[![CI - Cloud Backend](https://github.com/Collomut/Zerthiva/actions/workflows/backend-ci.yml/badge.svg)](https://github.com/Collomut/Zerthiva/actions/workflows/backend-ci.yml)
+[![CI - Regional Dashboard](https://github.com/Collomut/Zerthiva/actions/workflows/frontend-ci.yml/badge.svg)](https://github.com/Collomut/Zerthiva/actions/workflows/frontend-ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Hardware Cost](https://img.shields.io/badge/Node%20BOM-%2430--35-brightgreen)](docs/architecture/hardware_schematic.md)
 [![Edge Platform](https://img.shields.io/badge/Firmware-MicroPython%20ESP32-blue)](firmware/)
@@ -16,7 +16,7 @@
 
 In irrigated drylands across Sub-Saharan Africa and developing regions, over **20% of irrigated cropland** suffers from insidious salt accumulation. Smallholder farmers typically lack real-time soil visibility, resulting in a vicious cycle: salt deposits build up → plant root osmosis is impeded → farmers mistake stress for drought and apply more salty water or fertilizer → crops collapse.
 
-**SoilGuard** breaks this cycle with an affordable, solar-backed edge node deployed at the crop root zone:
+**Zerthiva** breaks this cycle with an affordable, solar-backed edge node deployed at the crop root zone:
 1. **Continuous 15-Minute Sensing:** Measures Soil Salinity (Electrical Conductivity, normalized to 25°C), Volumetric Water Content (VWC%), and Soil Temperature.
 2. **On-Device FAO-56 Decision Engine:** Operates 100% offline using peer-reviewed agronomic thresholds to calculate Leaching Requirements (LR) and prevent fertilizer toxicity.
 3. **Multi-Tier Alerting:**
@@ -64,7 +64,7 @@ In irrigated drylands across Sub-Saharan Africa and developing regions, over **2
 ## 🗂️ Repository Directory Structure
 
 ```text
-soilGuard/
+Zerthiva/
 ├── firmware/                       # ESP32 Edge Firmware (MicroPython)
 │   ├── src/
 │   │   ├── config.py               # Pin definitions, calibration constants, crop profiles
@@ -126,8 +126,8 @@ soilGuard/
 
 ```bash
 # Clone the repository
-git clone https://github.com/Collomut/soilGuard.git
-cd soilGuard
+git clone https://github.com/Collomut/Zerthiva.git
+cd Zerthiva
 
 # Copy environment settings
 cp .env.example .env
@@ -179,7 +179,7 @@ python -m unittest discover -s tests
 
 ## 🔬 Agronomic Science & FAO-56 Reference
 
-SoilGuard implements peer-reviewed FAO standards for crop salinity management:
+Zerthiva implements peer-reviewed FAO standards for crop salinity management:
 
 $$\text{LR} = \frac{\text{EC}_w}{5 \cdot \text{EC}_e - \text{EC}_w}$$
 

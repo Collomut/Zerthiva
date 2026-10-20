@@ -1,5 +1,5 @@
 """
-SoilGuard Field Telemetry Simulator
+Zerthiva Field Telemetry Simulator
 Generates diurnal temperature cycles, soil moisture depletion curves,
 periodic irrigation pulses, and gradual salt accumulation over a 30-day crop lifecycle.
 """

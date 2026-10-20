@@ -1,5 +1,5 @@
 """
-SoilGuard Cloud Platform — FastAPI Application Entrypoint
+Zerthiva Cloud Platform — FastAPI Application Entrypoint
 """
 
 from contextlib import asynccontextmanager
@@ -53,7 +53,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,
-    description="Industrial-grade Cloud Platform & Agronomic Advisory Engine for SoilGuard (SIS)",
+    description="Industrial-grade Cloud Platform & Agronomic Advisory Engine for Zerthiva (SIS)",
     lifespan=lifespan
 )
 
@@ -85,7 +85,7 @@ async def health_check():
 async def root():
     """Platform root information and documentation link"""
     return {
-        "message": "Welcome to SoilGuard Cloud Platform API",
+        "message": "Welcome to Zerthiva Cloud Platform API",
         "docs_url": "/docs",
         "health_check": "/health",
         "api_v1": settings.API_V1_STR

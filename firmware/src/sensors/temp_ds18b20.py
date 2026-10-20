@@ -1,5 +1,5 @@
 """
-SoilGuard DS18B20 Digital Temperature Sensor Driver
+Zerthiva DS18B20 Digital Temperature Sensor Driver
 Uses MicroPython onewire and ds18x20 protocol to query digital soil temperature.
 """
 

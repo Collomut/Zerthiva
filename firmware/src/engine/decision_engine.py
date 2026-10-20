@@ -1,5 +1,5 @@
 """
-SoilGuard Agronomic Decision Engine (FAO-56 Implementation)
+Zerthiva Agronomic Decision Engine (FAO-56 Implementation)
 Evaluates real-time soil vectors and determines irrigation, leaching, and fertilizer directives.
 """
 
@@ -76,7 +76,7 @@ class DecisionEngine:
                 "extra_water_percent": extra_percent,
                 "projected_yield_loss_percent": yield_loss,
                 "fertilizer_guidance": "LOCKED: Hold all fertilizers. Soil salinity is high.",
-                "sms_message": f"SoilGuard Alert: High salt in {crop['display_name']} ({ec_25} dS/m > {threshold_ec}). Hold fertilizer! Flush with {extra_percent}% extra irrigation water.",
+                "sms_message": f"Zerthiva Alert: High salt in {crop['display_name']} ({ec_25} dS/m > {threshold_ec}). Hold fertilizer! Flush with {extra_percent}% extra irrigation water.",
                 "summary": f"Salinity exceeds threshold ({ec_25} vs {threshold_ec} dS/m). Leaching cycle required."
             }
 
@@ -93,7 +93,7 @@ class DecisionEngine:
                 "extra_water_percent": 0,
                 "projected_yield_loss_percent": 0.0,
                 "fertilizer_guidance": f"OK: Standard dosage recommended: {crop['standard_npk_dose']}.",
-                "sms_message": f"SoilGuard: Soil moisture is low ({moisture_vwc}%). Salinity is safe ({ec_25} dS/m). Run normal irrigation today.",
+                "sms_message": f"Zerthiva: Soil moisture is low ({moisture_vwc}%). Salinity is safe ({ec_25} dS/m). Run normal irrigation today.",
                 "summary": f"Moisture is below refill point ({moisture_vwc}% < {min_moist}%). Standard irrigation recommended."
             }
 
@@ -110,7 +110,7 @@ class DecisionEngine:
                 "extra_water_percent": 0,
                 "projected_yield_loss_percent": 0.0,
                 "fertilizer_guidance": "LOCKED: Soil saturated. Fertilizer application will cause chemical runoff.",
-                "sms_message": f"SoilGuard Caution: Soil saturated ({moisture_vwc}%). Pause irrigation to prevent root rot.",
+                "sms_message": f"Zerthiva Caution: Soil saturated ({moisture_vwc}%). Pause irrigation to prevent root rot.",
                 "summary": f"Soil moisture exceeds field capacity ({moisture_vwc}% > {max_moist}%). Pause watering."
             }
 
@@ -126,6 +126,6 @@ class DecisionEngine:
             "extra_water_percent": 0,
             "projected_yield_loss_percent": 0.0,
             "fertilizer_guidance": f"OPTIMAL: Safe window for scheduled application: {crop['standard_npk_dose']}.",
-            "sms_message": f"SoilGuard: All soil metrics optimal (EC: {ec_25} dS/m, Moisture: {moisture_vwc}%). No action needed.",
+            "sms_message": f"Zerthiva: All soil metrics optimal (EC: {ec_25} dS/m, Moisture: {moisture_vwc}%). No action needed.",
             "summary": "Soil salinity and moisture levels are within optimal agronomic targets."
         }

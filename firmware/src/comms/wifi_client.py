@@ -1,5 +1,5 @@
 """
-SoilGuard WiFi Uplink Client
+Zerthiva WiFi Uplink Client
 Used for lab bench testing, firmware staging, and farm sites with local WiFi coverage.
 """
 

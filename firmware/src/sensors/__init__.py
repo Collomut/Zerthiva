@@ -1,3 +1,3 @@
 """
-SoilGuard Sensor Drivers Package
+Zerthiva Sensor Drivers Package
 """

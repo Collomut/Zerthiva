@@ -4,7 +4,7 @@ param(
     [string]$FirmwareBin = "esp32-20230426-v1.20.0.bin"
 )
 
-Write-Host "=== SoilGuard Firmware Deployment ===" -ForegroundColor Green
+Write-Host "=== Zerthiva Firmware Deployment ===" -ForegroundColor Green
 Write-Host "Target Port: $Port"
 Write-Host "Baud Rate:   $Baud"
 Write-Host "Binary:      $FirmwareBin"
@@ -20,7 +20,7 @@ esptool.py --chip esp32 --port $Port erase_flash
 Write-Host "[2/3] Writing MicroPython binary..." -ForegroundColor Cyan
 esptool.py --chip esp32 --port $Port --baud $Baud write_flash -z 0x1000 $FirmwareBin
 
-Write-Host "[3/3] Uploading SoilGuard Edge source..." -ForegroundColor Cyan
+Write-Host "[3/3] Uploading Zerthiva Edge source..." -ForegroundColor Cyan
 ampy --port $Port put src/ /
 
 Write-Host "Firmware flashing complete!" -ForegroundColor Green

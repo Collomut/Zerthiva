@@ -1,5 +1,5 @@
 """
-SoilGuard Prototype One-Click Launcher
+Zerthiva Prototype One-Click Launcher
 Starts the FastAPI cloud backend, launches the synthetic field simulator,
 and opens the interactive agronomic dashboard prototype in your default web browser.
 """
@@ -16,7 +16,7 @@ def main():
     dashboard_html = os.path.join(base_dir, "dashboard_prototype.html")
 
     print("=" * 65)
-    print("🌾 SoilGuard — Interactive Working Prototype Launcher")
+    print("🌾 Zerthiva — Interactive Working Prototype Launcher")
     print("=" * 65)
     print("1. Starting FastAPI Cloud Backend on http://127.0.0.1:8000 ...")
 
@@ -35,7 +35,7 @@ def main():
     webbrowser.open(f"file://{dashboard_html}")
 
     print("\n" + "=" * 65)
-    print("✅ SoilGuard Prototype is RUNNING!")
+    print("✅ Zerthiva Prototype is RUNNING!")
     print(f"• Interactive Dashboard: file://{dashboard_html}")
     print("• FastAPI Backend API:   http://127.0.0.1:8000")
     print("• Interactive API Docs:  http://127.0.0.1:8000/docs")
@@ -46,7 +46,7 @@ def main():
     try:
         backend_proc.wait()
     except KeyboardInterrupt:
-        print("\nShutting down SoilGuard backend...")
+        print("\nShutting down Zerthiva backend...")
         backend_proc.terminate()
         backend_proc.wait()
         print("Backend stopped cleanly. Good luck with your presentation!")

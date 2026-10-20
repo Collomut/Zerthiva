@@ -1,8 +1,8 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "SoilGuard Cloud Platform",
-    "description": "Industrial-grade Cloud Platform & Agronomic Advisory Engine for SoilGuard (SIS)",
+    "title": "Zerthiva Cloud Platform",
+    "description": "Industrial-grade Cloud Platform & Agronomic Advisory Engine for Zerthiva (SIS)",
     "version": "1.0.0"
   },
   "paths": {
