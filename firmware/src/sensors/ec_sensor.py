@@ -12,11 +12,11 @@ except ImportError:
 
 
 class ECSensor:
-    def __init__(self, pin_adc: int = 34, calibration_k: float = 1.85, alpha: float = 0.020):
+    def __init__(self, pin_adc: int = 34, calibration_k: float = 1.85, alpha: float = 0.0191):
         """
         :param pin_adc: GPIO pin connected to analog EC probe op-amp output
         :param calibration_k: Scaling factor converting analog voltage (V) to EC (dS/m)
-        :param alpha: Temperature compensation coefficient (default 0.020 = 2.0%/°C)
+        :param alpha: Temperature compensation coefficient (default 0.0191 = 1.91%/°C per Rhoades 1989)
         """
         self.pin_num = pin_adc
         self.k = calibration_k

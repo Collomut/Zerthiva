@@ -3,8 +3,10 @@
 [![CI - Edge Firmware](https://github.com/Collomut/Zerthiva/actions/workflows/firmware-ci.yml/badge.svg)](https://github.com/Collomut/Zerthiva/actions/workflows/firmware-ci.yml)
 [![CI - Cloud Backend](https://github.com/Collomut/Zerthiva/actions/workflows/backend-ci.yml/badge.svg)](https://github.com/Collomut/Zerthiva/actions/workflows/backend-ci.yml)
 [![CI - Regional Dashboard](https://github.com/Collomut/Zerthiva/actions/workflows/frontend-ci.yml/badge.svg)](https://github.com/Collomut/Zerthiva/actions/workflows/frontend-ci.yml)
+[![Master Technical Dossier](https://img.shields.io/badge/Master_Dossier-58_Sections-059669.svg)](https://collomut.github.io/soilManagement/)
+[![3D Soil Simulation](https://img.shields.io/badge/3D_Viewer-WebGL_Simulation-0284c7.svg)](https://collomut.github.io/soilManagement/zerthiva_interactive_3d.html)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Hardware Cost](https://img.shields.io/badge/Node%20BOM-%2430--35-brightgreen)](docs/architecture/hardware_schematic.md)
+[![Hardware Cost](https://img.shields.io/badge/Hardware%20Cost-%2434.80_BOM-brightgreen)](docs/architecture/hardware_schematic.md)
 [![Edge Platform](https://img.shields.io/badge/Firmware-MicroPython%20ESP32-blue)](firmware/)
 
 > **Know Your Soil. Feed Your Field.**  
@@ -26,6 +28,23 @@ In irrigated drylands across Sub-Saharan Africa and developing regions, over **2
 
 ---
 
+---
+
+## 🌐 Complete Platform Ecosystem
+
+Zerthiva is organized into two companion repositories:
+
+1. 💻 **Implementation Stack ([Collomut/Zerthiva](https://github.com/Collomut/Zerthiva)):**
+   - **ESP32 Edge Firmware:** MicroPython sensor acquisition, 25°C baseline normalization, and offline FAO-56 decision engine.
+   - **Cloud API Gateway:** FastAPI + SQLAlchemy async service for telemetry ingestion, SMS dispatch, and anomaly detection.
+   - **Regional Dashboard:** React + Vite + Tailwind CSS console for agricultural extension officers.
+   - **Field Node Simulator:** Synthetic telemetry stream generator with realistic diurnal cycles and salt spikes.
+
+2. 📘 **Research Platform & 3D Exhibition ([Collomut/soilManagement](https://github.com/Collomut/soilManagement)):**
+   - 🌐 **[Master Technical Dossier (58 Sections & 9 Annexes)](https://collomut.github.io/soilManagement/):** Complete agronomic evidence base, power budgets, Rhoades conversion models, and matched-pair pilot methodology.
+   - 🌾 **[Interactive 3D WebGL Soil Intelligence Simulation](https://collomut.github.io/soilManagement/zerthiva_interactive_3d.html):** Cinematic real-time 3D cutaway of crop root-zone electrochemical sensing with PBR soil strata.
+
+---
 ## 🏛️ System Architecture
 
 ```text

@@ -4,7 +4,7 @@ Authenticates edge devices, filters anomalies, performs cloud-side agronomic val
 and dispatches emergency cellular SMS alerts when critical soil salinity is detected.
 """
 
-from datetime import datetime
+from datetime import datetime, timezone
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -54,13 +54,13 @@ async def ingest_telemetry(
         node = Node(
             device_id=payload.device_id,
             battery_voltage=payload.battery_voltage or 4.0,
-            last_seen=datetime.utcnow()
+            last_seen=datetime.now(timezone.utc)
         )
         db.add(node)
         await db.flush()
     else:
         node.battery_voltage = payload.battery_voltage or 4.0
-        node.last_seen = datetime.utcnow()
+        node.last_seen = datetime.now(timezone.utc)
 
     # 3. Resolve Associated Farm
     farm = None
@@ -90,7 +90,7 @@ async def ingest_telemetry(
     telemetry_rec = Telemetry(
         device_id=payload.device_id,
         farm_id=node.farm_id,
-        timestamp=datetime.utcnow(),
+        timestamp=datetime.now(timezone.utc),
         soil_temp_c=payload.soil_temp_c,
         raw_ec=payload.raw_ec,
         normalized_ec_25=normalized_ec,
@@ -116,7 +116,7 @@ async def ingest_telemetry(
         alert_rec = AdvisoryAlert(
             device_id=payload.device_id,
             farm_id=node.farm_id,
-            timestamp=datetime.utcnow(),
+            timestamp=datetime.now(timezone.utc),
             alert_level="CRITICAL",
             action=action_str,
             salinity_ec_25=normalized_ec,

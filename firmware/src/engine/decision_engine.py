@@ -16,9 +16,9 @@ class DecisionEngine:
     def normalize_temperature(self, raw_ec: float, temp_c: float) -> float:
         """
         Standardizes electrical conductivity to 25°C baseline.
-        EC_25 = EC_raw / (1 + 0.02 * (T - 25))
+        EC_25 = EC_raw / (1 + 0.0191 * (T - 25)) per Rhoades 1989.
         """
-        alpha = 0.020
+        alpha = 0.0191
         temp_factor = 1.0 + alpha * (temp_c - 25.0)
         if temp_factor <= 0.1:
             temp_factor = 0.1
@@ -27,9 +27,14 @@ class DecisionEngine:
 
     def calculate_leaching_requirement(self, ec_soil_target: float) -> float:
         """
-        FAO-56 standard Leaching Requirement (LR) formula:
+        FAO-56 / FAO-29 Ayers & Westcot Leaching Requirement (LR) formula:
         LR = ECw / (5 * ECe - ECw)
+        Safety constraint: enforced only when EC_w <= 0.5 * EC_e (Annex E §E.1).
         """
+        if self.ec_water > 0.5 * ec_soil_target:
+            # Saline irrigation water cannot safely leach root-zone salts
+            return 0.0
+
         denominator = (5.0 * ec_soil_target) - self.ec_water
         if denominator <= 0:
             return 0.15 # Fallback baseline 15% leaching buffer

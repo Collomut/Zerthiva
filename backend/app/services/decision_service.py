@@ -48,7 +48,8 @@ class DecisionService:
 
     @classmethod
     def normalize_temperature(cls, raw_ec: float, temp_c: float) -> float:
-        alpha = 0.020
+        """Standardizes EC to 25°C baseline using Rhoades USDA coefficient (1.91%/°C)"""
+        alpha = 0.0191
         factor = 1.0 + alpha * (temp_c - 25.0)
         if factor <= 0.1:
             factor = 0.1
@@ -56,6 +57,13 @@ class DecisionService:
 
     @classmethod
     def calculate_leaching_requirement(cls, ec_soil_target: float, ec_water: float = 0.6) -> float:
+        """
+        FAO-56 / FAO-29 Leaching Fraction calculation.
+        Enforces safety guard: when ECw > 0.5 * ECe, leaching is locked out to prevent salt buildup.
+        """
+        if ec_water > 0.5 * ec_soil_target:
+            return 0.0
+
         denom = (5.0 * ec_soil_target) - ec_water
         if denom <= 0:
             return 0.15

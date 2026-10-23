@@ -2,7 +2,13 @@
 Unit tests for the Zerthiva Agronomic Decision Engine (FAO-56)
 """
 
+import os
+import sys
 import unittest
+
+# Ensure repository root is on sys.path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
+
 from firmware.src.engine.decision_engine import DecisionEngine
 from firmware.src.engine.fao_tables import CROP_PROFILES, get_crop_profile
 
@@ -69,9 +75,12 @@ class TestAgronomicDecisionEngine(unittest.TestCase):
         lr_low = self.engine.calculate_leaching_requirement(ec_soil_target=10.0)
         self.assertGreaterEqual(lr_low, 0.05)
 
-        # Clamping check: very low target EC
-        lr_high = self.engine.calculate_leaching_requirement(ec_soil_target=0.3)
-        self.assertLessEqual(lr_high, 0.45)
+    def test_leaching_safety_guard_when_water_saline(self):
+        # Safety guard: if ECw > 0.5 * ECe, leaching would concentrate salts further
+        # Maize ECe = 1.7. If ECw = 1.0 (which is > 0.85 = 0.5 * 1.7), LR must return 0.0
+        saline_engine = DecisionEngine(ec_water_source=1.0)
+        lr = saline_engine.calculate_leaching_requirement(ec_soil_target=1.7)
+        self.assertEqual(lr, 0.0)
 
     def test_tomato_thresholds(self):
         # Tomato has 2.5 dS/m threshold
